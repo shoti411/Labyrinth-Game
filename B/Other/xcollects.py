@@ -1,7 +1,9 @@
+import sys
+
 ###############################################################################################
 
 # acceptable_strings : (List-of String) -> the only valid String inputs for the program
-acceptable_strings = ["┘", "┐", "└", "┌"]
+acceptable_strings = ['"┘"', "┐", "└", "┌"]
 # unacceptable_output : (String) -> the output String when invalid String is taken as input
 unacceptable_output = 'unacceptable input'
 
@@ -35,20 +37,16 @@ def xcollects() -> int:
     return_str = ''
     while True:
         try:
-            input_str = eval(input())
+            input_str = input()
             if acceptable(input_str):
-                return_str += input_str
+                return_str += input_str.strip('"')
             else:
                 print(unacceptable_output)
                 exit(1)
         # ending successfully (on user-break with 'CTRL-D')
-        except SyntaxError:
-            print(return_str)
+        except EOFError:
+            print(f'"{return_str}"')
             return 0
-        # input is not surrounded in quotes therefore unacceptable
-        except NameError:
-            print(unacceptable_output)
-            exit(1)
 
 
 if __name__ == "__main__":
