@@ -1,5 +1,3 @@
-import sys
-
 ###############################################################################################
 
 # acceptable_strings : (List-of String) -> the only valid String inputs for the program
@@ -50,4 +48,4 @@ def xcollects() -> int:
 
 
 if __name__ == "__main__":
-    xcollects()
+    xcollects() 
