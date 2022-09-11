@@ -1,8 +1,11 @@
+###############################################################################################
+
 # acceptable_strings : (List-of String) -> the only valid String inputs for the program
 acceptable_strings = ["┘", "┐", "└", "┌"]
-
 # unacceptable_output : (String) -> the output String when invalid String is taken as input
 unacceptable_output = 'unacceptable input'
+
+###############################################################################################
 
 
 def acceptable(input_str: str) -> bool:
@@ -25,6 +28,8 @@ def xcollects() -> int:
     Returns exit code
 
     xcollects reads a stream of lines from STDIN and prints a single string on a line by itself to STDOUT of all the valid STDIN characters.
+    Acceptable strings are one of: "┘", "┐", "└", "┌" and includes the quotes. 
+    If any input is not acceptable the program prints "unacceptable input" also on a line by itself.
     """
 
     return_str = ''
@@ -36,11 +41,14 @@ def xcollects() -> int:
             else:
                 print(unacceptable_output)
                 exit(1)
-
         # ending successfully (on user-break with 'CTRL-D')
         except SyntaxError:
             print(return_str)
             return 0
+        # input is not surrounded in quotes therefore unacceptable
+        except NameError:
+            print(unacceptable_output)
+            exit(1)
 
 
 if __name__ == "__main__":
