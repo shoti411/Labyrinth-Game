@@ -1,7 +1,7 @@
 ###############################################################################################
 
 # acceptable_strings : (List-of String) -> the only valid String inputs for the program
-acceptable_strings = ['"┘"', "┐", "└", "┌"]
+acceptable_strings = ['"┘"', '"┐"', '"└"', '"┌"']
 # unacceptable_output : (String) -> the output String when invalid String is taken as input
 unacceptable_output = 'unacceptable input'
 
