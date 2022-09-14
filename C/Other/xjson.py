@@ -44,7 +44,7 @@ def xjson() -> int:
         input_json = json.loads(input_str)
         next_string = acceptable_string_map[input_json['vertical']][input_json['horizontal']]
         return_array.append(next_string)
-    print(json.dumps(return_array, ensure_ascii=False), end='')
+    print(json.dumps(return_array, ensure_ascii=False))
 
     return 0
 
