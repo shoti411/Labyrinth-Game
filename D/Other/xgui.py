@@ -7,10 +7,10 @@ tile_dimensions = (100, 100)
 
 # Mapping acceptable characters to their corresponding file path
 file_map = {
-    "┌": './Images/right-down.png',
-    "┐": './Images/left-down.png',
-    "┘": './Images/left-up.png',
-    "└": './Images/right-up.png'
+    "┌": 'Other/Images/right-down.png',
+    "┐": 'Other/Images/left-down.png',
+    "┘": 'Other/Images/left-up.png',
+    "└": 'Other/Images/right-up.png'
 }
 
 
