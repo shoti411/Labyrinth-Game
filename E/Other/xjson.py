@@ -7,6 +7,7 @@ acceptable_string_map = {
     "DOWN": {"LEFT": "┐", "RIGHT": "┌"}
 }
 
+
 def filter_input(input_str: str) -> list:
     """
     :param: input_str (str): input_str that is filled with json objects.
@@ -16,6 +17,7 @@ def filter_input(input_str: str) -> list:
     Returns that list.
     """
     return input_str.replace(' ','').replace('}','}*').split('*')[:-1]
+
 
 def xjson(raw_input) -> int:
     """
