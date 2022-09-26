@@ -58,7 +58,7 @@ def xtcp():
     data = collect_input(connection=conn)
     processed_data = xjson.xjson(data)
     conn.send(bytes(json.dumps(processed_data, ensure_ascii=False), 'utf-8'))
-    conn.send(bytes('\n', 'utf-8'))
+    conn.send(bytes('\r\n', 'utf-8'))
     host.close()
 
 
