@@ -1,9 +1,9 @@
 ## Splitting "Labyrinth" into 3 Sprints
 
-**TO: Matthias Felleisen**
-**FROM: Dylan Sapienza & Thomas Crook**
-**DATE: 09/26/2022**
-**SUBJECT: Proposal for Labyrinth Sprints**
+**TO: Matthias Felleisen** </br>
+**FROM: Dylan Sapienza & Thomas Crook**</br>
+**DATE: 09/26/2022**</br>
+**SUBJECT: Proposal for Labyrinth Sprints**</br>
 
 In order to split the implementation of Labyrinth into three 16-hour sprints, we have decided on a very specific approach. Our first sprint will focus on the creation of the player-referee interface, the player logic, as well as unit testing to wrap up our sprint. In sprint 2 we will complete the referee logic and a basic observer. Finally, for sprint 3,  we will complete the remote-player communication and the final implementation of the observer. Unit testing and integration testing will be ran at the end of every sprint, to catch any bugs that need to be prioritized before moving on to the next sprint.
 
