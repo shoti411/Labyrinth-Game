@@ -1,0 +1,11 @@
+Pair: crookt-Dsap5131
+Commit: 03890c0f2da490de477e57943c6e07a8eb216723
+Self-eval: 
+Score: 10/40
+Grader: Rashi Jain
+
+Note- The images doesnot show up. On runninnng the make file it showed an error 
+
+Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-3DmK2x/pillow/
+
+Commit URL: https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/tree/03890c0f2da490de477e57943c6e07a8eb216723
