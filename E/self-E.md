@@ -10,15 +10,18 @@ This assignment comes with three distinct, unrelated tasks.
 So, indicate below each bullet which file/unit takes care of each task:
 
 
-1. dealing with the command-line argument (PORT)
+1. dealing with the command-line argument (PORT): https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/f56c2e47535f930732eb7aaebcb51930a968a55f/E/Other/xtcp.py#L24
 
 
 
-2. connecting the client on the specified port to the functionality
+2. connecting the client on the specified port to the functionality: https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/f56c2e47535f930732eb7aaebcb51930a968a55f/E/Other/xtcp.py#L14-L29
 
 
 
-3. core functionality (either copied or imported from `C`)
+3. core functionality (either copied or imported from `C`)\
+    a. Collect Input : https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/f56c2e47535f930732eb7aaebcb51930a968a55f/E/Other/xtcp.py#L32-L46
+    b. Call functionality from C and send back output: https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/f56c2e47535f930732eb7aaebcb51930a968a55f/E/Other/xtcp.py#L59-L61
+    c. C with updated main: https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/f56c2e47535f930732eb7aaebcb51930a968a55f/E/Other/xjson.py
 
 
 
