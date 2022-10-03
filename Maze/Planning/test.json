@@ -1,0 +1,16 @@
+{
+  "board": [[{"name": "Tile"}, {"name": "Tile"}], [{"name": "Tile"}, {"name": "Tile"}]],
+  "players": [
+    {
+      "player": "p1",
+      "gem_type": "sapphire",
+      "home": [0, 1],
+      "gem_found": false,
+      "position": [0, 1]
+    },
+    {},
+    {}
+  ],
+  "extra_tile": {"name": "Tile"},
+  "player_turn": 0
+}
