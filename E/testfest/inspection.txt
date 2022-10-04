@@ -1,0 +1,14 @@
+Pair: crookt-Dsap5131
+Commit: f56c2e47535f930732eb7aaebcb51930a968a55f
+Self-eval: https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/15ce297d7af9418816d656b94f47c337c0de7f38/E/self-E.md
+Score: 30/30
+Grader: Alexis Hooks
+
+Self Evaluation [10/10]:
+    [+10] - accurate self eval
+
+Code Inspection [20/20]: 
+    [+10] - for dealing with the tcp part as a "separate" function/method
+    [+10] - having re-used functionality from C
+
+Commit URL: https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/tree/f56c2e47535f930732eb7aaebcb51930a968a55f
