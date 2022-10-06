@@ -1,13 +1,22 @@
 import copy
 import random
 
+from directions import Direction
 
 class Tile:
-    """ Represents a tile in a board game with possible paths to UP, DOWN, LEFT, and RIGHT """
+    """ 
+    Represents a tile in a board game with possible paths to UP, DOWN, LEFT, and/or RIGHT."""
 
     __acceptable_paths = ['│', '─', '┐', '└', '┌', '┘', '┬', '├', '┴', '┤', '┼']
 
     def __init__(self, path_code=None):
+        """
+        Constructs a Tile. By default, path_code is random.
+
+        :param: path_code (string): A acceptable string.
+            A string is acceptable if it is one of ['│', '─', '┐', '└', '┌', '┘', '┬', '├', '┴', '┤', '┼'].
+        """
+
         if path_code is None:
             path_code = random.choice(self.__acceptable_paths)
         if path_code not in self.__acceptable_paths:
@@ -18,16 +27,21 @@ class Tile:
         return copy.deepcopy(self.__path_code)
 
     def get_paths(self):
+        """
+        Converts and returns the path_code as a list of Direction.
+
+        :return: directions (list(Direction)): Paths from this tile.
+        """
+
         directions = []
-        ['│', '─', '┐', '└', '┌', '┘', '┬', '├', '┴', '┤', '┼']
         if self.__path_code in ['│', '└','┘', '├', '┴', '┤', '┼']:
-            directions.append('UP')
+            directions.append(Direction.UP)
         if self.__path_code in ['│', '┐', '┌', '┬', '├',  '┤', '┼']:
-            directions.append('DOWN')
+            directions.append(Direction.DOWN)
         if self.__path_code in ['─', '┐', '┘', '┬', '┴', '┤', '┼']:
-            directions.append('LEFT')
+            directions.append(Direction.LEFT)
         if self.__path_code in ['─',  '└', '┌', '┬', '├', '┴',  '┼']:
-            directions.append('RIGHT')
+            directions.append(Direction.RIGHT)
         return directions
 
     def __str__(self):

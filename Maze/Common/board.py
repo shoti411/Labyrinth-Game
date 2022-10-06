@@ -1,38 +1,59 @@
 from tile import Tile
+from directions import Direction
 import copy
-"""
-
-sliding a designated row or column in one or the other direction;
-
-inserting a tile into the spot that is left open by a slide;
-
-determining which tiles are reachable from a designated tile.
-
-"""
 
 
 class Board:
+    """
+    Data representation of the game board of maze.
 
-    def __init__(self, rows=7, cols=7, board=None, extra_tile=None):
-        if rows < 0 or cols < 0:
-            raise ValueError(f'Provided rows and columns must be non-negative. Given: [{rows}, {cols}]')
+    Supports:
+        Shifting columns and rows while inputting a given Tile.
+        Checking reachable tiles from any given position.
+    """
 
-        self.__extra_tile = extra_tile
-        if extra_tile is None:
-            self.__extra_tile = Tile()
+    def __init__(self, board):
+        """
+        Constructs a new Board with a given list of list of Tiles. If board is none, randomize 7x7 board.
 
+        :param: board (list(list(Tile))): Represents a game board made of individual Tile.
+        """
         self.__board = board
         if board is None:
-            self.__board = self.__create_board(rows, cols)
+            self.__board = self.__create_board()
 
-    def __create_board(self, rows, cols):
-        board = []
-        if cols == 0 or rows == 0:
-            return board
+        self.__check_board(self.__board)
 
-        for i in range(rows):
+
+    def __check_board(self, board):
+        """
+        Verify a board is valid. All rows are equal length, all positions are Tile objects,\
+             and length of rows and columns are Natural numbers.  
+
+        :param: board (list(list(Tile))): Represents a game board made of individual Tile.
+        """
+
+        if not board or not isinstance(board, list):
+            raise ValueError('Board is an invalid board.')
+
+        row_length = len(board[-1])
+        for row in board:
+            if len(row) != row_length:
+                raise ValueError('Board is an invalid board. A board must have equal column lengths.')
+            for tile in row:
+                if not isinstance(tile, Tile):
+                    raise ValueError('Board is an invalid board. A board must have all spaces filled with Tiles.')
+    
+
+    def __create_board(self):
+        """
+        Generate a random 7x7 game board.
+        """
+
+        board, rows, cols = [], 7, 7
+        for _ in range(rows):
             row = []
-            for j in range(cols):
+            for _ in range(cols):
                 row.append(Tile())
             board.append(row)
         return board
@@ -40,50 +61,110 @@ class Board:
     def get_board(self):
         return copy.deepcopy(self.__board)
 
-    def get_extra_tile(self):
-        return copy.deepcopy(self.__extra_tile)
+    def shift_column(self, index, direction, extra_tile):
+        """
+        Slides a columns in a given direction. Takes a Tile piece off the end. Adds a given Tile at the other end.
 
-    def shift_column(self, index, direction):
-        if index < 0 or index > len(self.__board[0]):
-            raise IndexError('Cannot shift undefined column.')
-        if direction not in [-1, 1]:
-            raise ValueError('Direction must be either -1 or 1')
+        :param: index (int): Column index to shift.
+        :param: direction (int): -1 or 1 representing moving down or up respectively. 
+        :param: extra_tile (Tile): new Insertable Tile
+
+        :returns: (Tile): Tile that has been taken off the end.
+        """
+
+        self.__shifting_board_error_check(index, direction, extra_tile, row=False)
 
         col = [row[index] for row in self.__board]
         if direction == 1:
-            new_extra_tile = col[-1]
-            col = col[:-1]
-            col.insert(0, self.__extra_tile)
+            new_extra_tile, col = self.__shift_tile_list_backward(col, extra_tile)
         elif direction == -1:
-            new_extra_tile = col[0]
-            col = col[1:]
-            col.append(self.__extra_tile)
+            new_extra_tile, col = self.__shift_tile_list_forward(col, extra_tile)
 
         for i, row in enumerate(self.__board):
             row[index] = col[i]
+        return new_extra_tile
 
-        self.__extra_tile = new_extra_tile
-        return self.__board
+    def shift_row(self, index, direction, extra_tile):
+        """
+        Slides a row in a given direction. Takes a Tile piece off the end. Adds a given Tile at the other end.
 
-    def shift_row(self, index, direction):
-        if index < 0 or index > len(self.__board):
-            raise IndexError('Cannot shift undefined row.')
-        if direction not in [-1, 1]:
-            raise ValueError('Direction must be either -1 or 1')
+        :param: index (int): Column index to shift.
+        :param: direction (int): -1 or 1 representing moving left or right respectively. 
+        :param: extra_tile (Tile): new Insertable Tile
+
+        :returns: (Tile): Tile that has been taken off the end.
+        """
+
+        self.__shifting_board_error_check(index, direction, extra_tile)
 
         row = self.__board[index]
         if direction == 1:
-            new_extra_tile = row[-1]
-            row = row[:-1]
-            row.insert(0, self.__extra_tile)
+            new_extra_tile, row = self.__shift_tile_list_backward(row, extra_tile)
         elif direction == -1:
-            new_extra_tile = row[0]
-            row = row[1:]
-            row.append(self.__extra_tile)
+            new_extra_tile, row = self.__shift_tile_list_forward(row, extra_tile)
         self.__board[index] = row
-        self.__extra_tile = new_extra_tile
+        return new_extra_tile
+
+    def __shift_tile_list_forward(self, tiles, extra_tile):
+        """
+        Shifts a list of tiles, dropping the last tile and adding a new one at the start.
+
+        :param: tiles (list(Tile))
+        :param: extra_tile (Tile)
+
+        :return: (Tile, list(Tile))
+        """
+        new_extra_tile = tiles[0]
+        tiles = tiles[1:]
+        tiles.append(extra_tile)
+        return new_extra_tile, tiles
+
+    def __shift_tile_list_backward(self, tiles, extra_tile):
+        """
+        Shifts a list of tiles, dropping the first tile and adding a new one at the end.
+
+        :param: tiles (list(Tile))
+        :param: extra_tile (Tile)
+
+        :return: (Tile, list(Tile))
+        """
+        new_extra_tile = tiles[-1]
+        tiles = tiles[:-1]
+        tiles.insert(0, extra_tile)
+        return new_extra_tile, tiles
+
+    
+    def __shifting_board_error_check(self, index, direction, extra_tile, row=True):
+        """
+        Checks that the parameters for shifting a row or column are valid.\
+        
+        :param: index (int): Column index to shift.
+        :param: direction (int): -1 or 1 representing moving left or right respectively. 
+        :param: extra_tile (Tile): new Insertable Tile
+        :param: row (bool): Defaults True. Represents whether we are checking for a row or column.  
+        """
+
+        if row and ( index < 0 or index > len(self.__board)):
+            raise IndexError('Cannot shift undefined row.')
+        elif not row and (index < 0 or index > len(self.__board[0])):
+            raise IndexError('Cannot shift undefined column.')
+
+        if direction not in [-1, 1]:
+            raise ValueError('Direction must be either -1 or 1')
+
+        if not isinstance(extra_tile, Tile):
+            raise ValueError('extra_tile must be a type Tile object')
 
     def get_reachable_tiles(self, x, y):
+        """
+        Check the reachable Tiles from a Tile at a given position.
+
+        :param: x (int): x coordinate
+        :param: y (int): y coordinate
+
+        :return: (list(int, int)): List of reachable positions
+        """
+
         if x not in range(len(self.__board)) or y not in range(len(self.__board[0])):
             raise ValueError('Cannot check reachable tiles from invalid index.')
         return self.__get_reachable_tiles_recurse(x, y, [])
@@ -93,30 +174,35 @@ class Board:
             return visited
         visited.append((x, y))
 
-        this_tile = self.__board[x][y]
-        directions = this_tile.get_paths()
-
-        if x > 0 and 'UP' in directions and 'DOWN' in self.__board[x - 1][y].get_paths() and (x - 1, y) not in visited:
-            visited = visited + self.__get_reachable_tiles_recurse(x - 1, y, visited)
-
-        if x < len(self.__board) - 1 \
-                and 'DOWN' in directions \
-                and 'UP' in self.__board[x + 1][y].get_paths() \
-                and (x + 1, y) not in visited:
-            visited = visited + self.__get_reachable_tiles_recurse(x + 1, y, visited)
-
-        if y > 0 and 'LEFT' in directions \
-                and 'RIGHT' in self.__board[x][y - 1].get_paths() \
-                and (x, y - 1) not in visited:
-            visited = visited + self.__get_reachable_tiles_recurse(x, y - 1, visited)
-
-        if y < len(self.__board[0]) - 1 \
-                and 'RIGHT' in directions \
-                and 'LEFT' in self.__board[x][y + 1].get_paths() \
-                and (x, y + 1) not in visited:
-            visited = visited + self.__get_reachable_tiles_recurse(x, y + 1, visited)
+        connections = self.__connections(x, y)
+        for connection in connections:
+            if connection not in visited:
+                visited = visited + self.__get_reachable_tiles_recurse(connection[0], connection[1], visited)
 
         return list(set(visited))
+
+    def __connections(self, x, y):
+        """
+        Checks and returns which of the surround Tiles from a given position are connected.
+
+        :param: x (int): x coordinate
+        :param: y (int): y coordinate
+        
+        :return: (list(Direction)): List of reachable directions
+        """
+
+        connections = []
+        directions = self.get_board()[x][y].get_paths()
+        if x > 0 and Direction.UP in directions and Direction.DOWN in self.__board[x - 1][y].get_paths():
+            connections.append((x-1,y))
+        if x < len(self.__board) - 1 and Direction.DOWN in directions and Direction.UP in self.__board[x + 1][y].get_paths():
+            connections.append((x+1,y))
+        if y > 0 and Direction.LEFT in directions and Direction.RIGHT in self.__board[x][y - 1].get_paths():
+            connections.append((x,y-1))
+        if y < len(self.__board[0]) - 1 and Direction.RIGHT in directions and Direction.LEFT in self.__board[x][y + 1].get_paths():
+            connections.append((x,y+1))
+
+        return connections
 
 
     def __str__(self):

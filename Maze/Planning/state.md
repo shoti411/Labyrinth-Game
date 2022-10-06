@@ -5,7 +5,7 @@
 **DATE: 10/03/2022**
 **SUBJECT: Game State Design Plan**
 
-After some discussion, Dylan and I have decided on a game state that includes a board, list of players, and player turn iterator.
+After some discussion, Dylan and I have decided on a game state that includes a board, extra tile, list of players, and player turn iterator.
 
 The board will be represented by a two dimensional array storing Tile objects, which consist of the unicode character representing the piece, and the gems that are on the piece. The board will also store the extra tile piece.
 

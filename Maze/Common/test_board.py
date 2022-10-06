@@ -4,98 +4,93 @@ from tile import Tile
 
 pytest.main()
 
-
-def test_board_constructor_0():
-    board = Board(rows=8, cols=4)
-    assert len(board.get_board()) == 8 and len(board.get_board()[0]) == 4, 'Board size doesn\'t match constructor'
-
-
-def test_board_constructor_1():
+def test_board_constructor():
     test_board = [[Tile('┴'), Tile('┤')], [Tile('┤'), Tile('┼')]]
     board = Board(board=test_board)
     assert board.get_board() == test_board, 'Board does not match provided board in constructor.'
 
-
 def test_board_constructor_2():
-    extra_tile = Tile()
-    board = Board(extra_tile=extra_tile)
-    assert board.get_extra_tile() == extra_tile, \
-        'Extra tile does not match provided extra tile in constructor.'
-
+    # Test invalid Tile
+    test_board = [[5, Tile('┤')], [Tile('┤'), Tile('┼')]]
+    with pytest.raises(ValueError) as e_info:
+        board = Board(board=test_board)
 
 def test_board_constructor_3():
-    board = Board(rows=0, cols=4)
-    assert board.get_board() == [], 'Board size doesn\'t match constructor'
-
+    # Test empty board
+    test_board = []
+    with pytest.raises(ValueError) as e_info:
+        board = Board(board=test_board)
 
 def test_board_constructor_4():
-    board = Board(rows=10, cols=0)
-    assert board.get_board() == [], 'Board size doesn\'t match constructor'
-
+    # Test invalid row lengths
+    test_board = [[Tile('┴')], [Tile('┤'), Tile('┼')]]
+    with pytest.raises(ValueError) as e_info:
+        board = Board(board=test_board)
 
 def test_board_constructor_5():
+    # Test invalid object for board 
+    test_board = ('Ace of spades', '2 of diamonds')
     with pytest.raises(ValueError) as e_info:
-        Board(rows=1, cols=-1)
-
-
-def test_board_constructor_6():
-    with pytest.raises(ValueError) as e_info:
-        Board(rows=-1, cols=1)
-
+        board = Board(board=test_board)
 
 def test_board_shift_row():
+    # Test right row shift
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
-    board.shift_row(0, 1)
-    assert board.get_board()[0] == [Tile('┐'), Tile('│'), Tile('─')] and board.get_extra_tile() == Tile('┐'), \
+    board = Board(board=test_board)
+    actual_extra_tile = board.shift_row(0, 1, test_extra_tile)
+    assert board.get_board()[0] == [Tile('┐'), Tile('│'), Tile('─')] and actual_extra_tile == Tile('┐'), \
         "Basic right shift row failed."
 
-
 def test_board_shift_row2():
+    # Test left row shift
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
-    board.shift_row(0, -1)
-    assert board.get_board()[0] == [Tile('─'), Tile('┐'), Tile('┐')] and board.get_extra_tile() == Tile('│'), \
+    board = Board(board=test_board)
+    actual_extra_tile = board.shift_row(0, -1, test_extra_tile)
+    assert board.get_board()[0] == [Tile('─'), Tile('┐'), Tile('┐')] and actual_extra_tile == Tile('│'), \
         "Basic left shift row failed."
 
 
 def test_board_shift_row3():
+    # Test negative invalid index
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
+    board = Board(board=test_board)
     with pytest.raises(IndexError) as e_info:
-        board.shift_row(-1, -1)
+        board.shift_row(-1, -1, test_extra_tile)
 
 
 def test_board_shift_row4():
+    # Test higher invalid index
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
+    board = Board(board=test_board)
     with pytest.raises(IndexError) as e_info:
-        board.shift_row(3, -1)
+        board.shift_row(3, -1, test_extra_tile)
 
 
 def test_board_shift_row5():
+    # Test invalid direction
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
+    board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        board.shift_row(1, 0)
+        board.shift_row(1, 0, test_extra_tile)
 
 
 def test_board_shift_col():
+    # Test downward column shift
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
@@ -103,13 +98,14 @@ def test_board_shift_col():
                      [Tile('│'), Tile('│'), Tile('─')],
                      [Tile('┐'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
-    board.shift_column(0, 1)
-    assert board.get_board() == shifted_board and board.get_extra_tile() == Tile('│'), \
+    board = Board(board=test_board)
+    actual_extra_tile = board.shift_column(0, 1, test_extra_tile)
+    assert board.get_board() == shifted_board and actual_extra_tile == Tile('│'), \
         "Basic down shift column failed."
 
 
 def test_board_shift_col2():
+    # Test upward column shift
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('┐'), Tile('┐'), Tile('┐')]]
@@ -117,43 +113,47 @@ def test_board_shift_col2():
                      [Tile('┐'), Tile('│'), Tile('─')],
                      [Tile('┐'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
-    board.shift_column(0, -1)
-    assert board.get_board() == shifted_board and board.get_extra_tile() == Tile('│'), \
+    board = Board(board=test_board)
+    actual_extra_tile = board.shift_column(0, -1, test_extra_tile)
+    assert board.get_board() == shifted_board and actual_extra_tile == Tile('│'), \
         "Basic down shift column failed."
 
 
 def test_board_shift_col3():
+    # Test negative invalid index
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
+    board = Board(board=test_board)
     with pytest.raises(IndexError) as e_info:
-        board.shift_column(-1, -1)
+        board.shift_column(-1, -1, test_extra_tile)
 
 
 def test_board_shift_col4():
+    # Test high invalid index
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
+    board = Board(board=test_board)
     with pytest.raises(IndexError) as e_info:
-        board.shift_column(3, -1)
+        board.shift_column(3, -1, test_extra_tile)
 
 
 def test_board_shift_col5():
+    # Test invalid direction
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
-    board = Board(board=test_board, extra_tile=test_extra_tile)
+    board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        board.shift_column(1, 0)
+        board.shift_column(1, 0, test_extra_tile)
 
 
 def test_board_get_reachable0():
+    # Basic functionality
     test_board = [[Tile('┌'), Tile('─'), Tile('┐')],
                   [Tile('│'), Tile('│'), Tile('│')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
@@ -165,6 +165,7 @@ def test_board_get_reachable0():
 
 
 def test_board_get_reachable1():
+    # All reachable
     test_board = [[Tile('┼'), Tile('┼'), Tile('┼')],
                   [Tile('┼'), Tile('┼'), Tile('┼')],
                   [Tile('┼'), Tile('┼'), Tile('┼')]]
@@ -176,6 +177,7 @@ def test_board_get_reachable1():
 
 
 def test_board_get_reachable2():
+    # None reachable
     test_board = [[Tile('│'), Tile('─'), Tile('│')],
                   [Tile('─'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('─'), Tile('│')]]
@@ -186,6 +188,7 @@ def test_board_get_reachable2():
 
 
 def test_board_get_reachable3():
+    # Test negative invalid x 
     test_board = [[Tile('│'), Tile('─'), Tile('│')],
                   [Tile('─'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('─'), Tile('│')]]
@@ -195,6 +198,7 @@ def test_board_get_reachable3():
 
 
 def test_board_get_reachable4():
+    # Test negatove invalid y
     test_board = [[Tile('│'), Tile('─'), Tile('│')],
                   [Tile('─'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('─'), Tile('│')]]
@@ -204,6 +208,7 @@ def test_board_get_reachable4():
 
 
 def test_board_get_reachable5():
+    # Test too large invalid x
     test_board = [[Tile('│'), Tile('─'), Tile('│')],
                   [Tile('─'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('─'), Tile('│')]]
@@ -213,6 +218,7 @@ def test_board_get_reachable5():
 
 
 def test_board_get_reachable6():
+    # Test too large invalid y
     test_board = [[Tile('│'), Tile('─'), Tile('│')],
                   [Tile('─'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('─'), Tile('│')]]
