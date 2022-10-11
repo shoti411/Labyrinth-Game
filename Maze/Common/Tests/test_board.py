@@ -2,8 +2,6 @@ import pytest
 from board import Board
 from tile import Tile
 
-pytest.main()
-
 def test_board_constructor():
     test_board = [[Tile('┴'), Tile('┤')], [Tile('┤'), Tile('┼')]]
     board = Board(board=test_board)
@@ -159,6 +157,7 @@ def test_board_get_reachable0():
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     board = Board(board=test_board)
     test_list = board.get_reachable_tiles(0, 0)
+    print(test_list)
     compare_list = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 2), (2, 0)]
     assert all([x in test_list for x in compare_list] + [x in compare_list for x in test_list]), \
         'Basic reachable functionality failed.'

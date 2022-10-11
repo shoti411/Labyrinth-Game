@@ -2,8 +2,6 @@ import pytest
 from tile import Tile
 from directions import Direction
 
-pytest.main()
-
 
 def test_tile_constructor_0():
     # Test default constructor works and that get_path_code works.

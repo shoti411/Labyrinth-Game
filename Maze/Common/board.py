@@ -24,7 +24,6 @@ class Board:
 
         self.__check_board(self.__board)
 
-
     def __check_board(self, board):
         """
         Verify a board is valid. All rows are equal length, all positions are Tile objects,\
@@ -41,9 +40,8 @@ class Board:
             if len(row) != row_length:
                 raise ValueError('Board is an invalid board. A board must have equal column lengths.')
             for tile in row:
-                if not isinstance(tile, Tile):
+                if not isinstance(tile, type(Tile())):
                     raise ValueError('Board is an invalid board. A board must have all spaces filled with Tiles.')
-    
 
     def __create_board(self):
         """
@@ -133,7 +131,6 @@ class Board:
         tiles.insert(0, extra_tile)
         return new_extra_tile, tiles
 
-    
     def __shifting_board_error_check(self, index, direction, extra_tile, row=True):
         """
         Checks that the parameters for shifting a row or column are valid.\
@@ -144,7 +141,7 @@ class Board:
         :param: row (bool): Defaults True. Represents whether we are checking for a row or column.  
         """
 
-        if row and ( index < 0 or index > len(self.__board)):
+        if row and (index < 0 or index > len(self.__board)):
             raise IndexError('Cannot shift undefined row.')
         elif not row and (index < 0 or index > len(self.__board[0])):
             raise IndexError('Cannot shift undefined column.')
@@ -194,16 +191,17 @@ class Board:
         connections = []
         directions = self.get_board()[x][y].get_paths()
         if x > 0 and Direction.UP in directions and Direction.DOWN in self.__board[x - 1][y].get_paths():
-            connections.append((x-1,y))
-        if x < len(self.__board) - 1 and Direction.DOWN in directions and Direction.UP in self.__board[x + 1][y].get_paths():
-            connections.append((x+1,y))
+            connections.append((x - 1, y))
+        if x < len(self.__board) - 1 and Direction.DOWN in directions and Direction.UP in self.__board[x + 1][
+            y].get_paths():
+            connections.append((x + 1, y))
         if y > 0 and Direction.LEFT in directions and Direction.RIGHT in self.__board[x][y - 1].get_paths():
-            connections.append((x,y-1))
-        if y < len(self.__board[0]) - 1 and Direction.RIGHT in directions and Direction.LEFT in self.__board[x][y + 1].get_paths():
-            connections.append((x,y+1))
+            connections.append((x, y - 1))
+        if y < len(self.__board[0]) - 1 and Direction.RIGHT in directions and Direction.LEFT in self.__board[x][
+            y + 1].get_paths():
+            connections.append((x, y + 1))
 
         return connections
-
 
     def __str__(self):
         return_string = ''
