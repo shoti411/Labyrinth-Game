@@ -21,7 +21,7 @@ Indicate below each bullet which file/unit takes care of each task:
 3. point to the functinality for inserting a tile into the open space
 
    - its signature and purpose statement
-   - unit tests for rows and columns
+   - unit tests for rows and columns \
    We took a slightly different approach for this. Since there is only going to be 1 old tile and 1 open space we do not need the user to tell us where they are inserting the tile. What we did is merge this functionality with shifting row or column. Where our row and column functions take a tile as a parameter. This tile will then be inserting into the blank created by the shift and our shift row and column then return the tile that was knocked off. Thus our inserting tile is part of our shifting row or column. 
    https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/cab0268dfb4e07b08a9648f4efba5a7e6f59f93b/Maze/Common/board.py#L64-L106
    https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/cab0268dfb4e07b08a9648f4efba5a7e6f59f93b/Maze/Common/test_board.py#L36-L89
