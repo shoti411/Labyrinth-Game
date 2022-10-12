@@ -32,3 +32,44 @@ def test_get_paths():
     assert tile.get_paths() == [Direction.DOWN, Direction.LEFT], 'Tile get path does not return the expect directions.'
 
 
+def test_rotate1():
+    tile = Tile('│')
+    tile.rotate(90)
+    assert tile.get_path_code() == '─', 'Rotate functionality doesn\'t work'
+
+
+def test_rotate2():
+    tile = Tile('┐')
+    tile.rotate(270)
+    assert tile.get_path_code() == '┘', 'Rotate functionality doesn\'t work'
+
+
+def test_rotate3():
+    tile = Tile('┬')
+    tile.rotate(180)
+    assert tile.get_path_code() == '┴', 'Rotate functionality doesn\'t work'
+
+
+def test_rotate4():
+    tile = Tile('┼')
+    tile.rotate(360)
+    assert tile.get_path_code() == '┼', 'Rotate functionality doesn\'t work'
+
+
+def test_rotate5():
+    tile = Tile('┼')
+    tile.rotate(-270)
+    assert tile.get_path_code() == '┼', 'Rotate functionality doesn\'t work'
+
+
+def test_rotate6():
+    tile = Tile('┬')
+    with pytest.raises(ValueError) as e_info:
+        tile.rotate(5)
+
+
+def test_rotate7():
+    tile = Tile('┐')
+    tile.rotate(0)
+    assert tile.get_path_code() == '┐', 'Rotate functionality doesn\'t work'
+

@@ -105,7 +105,7 @@ class Board:
 
     def __shift_tile_list_forward(self, tiles, extra_tile):
         """
-        Shifts a list of tiles, dropping the last tile and adding a new one at the start.
+        Drops the last tile and adds a new one at the start.
 
         :param: tiles (list(Tile))
         :param: extra_tile (Tile)
@@ -119,7 +119,7 @@ class Board:
 
     def __shift_tile_list_backward(self, tiles, extra_tile):
         """
-        Shifts a list of tiles, dropping the first tile and adding a new one at the end.
+        Drops the first tile and adds a new one at the end.
 
         :param: tiles (list(Tile))
         :param: extra_tile (Tile)
@@ -182,18 +182,19 @@ class Board:
         """
         Checks and returns which of the surround Tiles from a given position are connected.
 
-        :param: x (int): x coordinate
-        :param: y (int): y coordinate
+        :param: x (int): row coordinate
+        :param: y (int): column coordinate
         
         :return: (list(Direction)): List of reachable directions
         """
 
         connections = []
         directions = self.get_board()[x][y].get_paths()
+
         if x > 0 and Direction.UP in directions and Direction.DOWN in self.__board[x - 1][y].get_paths():
             connections.append((x - 1, y))
-        if x < len(self.__board) - 1 and Direction.DOWN in directions and Direction.UP in self.__board[x + 1][
-            y].get_paths():
+        if x < len(self.__board) - 1 and Direction.DOWN in directions \
+                and Direction.UP in self.__board[x + 1][y].get_paths():
             connections.append((x + 1, y))
         if y > 0 and Direction.LEFT in directions and Direction.RIGHT in self.__board[x][y - 1].get_paths():
             connections.append((x, y - 1))
