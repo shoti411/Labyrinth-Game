@@ -27,7 +27,11 @@ def handle_json(json_objects):
         for col in range(len(board_strings[row])):
             board_obj[row].append(Tile(board_strings[row][col]))
     board = Board(board=board_obj)
-    sys.stdout(board.get_reachable_tiles(json_objects[1]['row#'], json_objects[1]['column#']))
+    reachable = board.get_reachable_tiles(json_objects[1]['row#'], json_objects[1]['column#'])
+    return_obj = []
+    for reachable_tile in reachable:
+        return_obj.append({'column#': reachable_tile[1], 'row#': reachable_tile[0]})
+    print(json.dumps(return_obj))
 
 
 if __name__ == '__main__':
