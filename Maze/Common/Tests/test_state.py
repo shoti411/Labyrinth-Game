@@ -4,6 +4,7 @@ from player import Player
 from board import Board
 from tile import Tile
 
+# DEFAULT TESTING CONSTANTS
 test_board = [[Tile('─'), Tile('─'), Tile('┐')],
               [Tile('┐'), Tile('│'), Tile('│')],
               [Tile('│'), Tile('┐'), Tile('┐')]]
@@ -16,16 +17,19 @@ players = [
 
 
 def test_active_can_reach_tile1():
+    # Check can reach
     s = State(players=players, board=board, extra_tile=extra_tile)
     assert s.active_can_reach_tile(1, 2), 'Active cannot reach reachable tile'
 
 
 def test_active_can_reach_tile2():
+    # Check cannot reach
     s = State(players=players, board=board, extra_tile=extra_tile)
     assert not s.active_can_reach_tile(1, 0), 'Active can reach non-reachable tile'
 
 
 def test_active_on_goal_tile1():
+    # Check player on goal tile
     test_players = [
         Player(None, test_board[0][0], test_board[2][2], [2, 2]),
         Player(None, test_board[2][0], test_board[0][2], [2, 0]),
@@ -35,17 +39,20 @@ def test_active_on_goal_tile1():
 
 
 def test_active_on_goal_tile2():
+    # Check player not on goal tile
     s = State(players=players, board=board, extra_tile=extra_tile)
     assert not s.active_on_goal_tile(), 'Active player on goal tile wrongful true'
 
 
 def test_kick_active1():
+    # Check kick
     s = State(players=players, board=board, extra_tile=extra_tile)
     s.kick_active()
     assert len(s.get_players()) == 1, 'Active player not kicked'
 
 
 def test_kick_active2():
+    # Check multiple kicks and kicked down to empty list
     s = State(players=players, board=board, extra_tile=extra_tile)
     s.kick_active()
     s.kick_active()
@@ -53,6 +60,7 @@ def test_kick_active2():
 
 
 def test_kick_active3():
+    # Check multiple kicks and kick on empty list
     s = State(players=players, board=board, extra_tile=extra_tile)
     s.kick_active()
     s.kick_active()
@@ -61,6 +69,7 @@ def test_kick_active3():
 
 
 def test_shift1():
+    # Test valid row forward shift. With player on new extra tile and player in row. 
     test_players = [
         Player(None, test_board[0][0], test_board[2][2], [0, 0]),
         Player(None, test_board[0][2], test_board[0][2], [0, 2]),
@@ -72,6 +81,7 @@ def test_shift1():
 
 
 def test_shift2():
+    # Test valid row backward shift. With player on new extra tile and player in row. 
     test_players = [
         Player(None, test_board[0][0], test_board[2][2], [0, 0]),
         Player(None, test_board[0][2], test_board[0][2], [0, 2]),
@@ -83,6 +93,7 @@ def test_shift2():
 
 
 def test_shift3():
+    # Test valid column forward shift. With player on new extra tile and player in column. 
     test_players = [
         Player(None, test_board[0][0], test_board[2][2], [0, 0]),
         Player(None, test_board[0][2], test_board[0][2], [2, 0]),
@@ -94,6 +105,7 @@ def test_shift3():
 
 
 def test_shift4():
+    # Test valid column backward shift. With player on new extra tile and player in column. 
     test_players = [
         Player(None, test_board[0][0], test_board[2][2], [0, 0]),
         Player(None, test_board[0][2], test_board[0][2], [2, 0]),

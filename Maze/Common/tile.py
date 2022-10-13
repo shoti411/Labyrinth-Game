@@ -10,15 +10,15 @@ class Tile:
     __acceptable_paths = ['│', '─', '┐', '└', '┌', '┘', '┬', '├', '┴', '┤', '┼']
     __rotation_mapping = [['│', '─'], ['┐', '┌', '└', '┘'], ['┬', '├', '┴', '┤'], ['┼']]
 
-    def __init__(self, path_code=None):
+    def __init__(self, path_code=False):
         """
-        Constructs a Tile. By default, path_code is random.
+        Constructs a Tile. By default, path_code False and is random.
 
         :param: path_code (string): A acceptable string.
             A string is acceptable if it is one of ['│', '─', '┐', '└', '┌', '┘', '┬', '├', '┴', '┤', '┼'].
         """
 
-        if path_code is None:
+        if not path_code:
             path_code = random.choice(self.__acceptable_paths)
         if path_code not in self.__acceptable_paths:
             raise ValueError(f'Given path_code must be in: {self.__acceptable_paths}')
@@ -46,6 +46,11 @@ class Tile:
         return directions
 
     def rotate(self, degrees):
+        """ Rotates the tile based on a given number of degrees
+        
+        :param: degrees (int): degrees is an int that represents the number of degrees to rotate by. 
+                               degrees can be positive or negative but must be a multiple of 90.
+        """
         if degrees % 90 != 0:
             raise ValueError('Degrees must be a multiple of 90.')
         degrees = degrees % 360

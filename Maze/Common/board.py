@@ -12,16 +12,16 @@ class Board:
         Checking reachable tiles from any given position.
     """
 
-    def __init__(self, board):
+    def __init__(self, board=False):
         """
-        Constructs a new Board with a given list of list of Tiles. If board is none, randomize 7x7 board.
+        Constructs a new Board with a given list of list of Tiles. If board is False (default), randomize 7x7 board.
 
         :param: board (list(list(Tile))): Represents a game board made of individual Tile.
                 board is represented by: board[x][y], where x is row, and y is column
                                          board[0][0] is the top left corner of the board.
         """
         self.__board = board
-        if board is None:
+        if not board:
             self.__board = self.__create_board()
 
         self.__check_board(self.__board)
@@ -65,7 +65,7 @@ class Board:
         """
         Slides a columns in a given direction. Takes a Tile piece off the end. Adds a given Tile at the other end.
 
-        :param: index (int): Column index to shift.
+        :param: index (int): Column index to shift. index must be a even number.
         :param: direction (int): -1 or 1 representing moving down or up respectively. 
         :param: extra_tile (Tile): new Insertable Tile
 
@@ -88,7 +88,7 @@ class Board:
         """
         Slides a row in a given direction. Takes a Tile piece off the end. Adds a given Tile at the other end.
 
-        :param: index (int): Column index to shift.
+        :param: index (int): Row index to shift. index must be an even number.
         :param: direction (int): -1 or 1 representing moving left or right respectively. 
         :param: extra_tile (Tile): new Insertable Tile
 
@@ -137,7 +137,7 @@ class Board:
         """
         Checks that the parameters for shifting a row or column are valid.\
         
-        :param: index (int): Column index to shift.
+        :param: index (int): index of row or column to shift. index must be an even number. 
         :param: direction (int): -1 or 1 representing moving left or right respectively. 
         :param: extra_tile (Tile): new Insertable Tile
         :param: row (bool): Defaults True. Represents whether we are checking for a row or column.  

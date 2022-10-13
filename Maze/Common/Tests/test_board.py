@@ -88,7 +88,7 @@ def test_board_shift_row5():
 
 
 def test_board_shift_row6():
-    # Test invalid direction
+    # Test invalid row index
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
@@ -162,7 +162,7 @@ def test_board_shift_col5():
 
 
 def test_board_shift_col6():
-    # Test invalid direction
+    # Test invalid row index
     test_board = [[Tile('│'), Tile('─'), Tile('┐')],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
