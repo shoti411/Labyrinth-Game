@@ -84,7 +84,18 @@ def test_board_shift_row5():
     test_extra_tile = Tile('┐')
     board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        board.shift_row(1, 0, test_extra_tile)
+        board.shift_row(2, 0, test_extra_tile)
+
+
+def test_board_shift_row6():
+    # Test invalid direction
+    test_board = [[Tile('│'), Tile('─'), Tile('┐')],
+                  [Tile('┐'), Tile('│'), Tile('─')],
+                  [Tile('│'), Tile('┐'), Tile('┐')]]
+    test_extra_tile = Tile('┐')
+    board = Board(board=test_board)
+    with pytest.raises(IndexError) as e_info:
+        board.shift_row(1, 1, test_extra_tile)
 
 
 def test_board_shift_col():
@@ -147,7 +158,18 @@ def test_board_shift_col5():
     test_extra_tile = Tile('┐')
     board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        board.shift_column(1, 0, test_extra_tile)
+        board.shift_column(2, 0, test_extra_tile)
+
+
+def test_board_shift_col6():
+    # Test invalid direction
+    test_board = [[Tile('│'), Tile('─'), Tile('┐')],
+                  [Tile('┐'), Tile('│'), Tile('─')],
+                  [Tile('│'), Tile('┐'), Tile('┐')]]
+    test_extra_tile = Tile('┐')
+    board = Board(board=test_board)
+    with pytest.raises(IndexError) as e_info:
+        board.shift_column(1, 1, test_extra_tile)
 
 
 def test_board_get_reachable0():

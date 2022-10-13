@@ -17,6 +17,8 @@ class Board:
         Constructs a new Board with a given list of list of Tiles. If board is none, randomize 7x7 board.
 
         :param: board (list(list(Tile))): Represents a game board made of individual Tile.
+                board is represented by: board[x][y], where x is row, and y is column
+                                         board[0][0] is the top left corner of the board.
         """
         self.__board = board
         if board is None:
@@ -145,6 +147,9 @@ class Board:
             raise IndexError('Cannot shift undefined row.')
         elif not row and (index < 0 or index > len(self.__board[0])):
             raise IndexError('Cannot shift undefined column.')
+
+        if index % 2 != 0:
+            raise IndexError('Indices must be even.')
 
         if direction not in [-1, 1]:
             raise ValueError('Direction must be either -1 or 1')

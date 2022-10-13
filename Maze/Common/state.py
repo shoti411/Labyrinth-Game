@@ -5,8 +5,8 @@ from directions import Direction
 
 
 class State:
-
-    def __init__(self, players, board=None, extra_tile=None):
+    """ TODO: PURPOSE STATEMENT """
+    def __init__(self, players, board=False, extra_tile=False):
         # players is a list of players, s.t. players[0] is currently active.
         self.players = players
         self.extra_tile = extra_tile
@@ -61,9 +61,11 @@ class State:
             self.extra_tile = self.board.shift_column(index, direction, self.get_extra_tile())
 
         for player in self.players:
+
             if player.get_position()[0] == index and is_row:
                 new_y = int((player.get_position()[1] + direction) % len(self.board.get_board()[index]))
                 player.set_position(player.get_position()[0], new_y)
+
             elif player.get_position()[1] == index and not is_row:
                 new_x = int((player.get_position()[0] + direction) % len(self.board.get_board()))
                 player.set_position(new_x, player.get_position()[1])
