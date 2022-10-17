@@ -1,6 +1,7 @@
 import copy
 import random
 
+from gems import Gem
 from directions import Direction
 
 class Tile:
@@ -10,7 +11,7 @@ class Tile:
     __acceptable_paths = ['│', '─', '┐', '└', '┌', '┘', '┬', '├', '┴', '┤', '┼']
     __rotation_mapping = [['│', '─'], ['┐', '┌', '└', '┘'], ['┬', '├', '┴', '┤'], ['┼']]
 
-    def __init__(self, path_code=False):
+    def __init__(self, path_code=False, gems=[]):
         """
         Constructs a Tile. By default, path_code False and is random.
 
@@ -22,10 +23,19 @@ class Tile:
             path_code = random.choice(self.__acceptable_paths)
         if path_code not in self.__acceptable_paths:
             raise ValueError(f'Given path_code must be in: {self.__acceptable_paths}')
+        if not gems:
+            gems = random.sample(list(Gem), 2)
+        for gem in gems:
+            if not isinstance(gem, Gem):
+                raise ValueError(f'Given gems must contain only type Gem.')
+        self.__gems = gems
         self.__path_code = path_code
 
     def get_path_code(self):
         return copy.deepcopy(self.__path_code)
+
+    def get_gems(self):
+        return self.__gems
 
     def get_paths(self):
         """
@@ -66,4 +76,7 @@ class Tile:
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        return other.get_path_code() == self.__path_code
+        return other.get_path_code() == self.__path_code \
+            and all([x in self.__gems for x in other.get_gems()]) \
+            and all([x in other.get_gems() for x in self.get_gems()]) \
+            and len(other.get_gems()) == len(self.get_gems())

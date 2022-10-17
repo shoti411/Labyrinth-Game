@@ -33,24 +33,30 @@ def test_board_constructor_5():
 
 def test_board_shift_row():
     # Test right row shift
-    test_board = [[Tile('│'), Tile('─'), Tile('┐')],
+    test_tile_1 = Tile('│')
+    test_tile_2 = Tile('─')
+    test_tile_3 = Tile('┐')
+    test_board = [[test_tile_1, test_tile_2, test_tile_3],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
     board = Board(board=test_board)
     actual_extra_tile = board.shift_row(0, 1, test_extra_tile)
-    assert board.get_board()[0] == [Tile('┐'), Tile('│'), Tile('─')] and actual_extra_tile == Tile('┐'), \
+    assert board.get_board()[0] == [test_extra_tile, test_tile_1, test_tile_2] and actual_extra_tile == test_tile_3, \
         "Basic right shift row failed."
 
 def test_board_shift_row2():
     # Test left row shift
-    test_board = [[Tile('│'), Tile('─'), Tile('┐')],
+    test_tile_1 = Tile('│')
+    test_tile_2 = Tile('─')
+    test_tile_3 = Tile('┐')
+    test_board = [[test_tile_1, test_tile_2, test_tile_3],
                   [Tile('┐'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     test_extra_tile = Tile('┐')
     board = Board(board=test_board)
     actual_extra_tile = board.shift_row(0, -1, test_extra_tile)
-    assert board.get_board()[0] == [Tile('─'), Tile('┐'), Tile('┐')] and actual_extra_tile == Tile('│'), \
+    assert board.get_board()[0] == [test_tile_2, test_tile_3, test_extra_tile] and actual_extra_tile == test_tile_1, \
         "Basic left shift row failed."
 
 
@@ -100,31 +106,37 @@ def test_board_shift_row6():
 
 def test_board_shift_col():
     # Test downward column shift
-    test_board = [[Tile('│'), Tile('─'), Tile('┐')],
-                  [Tile('┐'), Tile('│'), Tile('─')],
-                  [Tile('│'), Tile('┐'), Tile('┐')]]
-    shifted_board = [[Tile('┐'), Tile('─'), Tile('┐')],
-                     [Tile('│'), Tile('│'), Tile('─')],
-                     [Tile('┐'), Tile('┐'), Tile('┐')]]
+    test_tile_1 = Tile('│')
+    test_tile_2 = Tile('┐')
+    test_tile_3 = Tile('│')
     test_extra_tile = Tile('┐')
+    test_board = [[test_tile_1, test_tile_1, test_tile_1],
+                  [test_tile_2, test_tile_1, test_tile_1],
+                  [test_tile_3, test_tile_1, test_tile_1]]
+    shifted_board = [[test_extra_tile, test_tile_1, test_tile_1],
+                     [test_tile_1, test_tile_1, test_tile_1],
+                     [test_tile_2, test_tile_1, test_tile_1]]
     board = Board(board=test_board)
     actual_extra_tile = board.shift_column(0, 1, test_extra_tile)
-    assert board.get_board() == shifted_board and actual_extra_tile == Tile('│'), \
+    assert board.get_board() == shifted_board and actual_extra_tile == test_tile_3, \
         "Basic down shift column failed."
 
 
 def test_board_shift_col2():
     # Test upward column shift
-    test_board = [[Tile('│'), Tile('─'), Tile('┐')],
-                  [Tile('┐'), Tile('│'), Tile('─')],
-                  [Tile('┐'), Tile('┐'), Tile('┐')]]
-    shifted_board = [[Tile('┐'), Tile('─'), Tile('┐')],
-                     [Tile('┐'), Tile('│'), Tile('─')],
-                     [Tile('┐'), Tile('┐'), Tile('┐')]]
+    test_tile_1 = Tile('│')
+    test_tile_2 = Tile('┐')
+    test_tile_3 = Tile('│')
     test_extra_tile = Tile('┐')
+    test_board = [[test_tile_1, test_tile_1, test_tile_1],
+                  [test_tile_2, test_tile_1, test_tile_1],
+                  [test_tile_3, test_tile_1, test_tile_1]]
+    shifted_board = [[test_tile_2, test_tile_1, test_tile_1],
+                     [test_tile_3, test_tile_1, test_tile_1],
+                     [test_extra_tile, test_tile_1, test_tile_1]]
     board = Board(board=test_board)
     actual_extra_tile = board.shift_column(0, -1, test_extra_tile)
-    assert board.get_board() == shifted_board and actual_extra_tile == Tile('│'), \
+    assert board.get_board() == shifted_board and actual_extra_tile == test_tile_1, \
         "Basic down shift column failed."
 
 

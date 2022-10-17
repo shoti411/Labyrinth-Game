@@ -15,7 +15,7 @@ class State:
         rotate spare tiles.\n
         Shift rows or columns.\n
         check if the active player can reach a tile.\n
-        check if the active player is at their goal tile.\n
+        check if the active player is a goal tile.\n
         Kick active player.
     """
     def __init__(self, players, board=False, extra_tile=False):
@@ -52,6 +52,18 @@ class State:
     def get_extra_tile(self):
         return self.extra_tile
 
+    def move_active_player(self, x, y):
+        """
+        Moves the active player to the new location.
+
+        :param: x (int): int representing the row location of the move.
+        :param: y (int): int representing the col location of the move.
+        """
+        if self.active_can_reach_tile(x,y):
+            self.players[0].set_position(x,y)
+        else:
+            raise ValueError('The given move is unreachable or unvalid.')
+
     def rotate_extra_tile(self, degrees):
         """
         Rotates the tile based on a given number of degrees
@@ -76,14 +88,15 @@ class State:
 
     def active_on_goal_tile(self):
         """
-        Check if the active players position is at their goal tile.
+        Check if the active players position is at a goal tile.
 
-        :return: <bool>: True or False depending on if the players position is at their goal tile.
+        :return: <bool>: True or False depending on if the players position is at a goal tile.
         """
         curr_x, curr_y = self.players[0].get_position()
         curr_tile = self.board.get_board()[curr_x][curr_y]
-        goal_tile = self.players[0].get_goal()
-        return curr_tile == goal_tile
+        goal_treasure = self.players[0].get_goal()
+        print(curr_tile.get_gems())
+        return goal_treasure in curr_tile.get_gems()
 
     def kick_active(self):
         """

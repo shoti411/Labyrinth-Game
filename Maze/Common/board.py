@@ -12,19 +12,16 @@ class Board:
         Checking reachable tiles from any given position.
     """
 
-    def __init__(self, board=False):
+    def __init__(self, board):
         """
-        Constructs a new Board with a given list of list of Tiles. If board is False (default), randomize 7x7 board.
+        Constructs a new Board with a given list of list of Tiles.
 
         :param: board (list(list(Tile))): Represents a game board made of individual Tile.
                 board is represented by: board[x][y], where x is row, and y is column
                                          board[0][0] is the top left corner of the board.
         """
+        self.__check_board(board)
         self.__board = board
-        if not board:
-            self.__board = self.__create_board()
-
-        self.__check_board(self.__board)
 
     def __check_board(self, board):
         """
@@ -44,19 +41,6 @@ class Board:
             for tile in row:
                 if not isinstance(tile, type(Tile())):
                     raise ValueError('Board is an invalid board. A board must have all spaces filled with Tiles.')
-
-    def __create_board(self):
-        """
-        Generate a random 7x7 game board.
-        """
-
-        board, rows, cols = [], 7, 7
-        for _ in range(rows):
-            row = []
-            for _ in range(cols):
-                row.append(Tile())
-            board.append(row)
-        return board
 
     def get_board(self):
         return copy.deepcopy(self.__board)
