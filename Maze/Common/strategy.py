@@ -19,8 +19,6 @@ class Strategy:
         if not isinstance(player, Player):
             raise ValueError('player must be of type Player.')
 
-        
-
 
 class Riemann(Strategy):
 
@@ -28,28 +26,46 @@ class Riemann(Strategy):
         self.check_state(board, extra_tile, player)
 
         tiles = board.get_board()
-        for row in tiles:
-            for tile in row:
-                try:
+        for row in range(len(tiles)):
+            for col in range(len(row)):
+                tile = tiles[row][col]
+                if player.get_goal() in tile.get_gems():
                     for i in len(tiles):
                         for degree in [0, 90, 180, 270]:
                             test_board = copy.deepcopy(board)
+                            test_tile = copy.deepcopy(extra_tile)
                             test_board.shift_row(i, 1, extra_tile.rotate(degree))
                             x, y = player.get_position()
                             reachable = test_board.get_reachable_tiles(x, y)
-                            if any([player.get_goal() in test_board.get_board()[x[0]][x[1]].get_gems() for x in reachable]):
-                                return i, 1, True, degree 
-                    ...
-                except IndexError as e:
-                    ...
+                            if (row, col) in reachable:
+                                return i, 1, True, degree
+                        for degree in [0, 90, 180, 270]:
+                            test_board = copy.deepcopy(board)
+                            test_tile = copy.deepcopy(extra_tile)
+                            test_board.shift_row(i, -1, extra_tile.rotate(degree))
+                            x, y = player.get_position()
+                            reachable = test_board.get_reachable_tiles(x, y)
+                            if (row, col) in reachable:
+                                return i, -1, True, degree
 
+                    for i in len(tiles[row]):
+                        for degree in [0, 90, 180, 270]:
+                            test_board = copy.deepcopy(board)
+                            test_tile = copy.deepcopy(extra_tile)
+                            test_board.shift_column(i, 1, extra_tile.rotate(degree))
+                            x, y = player.get_position()
+                            reachable = test_board.get_reachable_tiles(x, y)
+                            if (row, col) in reachable:
+                                return i, 1, False, degree
+                        for degree in [0, 90, 180, 270]:
+                            test_board = copy.deepcopy(board)
+                            test_tile = copy.deepcopy(extra_tile)
+                            test_board.shift_column(i, -1, extra_tile.rotate(degree))
+                            x, y = player.get_position()
+                            reachable = test_board.get_reachable_tiles(x, y)
+                            if (row, col) in reachable:
+                                return i, -1, False, degree
 
-
-
-
-    def __check_configurations(self, tiles, extra_tile, player):
-        for row in tiles:
-            for tile in row:
                 
 
     # check configuration
