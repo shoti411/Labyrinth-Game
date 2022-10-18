@@ -12,8 +12,8 @@ test_board = [[Tile('─'), Tile('─'), Tile('┐')],
 board = Board(board=test_board)
 extra_tile = Tile('┐')
 players = [
-    Player(None, test_board[0][0], Gem.ALEXANDRITE_PEAR_SHAPE, (0, 0)),
-    Player(None, test_board[2][0], Gem.ALEXANDRITE, (2, 0)),
+    Player(None, test_board[0][0], test_board[1][2], (0, 0)),
+    Player(None, test_board[2][0], test_board[0][2], (2, 0)),
 ]
 
 
@@ -32,13 +32,13 @@ def test_active_can_reach_tile2():
 def test_active_on_goal_tile1():
     test_board = [[Tile('─'), Tile('─'), Tile('┐')],
               [Tile('┐'), Tile('│'), Tile('│')],
-              [Tile('│'), Tile('┐'), Tile('┐', [Gem.ALEXANDRITE_PEAR_SHAPE])]]
+              [Tile('│'), Tile('┐'), Tile('┐')]]
     board = Board(board=test_board)
     extra_tile = Tile('┐')
     # Check player on goal tile
     test_players = [
-        Player(None, test_board[0][0], Gem.ALEXANDRITE_PEAR_SHAPE, [2, 2]),
-        Player(None, test_board[2][0], Gem.ALEXANDRITE, [2, 0]),
+        Player(None, test_board[0][0], test_board[2][2], [2, 2]),
+        Player(None, test_board[2][0], test_board[0][2], [2, 0]),
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     assert s.active_on_goal_tile(), 'Active player on goal tile wrongful false'
@@ -52,8 +52,8 @@ def test_active_on_goal_tile2():
     board = Board(board=test_board)
     extra_tile = Tile('┐')
     players = [
-        Player(None, test_board[0][0], Gem.ALEXANDRITE_PEAR_SHAPE, (0, 0)),
-        Player(None, test_board[2][0], Gem.ALEXANDRITE, (2, 0)),
+        Player(None, test_board[0][0], test_board[2][2], (0, 0)),
+        Player(None, test_board[2][0], test_board[2][2], (2, 0)),
     ]
     # Check player not on goal tile
     s = State(players=players, board=board, extra_tile=extra_tile)
@@ -87,8 +87,8 @@ def test_kick_active3():
 def test_shift1():
     # Test valid row forward shift. With player on new extra tile and player in row. 
     test_players = [
-        Player(None, test_board[0][0], Gem.ALEXANDRITE_PEAR_SHAPE, [0, 0]),
-        Player(None, test_board[0][2], Gem.ALEXANDRITE, [0, 2]),
+        Player(None, test_board[0][0], test_board[2][2], [0, 0]),
+        Player(None, test_board[0][2], test_board[0][2], [0, 2]),
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, 1, True)
@@ -99,8 +99,8 @@ def test_shift1():
 def test_shift2():
     # Test valid row backward shift. With player on new extra tile and player in row. 
     test_players = [
-        Player(None, test_board[0][0], Gem.ALEXANDRITE_PEAR_SHAPE, [0, 0]),
-        Player(None, test_board[0][2], Gem.ALEXANDRITE, [0, 2]),
+        Player(None, test_board[0][0], test_board[2][2], [0, 0]),
+        Player(None, test_board[0][2], test_board[0][2], [0, 2]),
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, -1, True)
@@ -111,8 +111,8 @@ def test_shift2():
 def test_shift3():
     # Test valid column forward shift. With player on new extra tile and player in column. 
     test_players = [
-        Player(None, test_board[0][0], Gem.ALEXANDRITE, [0, 0]),
-        Player(None, test_board[0][2], Gem.ALEXANDRITE_PEAR_SHAPE, [2, 0]),
+        Player(None, test_board[0][0], test_board[2][2], [0, 0]),
+        Player(None, test_board[0][2], test_board[0][2], [2, 0]),
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, 1, False)
@@ -123,8 +123,8 @@ def test_shift3():
 def test_shift4():
     # Test valid column backward shift. With player on new extra tile and player in column. 
     test_players = [
-        Player(None, test_board[0][0], Gem.ALEXANDRITE_PEAR_SHAPE, [0, 0]),
-        Player(None, test_board[0][2], Gem.ALEXANDRITE, [2, 0]),
+        Player(None, test_board[0][0], test_board[2][2], [0, 0]),
+        Player(None, test_board[0][2], test_board[0][2], [2, 0]),
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, -1, False)

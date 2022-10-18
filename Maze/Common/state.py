@@ -93,10 +93,7 @@ class State:
         :return: <bool>: True or False depending on if the players position is at a goal tile.
         """
         curr_x, curr_y = self.players[0].get_position()
-        curr_tile = self.board.get_board()[curr_x][curr_y]
-        goal_treasure = self.players[0].get_goal()
-        print(curr_tile.get_gems())
-        return goal_treasure in curr_tile.get_gems()
+        return self.players[0].get_goal() == self.board.get_board()[curr_x][curr_y]
 
     def kick_active(self):
         """

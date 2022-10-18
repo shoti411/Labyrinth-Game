@@ -45,6 +45,22 @@ class Board:
     def get_board(self):
         return copy.deepcopy(self.__board)
 
+    def find_tile_position_by_gem(self, gem):
+        for r in range(len(self.__board)):
+            for c in range(len(self.__board[r])):
+                tile = self.__board[r][c]
+                if gem in tile.get_gems():
+                    return r, c
+        return -1
+
+    def fine_tile_position_by_tile(self, tile):
+        for r in range(len(self.__board)):
+            for c in range(len(self.__board[r])):
+                if tile == self.__board[r][c]:
+                    return r, c
+        return -1
+
+
     def shift_column(self, index, direction, extra_tile):
         """
         Slides a columns in a given direction. Takes a Tile piece off the end. Adds a given Tile at the other end.

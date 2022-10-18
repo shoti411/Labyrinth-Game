@@ -12,7 +12,7 @@ class Player:
         
         :param: avatar <string>: String that represents the avatar of the player. 
         :param: home <Tile>: home represents the home tile of the player.
-        :param: goal <Gem>: goal represents the target treasure of the player.
+        :param: goal <Tile>: goal represents the target tile of the player.
         :param: position  <tuple(int,int)>: position represents a tuple of ints representing the coordinate of the player on the board. 
                                             (x,y). x represents the row coordinate, y represents the column coordinate. 
                                             (0,0). represents the top left of the board.
@@ -27,7 +27,7 @@ class Player:
     def __check_constructor(self):
         if not isinstance(self.__home, type(Tile())):
             raise ValueError('Home must be of type Tile')
-        if not isinstance(self.__goal, Gem):
+        if not isinstance(self.__goal, type(Tile())):
             raise ValueError('Goal must be of type Gem')
         if not(len(self.__position) == 2
                and isinstance(self.__position[0], int)
