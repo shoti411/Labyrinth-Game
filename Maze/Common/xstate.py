@@ -23,7 +23,7 @@ def read_input():
     :return: <list of Json Objects>
     """
 
-json_str = sys.stdin.read()
+    json_str = sys.stdin.read()
     decoder = json.JSONDecoder()
     pos = 0
     objs = []
@@ -33,7 +33,7 @@ json_str = sys.stdin.read()
             break
         obj, pos = decoder.raw_decode(json_str)
         objs.append(obj)
-    return objs
+    return obj
 
 
 def handle_json(json_objects):
