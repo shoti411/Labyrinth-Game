@@ -1,4 +1,4 @@
-{"board": {"connectors":[["┼","┼","┼"],["┼","┼","┼"],["┼","┼","┼"]],"treasures":[[["zircon","ruby-diamond-profile"],["zircon","rose-quartz"],["zoisite","yellow-jasper"]],[["zoisite","yellow-baguette"],["zoisite","white-square"],["zoisite","tourmaline"]],[["zoisite","yellow-baguette"],["zoisite","white-square"],["zoisite","tourmaline"]]]}, "spare": {"tilekey": "│"}, "plmt": [{"current": {"row#": 0, "column#": 0}, "home": {"row#": 0, "column#": 0}}], "last": null}
-1
+{"board": {"connectors": [["│", "─", "┐"], ["┐", "│", "─"], ["│", "┐", "┐"]], "treasures": [[], ["citrine", "prehnite"], ["pink-round", "moonstone"], ["blue-cushion", "ametrine"], [], ["emerald", "purple-spinel-trillion"], ["moss-agate", "heliotrope"], ["labradorite", "apricot-square-radiant"], [], ["goldstone", "bulls-eye"], ["sphalerite", "ametrine"], ["blue-ceylon-sapphire", "chrome-diopside"]]}, "spare": {"tilekey": "│"}, "plmt": [{"current": {"row#": 0, "column#": 0}, "home": {"row#": 0, "column#": 0}}], "last": null}
+2
 "UP"
 90

@@ -13,22 +13,20 @@ def xstate():
 
 
 def read_input():
-    collected_input = sys.stdin.read()
-    print(collected_input)
-    json_objects = []
-    j = 0
-    for i in range(len(collected_input)):
-        try:
-            input_json = json.loads(collected_input[j:i])
-            j = i
-            json_objects.append(input_json)
-        except json.decoder.JSONDecodeError:
-            continue
-    return json_objects
+    json_str = sys.stdin.read()
+    decoder = json.JSONDecoder()
+    pos = 0
+    objs = []
+    while pos < len(json_str):
+        json_str = json_str[pos:].strip()
+        if not json_str:
+            break
+        obj, pos = decoder.raw_decode(json_str)
+        objs.append(obj)
+    return objs
 
 
 def handle_json(json_objects):
-    print(json_objects)
     board_strings = (json_objects[0]['board']['connectors'])
     board_obj = []
     for row in range(len(board_strings)):
@@ -38,15 +36,15 @@ def handle_json(json_objects):
     board = Board(board=board_obj)
 
     spare_tile = Tile(json_objects[0]['spare']['tilekey'])
-    players_data = json_objects['plmt']
+    players_data = json_objects[0]['plmt']
     players = []
     board_data = board.get_board()
     for player_data in players_data:
         home = player_data['home']
-        players.append(Player(player_data['color'],
+        players.append(Player('',
                               board_data[home['row#']][home['column#']],
                               board_data[home['row#']][home['column#']],
-                              board_data[home['row#']][home['column#']]))
+                              [home['row#'], home['column#']]))
 
     state = State(players, board, spare_tile)
     index = json_objects[1]

@@ -15,7 +15,7 @@ def board_to_json(board):
         treasures.append([])
         for col in range(len(board_obj[row])):
             connectors[row].append(board_obj[row][col].get_path_code())
-            treasures.append([g.value for g in board_obj[row][col].get_gems()])
+            treasures[row].append([g.value for g in board_obj[row][col].get_gems()])
     return {'connectors': connectors, 'treasures': treasures}
 
 
@@ -54,12 +54,12 @@ def generate_test_case(s, index, direction, degree):
     return json_string
 
 
-test_board = [[Tile('│'), Tile('─'), Tile('┐')],
+test_board = [[Tile('─'), Tile('─'), Tile('┐')],
               [Tile('┐'), Tile('│'), Tile('─')],
               [Tile('│'), Tile('┐'), Tile('┐')]]
 b = Board(board=test_board)
 p = Player('', b.get_board()[0][0], b.get_board()[1][1], (0, 0))
-s = State([p], b, Tile('│'))
+s = State([p], b, Tile('─'))
 
-print(generate_test_case(s, 1, 'UP', 90))
+print(generate_test_case(s, 2, 'RIGHT', 360))
 
