@@ -7,13 +7,23 @@ from player import Player
 
 
 def xstate():
+    """
+    Reads json objects from stdin representing the game state and requested testing parameters.
+    Outputs to stdout the reachable tiles from that Maze board state from the given coordinate.
+    """
     json_objects = read_input()
     reachable = handle_json(json_objects)
     return_output(reachable)
 
 
 def read_input():
-    json_str = sys.stdin.read()
+    """
+    Reads input from stdin, parses well-formed and valid json objects.
+
+    :return: <list of Json Objects>
+    """
+
+json_str = sys.stdin.read()
     decoder = json.JSONDecoder()
     pos = 0
     objs = []
@@ -27,6 +37,14 @@ def read_input():
 
 
 def handle_json(json_objects):
+    """
+    Parses json objects into our data representation of a Maze State. Uses parameters (degree rotation, spare tile,
+    and index, and direction) to make a 'shift' move and then read the reachable tiles.
+
+    :param: json_objects <list of Json Objects>: List of well-formed and valid json objects.
+
+    :return: <list(tuple(int, int))>: List of coordinates of x,y represents the row and column of reachable tiles.
+    """
     board_strings = (json_objects[0]['board']['connectors'])
     board_obj = []
     for row in range(len(board_strings)):
@@ -58,6 +76,9 @@ def handle_json(json_objects):
 
 
 def return_output(reachable):
+    """
+    Converts list of tuple(int,int) into Coordinate objects to be dumped to stdout.
+    """
     return_obj = []
     for reachable_tile in reachable:
         return_obj.append({'column#': reachable_tile[1], 'row#': reachable_tile[0]})
