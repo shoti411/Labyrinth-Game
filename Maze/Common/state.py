@@ -2,6 +2,7 @@ from tile import Tile
 from board import Board
 from player import Player
 from directions import Direction
+import copy
 
 
 class State:
@@ -51,6 +52,9 @@ class State:
 
     def get_extra_tile(self):
         return self.extra_tile
+
+    def get_board(self):
+        return copy.deepcopy(self.board)
 
     def move_active_player(self, x, y):
         """

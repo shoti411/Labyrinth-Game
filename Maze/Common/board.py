@@ -53,7 +53,7 @@ class Board:
                     return r, c
         return -1
 
-    def fine_tile_position_by_tile(self, tile):
+    def find_tile_position_by_tile(self, tile):
         for r in range(len(self.__board)):
             for c in range(len(self.__board[r])):
                 if tile == self.__board[r][c]:
