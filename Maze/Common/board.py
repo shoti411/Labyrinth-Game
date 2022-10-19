@@ -51,14 +51,14 @@ class Board:
                 tile = self.__board[r][c]
                 if gem in tile.get_gems():
                     return r, c
-        return -1
+        return -1, -1
 
     def find_tile_position_by_tile(self, tile):
         for r in range(len(self.__board)):
             for c in range(len(self.__board[r])):
                 if tile == self.__board[r][c]:
                     return r, c
-        return -1
+        return -1, -1
 
 
     def shift_column(self, index, direction, extra_tile):
