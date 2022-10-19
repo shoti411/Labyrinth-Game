@@ -1,0 +1,17 @@
+Delivery
+5/5 pts: Deliverable state.pp exists
+5/5 pts: Deliverable player.md exists
+5/5 pts: Deliverable xboard exists with the right permissions
+5/5 pts: Delivery of test files
+Functionality
+0/15 pts: Passed 0 out of 3 tests (see MF.txt)
+0/15 pts: 0 valid tests (see audit.txt)
+0/15 bonus pts (other teams failing your tests)
+Inspection
+66/85 pts: See inspection.md
+
+You submitted provided tests as your own:
+  your 2-in.json is the same as the provided 2-in.json
+
+You are losing all points for the testfest/functionality part of this milestone
+Total: 86/135 pts
