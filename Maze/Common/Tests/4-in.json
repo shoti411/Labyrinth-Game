@@ -1,0 +1,4 @@
+{"board": {"connectors": [["─", "─", "┐"], ["┐", "│", "─"], ["│", "┐", "┐"]], "treasures": [[["cordierite", "moonstone"], ["pink-emerald-cut", "unakite"], ["pink-spinel-cushion", "peridot"]], [["ammolite", "prasiolite"], ["tourmaline-laser-cut", "clinohumite"], ["pink-round", "almandine-garnet"]], [["lemon-quartz-briolette", "moss-agate"], ["green-aventurine", "almandine-garnet"], ["ametrine", "padparadscha-oval"]]]}, "spare": {"tilekey": "─"}, "plmt": [{"current": {"row#": 0, "column#": 0}, "home": {"row#": 0, "column#": 0}}], "last": null}
+2
+"RIGHT"
+360
