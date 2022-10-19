@@ -33,7 +33,7 @@ def read_input():
             break
         obj, pos = decoder.raw_decode(json_str)
         objs.append(obj)
-    return obj
+    return objs
 
 
 def handle_json(json_objects):
@@ -72,7 +72,11 @@ def handle_json(json_objects):
     state.rotate_extra_tile(degree)
     state.shift(index, direction, is_row)
     x, y = state.get_players()[0].get_position()
-    return board.get_reachable_tiles(x, y)
+    return sort_reachable(board.get_reachable_tiles(x, y))
+
+
+def sort_reachable(positions):
+    return sorted(positions, key=lambda x: (x[0], x[1]))
 
 
 def return_output(reachable):

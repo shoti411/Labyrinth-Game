@@ -1,4 +1,0 @@
-{"board": {"connectors": [["─", "─", "┐"], ["┐", "│", "─"], ["│", "┐", "┐"]], "treasures": [[["yellow-heart", "ametrine"], ["black-onyx", "garnet"], ["ammolite", "prasiolite"]], [["magnesite", "emerald"], ["jaspilite", "blue-spinel-heart"], ["lemon-quartz-briolette", "yellow-beryl-oval"]], [["hackmanite", "mexican-opal"], ["gray-agate", "citrine"], ["azurite", "chrysoberyl-cushion"]]]}, "spare": {"tilekey": "─"}, "plmt": [{"current": {"row#": 0, "column#": 0}, "home": {"row#": 0, "column#": 0}}], "last": null}
-2
-"DOWN"
-180

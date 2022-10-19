@@ -1,4 +1,0 @@
-{"board": {"connectors": [["│", "─", "┐"], ["┐", "│", "─"], ["│", "┐", "┐"]], "treasures": [[], ["pink-opal", "morganite-oval"], ["pink-opal", "green-beryl"], ["raw-citrine", "grossular-garnet"], [], ["red-spinel-square-emerald-cut", "lapis-lazuli"], ["jasper", "citrine-checkerboard"], ["ametrine", "fancy-spinel-marquise"], [], ["green-princess-cut", "color-change-oval"], ["golden-diamond-cut", "yellow-heart"], ["yellow-jasper", "black-obsidian"]]}, "spare": {"tilekey": "│"}, "plmt": [{"current": {"row#": 0, "column#": 0}, "home": {"row#": 0, "column#": 0}}], "last": null}
-2
-"RIGHT"
-90
