@@ -12,7 +12,15 @@ Indicate below each bullet which file/unit takes care of each task:
 
 1. the "top-level" function/method, which composes tasks 2 and 3 
 
+https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/fac5a435dbe41ca16397a40b650e3be101850acc/Maze/Common/strategy.py#L83-L114
+
 2. a method that `generates` the sequence of spots the player may wish to move to
+
+https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/fac5a435dbe41ca16397a40b650e3be101850acc/Maze/Common/strategy.py#L55-L66
+
+https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/fac5a435dbe41ca16397a40b650e3be101850acc/Maze/Common/riemann.py#L12-L38
+
+https://github.khoury.northeastern.edu/CS4500-F22/crookt-Dsap5131/blob/fac5a435dbe41ca16397a40b650e3be101850acc/Maze/Common/euclid.py#L14-L43
 
 3. a method that `searches` rows,  columns, etcetc. 
 
