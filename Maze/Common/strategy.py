@@ -31,7 +31,7 @@ class Strategy:
 
         raise NotImplemented('slide_and_insert not implemented.')
 
-    def move(self, board, extra_tile, player):
+    def move(self, board, player):
         """
         move takes in a board, and player. It evaluates this game state and determines what 
         the location to move to is.
@@ -39,7 +39,6 @@ class Strategy:
         move will return the x, y coordinates of the players current location if it is unable to reach any other tile.
 
         :param: board <Board>: Maze game scenario board
-        :param: extra_tile <Tile>: extra tile of Maze game scenario
         :param: player <Player>: Active player of Maze game scenario
 
         :return: (x, y): <(int, int)>:\n
@@ -116,7 +115,6 @@ class AbstractStrategy(Strategy):
         """
         while not enumerated_tiles.empty():
             _, (target_x, target_y) = enumerated_tiles.get()
-            print(f'priority: {_}, position: {target_x},{target_y}')
             re = self.check_row_shift(target_x, target_y, player, board, extra_tile)
             if re == -1:
                 re = self.check_col_shift(target_x, target_y, player, board, extra_tile)
