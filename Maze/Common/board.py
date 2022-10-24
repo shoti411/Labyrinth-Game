@@ -45,15 +45,16 @@ class Board:
     def get_board(self):
         return copy.deepcopy(self.__board)
 
-    def find_tile_position_by_gem(self, gem):
-        for r in range(len(self.__board)):
-            for c in range(len(self.__board[r])):
-                tile = self.__board[r][c]
-                if gem in tile.get_gems():
-                    return r, c
-        return -1, -1
 
     def find_tile_position_by_tile(self, tile):
+        """
+        Finds the row column position on the board of a given Tile. If the Tile is not on the board return (-1, -1).
+
+        :param: tile <Tile>: Tile to find position of.
+
+        :return: <tuple(int, int)>: row, column position of a Tile. 
+        """
+
         for r in range(len(self.__board)):
             for c in range(len(self.__board[r])):
                 if tile == self.__board[r][c]:

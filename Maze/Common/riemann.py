@@ -12,10 +12,7 @@ class Riemann(AbstractStrategy):
     def get_enumerated_tiles(self, board, player):
         """
         Creates a priority queue of the boards Tiles. 
-        The highest priority is the goal tile then it is each tile with the closest Euclidean distance to the goal tile.
-        Tie breaker for Euclidean distance is done lexigraphically in row-column order.
-
-        If the goal tile is not on the board then the Euclidean distance will be based on the player position not the goal tile.
+        The highest priority is the goal tile then it is each tile lexigraphically in row-column order. 
         
         :param: board <Board>: Maze game scenario board
         :param: player <Player>: Active player of Maze game scenario

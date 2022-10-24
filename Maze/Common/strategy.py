@@ -4,6 +4,11 @@ from player import Player
 import copy
 
 class Strategy:
+    """
+    Strategy represents an interface of the required functionality of a Strategy subclass. 
+    This class is not intended to be instantiated.
+    """
+
     def slide_and_insert(self, board, extra_tile, player):
         """
         slide_and_insert takes in a board, extra_tile, and player. It evaluates this game state and determines what 
@@ -46,6 +51,12 @@ class Strategy:
 
 
 class AbstractStrategy(Strategy):
+    """
+    AbstractStrategy is a abstract class for the interface Strategy. This class is not intended to be instantiated.
+
+    AbstractStrategy requires that get_enumerated_tiles be implemented by subclasses.
+    """
+
     # DEGREES: <list(int)> Represents valid degree values to rotate a Tile by.
     DEGREES = [0, 90, 180, 270]
     # DIRECTIONS: <list(int)> Represents valid directions for sliding a row or column by.
@@ -270,7 +281,7 @@ class AbstractStrategy(Strategy):
         """
         Check if the player can reach any of the enumerated_tiles. Checks in order of the enumerated_tiles priority queue. 
         
-        Will return -1 if the all tiles are reachable.
+        Will return -1 if the player can not move to a new tile.
 
         :param: enumerated_tiles <PriorityQueue(Tile)>: Priority queue of the boards Tiles.
         :param: board <Board>: Maze game scenario board
