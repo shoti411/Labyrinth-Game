@@ -45,15 +45,29 @@ def handle_json(json_objects):
 
     :return: <list(tuple(int, int))>: List of coordinates of x,y represents the row and column of reachable tiles.
     """
+    board = json_to_board(json_objects)
+    spare_tile = Tile(json_objects[0]['spare']['tilekey'])
+    players = json_to_players(json_objects, board)
+    state = State(players, board, spare_tile)
+    index, direction, is_row, degree = json_to_move_parameters(json_objects)
+
+    state.rotate_extra_tile(degree)
+    state.shift(index, direction, is_row)
+    x, y = state.get_players()[0].get_position()
+    return sort_reachable(board.get_reachable_tiles(x, y))
+
+
+def json_to_board(json_objects):
     board_strings = (json_objects[0]['board']['connectors'])
     board_obj = []
     for row in range(len(board_strings)):
         board_obj.append([])
         for col in range(len(board_strings[row])):
             board_obj[row].append(Tile(board_strings[row][col]))
-    board = Board(board=board_obj)
+    return Board(board=board_obj)
 
-    spare_tile = Tile(json_objects[0]['spare']['tilekey'])
+
+def json_to_players(json_objects, board):
     players_data = json_objects[0]['plmt']
     players = []
     board_data = board.get_board()
@@ -63,16 +77,15 @@ def handle_json(json_objects):
                               board_data[home['row#']][home['column#']],
                               board_data[home['row#']][home['column#']],
                               [home['row#'], home['column#']]))
+    return players
 
-    state = State(players, board, spare_tile)
+
+def json_to_move_parameters(json_objects):
     index = json_objects[1]
     direction = 1 if json_objects[2] in ["DOWN", "RIGHT"] else -1
     is_row = json_objects[2] in ['LEFT', 'RIGHT']
     degree = json_objects[3]
-    state.rotate_extra_tile(degree)
-    state.shift(index, direction, is_row)
-    x, y = state.get_players()[0].get_position()
-    return sort_reachable(board.get_reachable_tiles(x, y))
+    return index, direction, is_row, degree
 
 
 def sort_reachable(positions):
