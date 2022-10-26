@@ -1,0 +1,484 @@
+(testing /home/samc/sw-dev/22SwDev/Code/4/xstate)
+(testing /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-0/0-in.json /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-0/0-out.json)
+car: contract violation
+  expected: pair?
+  given: #f
+  context...:
+   /proj/racket/plt-released/recent/collects/racket/contract/private/arrow-val-first.rkt:486:18: body of top-level
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:53:0
+   /home/samc/sw-dev/22SwDev/Code/get.rkt:18:0: get
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:34:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((board
+           .
+           #hasheq((connectors
+                    .
+                    (("┘" "┘" "│" "│" "─" "│" "─")
+                     ("├" "├" "├" "├" "┤" "┤" "┴")
+                     ("│" "┼" "├" "┐" "└" "┘" "┤")
+                     ("├" "┘" "┼" "┴" "┌" "─" "┘")
+                     ("┘" "┌" "┐" "└" "┌" "│" "┼")
+                     ("┌" "┬" "─" "┌" "─" "┼" "┤")
+                     ("┼" "│" "─" "├" "└" "└" "┐")))
+                   (treasures
+                    .
+                    ((("tourmaline" "iolite-emerald-cut")
+                      ("pink-emerald-cut" "ametrine")
+                      ("hematite" "zoisite")
+                      ("tourmaline-laser-cut" "color-change-oval")
+                      ("azurite" "red-spinel-square-emerald-cut")
+                      ("chrysoberyl-cushion" "zoisite")
+                      ("purple-cabochon" "amethyst"))
+                     (("garnet" "chrysoberyl-cushion")
+                      ("citrine" "tourmaline")
+                      ("green-beryl" "blue-spinel-heart")
+                      ("black-obsidian" "stilbite")
+                      ("gray-agate" "garnet")
+                      ("pink-opal" "goldstone")
+                      ("blue-spinel-heart" "dumortierite"))
+                     (("almandine-garnet" "grandidierite")
+                      ("cordierite" "fancy-spinel-marquise")
+                      ("raw-beryl" "ammolite")
+                      ("ammolite" "labradorite")
+                      ("apatite" "zircon")
+                      ("lapis-lazuli" "color-change-oval")
+                      ("beryl" "white-square"))
+                     (("garnet" "carnelian")
+                      ("kunzite" "blue-pear-shape")
+                      ("black-obsidian" "blue-ceylon-sapphire")
+                      ("almandine-garnet" "prasiolite")
+                      ("morganite-oval" "heliotrope")
+                      ("ruby" "goldstone")
+                      ("morganite-oval" "peridot"))
+                     (("yellow-heart" "rock-quartz")
+                      ("azurite" "orange-radiant")
+                      ("heliotrope" "black-obsidian")
+                      ("padparadscha-oval" "tourmaline-laser-cut")
+                      ("citrine-checkerboard" "green-beryl")
+                      ("garnet" "mexican-opal")
+                      ("hackmanite" "fancy-spinel-marquise"))
+                     (("black-obsidian" "sphalerite")
+                      ("rose-quartz" "yellow-jasper")
+                      ("ruby" "sphalerite")
+                      ("dumortierite" "star-cabochon")
+                      ("ammolite" "gray-agate")
+                      ("labradorite" "fancy-spinel-marquise")
+                      ("alexandrite-pear-shape" "raw-citrine"))
+                     (("tanzanite-trillion" "black-obsidian")
+                      ("pink-emerald-cut" "black-onyx")
+                      ("ametrine" "stilbite")
+                      ("kunzite-oval" "purple-oval")
+                      ("kunzite-oval" "lemon-quartz-briolette")
+                      ("pink-opal" "garnet")
+                      ("peridot" "padparadscha-sapphire"))))))
+          (last . null)
+          (plmt
+           .
+           (#hasheq((current . #hasheq((column# . 3) (row# . 6)))
+                    (home . #hasheq((column# . 4) (row# . 2))))))
+          (spare . #hasheq((tilekey . "┘"))))
+  6
+  "DOWN"
+  180)
+(*** expected)
+'((#hasheq((column# . 3) (row# . 0))
+   #hasheq((column# . 5) (row# . 0))
+   #hasheq((column# . 3) (row# . 1))
+   #hasheq((column# . 4) (row# . 1))
+   #hasheq((column# . 5) (row# . 1))
+   #hasheq((column# . 4) (row# . 2))
+   #hasheq((column# . 5) (row# . 2))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /home/samc/sw-dev/22SwDev/Code/4/xstate)
+(testing /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-1/1-in.json /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-1/1-out.json)
+car: contract violation
+  expected: pair?
+  given: #f
+  context...:
+   /proj/racket/plt-released/recent/collects/racket/contract/private/arrow-val-first.rkt:486:18: body of top-level
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:53:0
+   /home/samc/sw-dev/22SwDev/Code/get.rkt:18:0: get
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:34:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((board
+           .
+           #hasheq((connectors
+                    .
+                    (("└" "─" "┬" "┌" "┼" "─" "│")
+                     ("┴" "─" "┴" "┘" "┬" "┴" "├")
+                     ("┼" "┐" "│" "┼" "┴" "┘" "─")
+                     ("┴" "└" "┬" "├" "┐" "│" "┴")
+                     ("┤" "─" "┬" "┐" "─" "┴" "┼")
+                     ("┴" "┌" "┼" "┤" "┐" "─" "┴")
+                     ("─" "┌" "┘" "├" "┤" "├" "┐")))
+                   (treasures
+                    .
+                    ((("zoisite" "pink-opal")
+                      ("black-onyx" "ruby")
+                      ("rhodonite" "magnesite")
+                      ("ammolite" "spinel")
+                      ("green-aventurine" "apatite")
+                      ("prehnite" "grossular-garnet")
+                      ("blue-pear-shape" "padparadscha-oval"))
+                     (("ammolite" "pink-opal")
+                      ("unakite" "green-aventurine")
+                      ("red-spinel-square-emerald-cut" "cordierite")
+                      ("blue-spinel-heart" "zoisite")
+                      ("jaspilite" "sunstone")
+                      ("rose-quartz" "aventurine")
+                      ("black-obsidian" "kunzite-oval"))
+                     (("cordierite" "blue-cushion")
+                      ("grossular-garnet" "blue-cushion")
+                      ("ruby" "fancy-spinel-marquise")
+                      ("unakite" "citrine")
+                      ("blue-cushion" "grandidierite")
+                      ("sunstone" "raw-beryl")
+                      ("stilbite" "blue-ceylon-sapphire"))
+                     (("moss-agate" "bulls-eye")
+                      ("tanzanite-trillion" "blue-ceylon-sapphire")
+                      ("hackmanite" "ruby")
+                      ("yellow-jasper" "blue-pear-shape")
+                      ("moonstone" "super-seven")
+                      ("grossular-garnet" "alexandrite-pear-shape")
+                      ("sphalerite" "padparadscha-sapphire"))
+                     (("purple-square-cushion" "mexican-opal")
+                      ("moonstone" "chrysolite")
+                      ("unakite" "jaspilite")
+                      ("sphalerite" "fancy-spinel-marquise")
+                      ("hackmanite" "blue-pear-shape")
+                      ("color-change-oval" "iolite-emerald-cut")
+                      ("apatite" "iolite-emerald-cut"))
+                     (("green-beryl-antique" "white-square")
+                      ("kunzite" "green-beryl")
+                      ("red-spinel-square-emerald-cut" "mexican-opal")
+                      ("iolite-emerald-cut" "black-spinel-cushion")
+                      ("tourmaline" "beryl")
+                      ("heliotrope" "emerald")
+                      ("ametrine" "aquamarine"))
+                     (("prehnite" "alexandrite")
+                      ("moonstone" "zircon")
+                      ("mexican-opal" "citrine")
+                      ("morganite-oval" "kunzite")
+                      ("spinel" "grossular-garnet")
+                      ("pink-round" "ruby-diamond-profile")
+                      ("tanzanite-trillion" "fancy-spinel-marquise"))))))
+          (last . null)
+          (plmt
+           .
+           (#hasheq((current . #hasheq((column# . 4) (row# . 0)))
+                    (home . #hasheq((column# . 6) (row# . 0))))))
+          (spare . #hasheq((tilekey . "└"))))
+  2
+  "UP"
+  270)
+(*** expected)
+'((#hasheq((column# . 6) (row# . 0)) #hasheq((column# . 6) (row# . 1))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /home/samc/sw-dev/22SwDev/Code/4/xstate)
+(testing /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-2/2-in.json /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-2/2-out.json)
+car: contract violation
+  expected: pair?
+  given: #f
+  context...:
+   /proj/racket/plt-released/recent/collects/racket/contract/private/arrow-val-first.rkt:486:18: body of top-level
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:53:0
+   /home/samc/sw-dev/22SwDev/Code/get.rkt:18:0: get
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:34:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((board
+           .
+           #hasheq((connectors
+                    .
+                    (("┘" "├" "┬" "─" "┬" "┐" "┤")
+                     ("┼" "┘" "─" "┼" "┌" "└" "─")
+                     ("┼" "┴" "┘" "┘" "┼" "│" "┐")
+                     ("─" "┴" "┤" "├" "┘" "─" "├")
+                     ("┼" "┤" "└" "┬" "│" "├" "┼")
+                     ("┌" "└" "─" "─" "│" "┤" "┌")
+                     ("├" "┘" "┬" "┐" "┬" "│" "┘")))
+                   (treasures
+                    .
+                    ((("kunzite" "ruby")
+                      ("carnelian" "ammolite")
+                      ("chrysolite" "sphalerite")
+                      ("morganite-oval" "iolite-emerald-cut")
+                      ("fancy-spinel-marquise" "morganite-oval")
+                      ("magnesite" "almandine-garnet")
+                      ("apatite" "rhodonite"))
+                     (("apricot-square-radiant" "iolite-emerald-cut")
+                      ("pink-opal" "almandine-garnet")
+                      ("jaspilite" "alexandrite")
+                      ("yellow-heart" "red-diamond")
+                      ("green-aventurine" "padparadscha-sapphire")
+                      ("chrysolite" "chrysoberyl-cushion")
+                      ("aplite" "tourmaline-laser-cut"))
+                     (("color-change-oval" "ruby")
+                      ("bulls-eye" "yellow-baguette")
+                      ("sphalerite" "raw-citrine")
+                      ("magnesite" "morganite-oval")
+                      ("beryl" "tanzanite-trillion")
+                      ("australian-marquise" "grossular-garnet")
+                      ("purple-spinel-trillion" "kunzite"))
+                     (("diamond" "grandidierite")
+                      ("pink-opal" "pink-spinel-cushion")
+                      ("diamond" "australian-marquise")
+                      ("pink-opal" "blue-cushion")
+                      ("zircon" "raw-beryl")
+                      ("hackmanite" "chrysoberyl-cushion")
+                      ("yellow-jasper" "purple-oval"))
+                     (("labradorite" "lemon-quartz-briolette")
+                      ("red-spinel-square-emerald-cut" "raw-citrine")
+                      ("ruby-diamond-profile" "super-seven")
+                      ("zoisite" "goldstone")
+                      ("aquamarine" "black-obsidian")
+                      ("blue-cushion" "yellow-jasper")
+                      ("padparadscha-sapphire" "rock-quartz"))
+                     (("purple-spinel-trillion" "green-beryl-antique")
+                      ("raw-beryl" "golden-diamond-cut")
+                      ("grossular-garnet" "green-beryl-antique")
+                      ("aplite" "pink-round")
+                      ("garnet" "apatite")
+                      ("zircon" "color-change-oval")
+                      ("stilbite" "magnesite"))
+                     (("super-seven" "color-change-oval")
+                      ("gray-agate" "lemon-quartz-briolette")
+                      ("fancy-spinel-marquise" "rose-quartz")
+                      ("diamond" "moss-agate")
+                      ("blue-cushion" "labradorite")
+                      ("clinohumite" "magnesite")
+                      ("lemon-quartz-briolette" "moonstone"))))))
+          (last . null)
+          (plmt
+           .
+           (#hasheq((current . #hasheq((column# . 5) (row# . 6)))
+                    (home . #hasheq((column# . 0) (row# . 2))))))
+          (spare . #hasheq((tilekey . "┤"))))
+  0
+  "UP"
+  0)
+(*** expected)
+'((#hasheq((column# . 0) (row# . 0))
+   #hasheq((column# . 1) (row# . 0))
+   #hasheq((column# . 2) (row# . 0))
+   #hasheq((column# . 3) (row# . 0))
+   #hasheq((column# . 4) (row# . 0))
+   #hasheq((column# . 5) (row# . 0))
+   #hasheq((column# . 0) (row# . 1))
+   #hasheq((column# . 1) (row# . 1))
+   #hasheq((column# . 5) (row# . 1))
+   #hasheq((column# . 6) (row# . 1))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /home/samc/sw-dev/22SwDev/Code/4/xstate)
+(testing /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-3/3-in.json /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-3/3-out.json)
+car: contract violation
+  expected: pair?
+  given: #f
+  context...:
+   /proj/racket/plt-released/recent/collects/racket/contract/private/arrow-val-first.rkt:486:18: body of top-level
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:53:0
+   /home/samc/sw-dev/22SwDev/Code/get.rkt:18:0: get
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:34:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((board
+           .
+           #hasheq((connectors
+                    .
+                    (("┬" "├" "├" "┬" "┴" "└" "├")
+                     ("┼" "┴" "┤" "┴" "┴" "├" "┬")
+                     ("└" "┐" "│" "└" "┼" "─" "┘")
+                     ("┼" "┤" "└" "┼" "├" "├" "┴")
+                     ("┼" "┤" "│" "└" "─" "├" "┼")
+                     ("├" "┼" "─" "│" "┐" "┤" "┴")
+                     ("┼" "─" "┴" "│" "┴" "┘" "┌")))
+                   (treasures
+                    .
+                    ((("dumortierite" "apatite")
+                      ("aventurine" "tigers-eye")
+                      ("blue-spinel-heart" "magnesite")
+                      ("azurite" "sunstone")
+                      ("green-beryl-antique" "diamond")
+                      ("sphalerite" "kunzite-oval")
+                      ("peridot" "yellow-jasper"))
+                     (("ammolite" "moss-agate")
+                      ("magnesite" "diamond")
+                      ("white-square" "red-diamond")
+                      ("prehnite" "cordierite")
+                      ("color-change-oval" "citrine-checkerboard")
+                      ("fancy-spinel-marquise" "blue-spinel-heart")
+                      ("raw-beryl" "green-beryl"))
+                     (("pink-spinel-cushion" "lemon-quartz-briolette")
+                      ("ammolite" "white-square")
+                      ("pink-spinel-cushion" "chrysolite")
+                      ("sunstone" "stilbite")
+                      ("alexandrite-pear-shape" "zircon")
+                      ("kunzite-oval" "gray-agate")
+                      ("kunzite-oval" "pink-emerald-cut"))
+                     (("sphalerite" "chrome-diopside")
+                      ("raw-citrine" "tourmaline-laser-cut")
+                      ("raw-citrine" "beryl")
+                      ("lapis-lazuli" "green-aventurine")
+                      ("orange-radiant" "magnesite")
+                      ("chrysolite" "red-diamond")
+                      ("australian-marquise" "amethyst"))
+                     (("padparadscha-oval" "azurite")
+                      ("red-spinel-square-emerald-cut" "star-cabochon")
+                      ("aquamarine" "stilbite")
+                      ("cordierite" "prehnite")
+                      ("ruby" "chrysolite")
+                      ("diamond" "goldstone")
+                      ("alexandrite" "raw-citrine"))
+                     (("unakite" "gray-agate")
+                      ("chrysolite" "heliotrope")
+                      ("morganite-oval" "diamond")
+                      ("prehnite" "hackmanite")
+                      ("grossular-garnet" "purple-spinel-trillion")
+                      ("aquamarine" "carnelian")
+                      ("apatite" "stilbite"))
+                     (("diamond" "alexandrite")
+                      ("chrysolite" "raw-beryl")
+                      ("citrine-checkerboard" "almandine-garnet")
+                      ("yellow-baguette" "alexandrite")
+                      ("blue-pear-shape" "rose-quartz")
+                      ("pink-spinel-cushion" "rhodonite")
+                      ("jaspilite" "goldstone"))))))
+          (last . null)
+          (plmt
+           .
+           (#hasheq((current . #hasheq((column# . 4) (row# . 3)))
+                    (home . #hasheq((column# . 6) (row# . 5))))))
+          (spare . #hasheq((tilekey . "┴"))))
+  6
+  "UP"
+  0)
+(*** expected)
+'((#hasheq((column# . 5) (row# . 3))
+   #hasheq((column# . 6) (row# . 3))
+   #hasheq((column# . 5) (row# . 4))
+   #hasheq((column# . 6) (row# . 4))
+   #hasheq((column# . 4) (row# . 5))
+   #hasheq((column# . 5) (row# . 5))
+   #hasheq((column# . 4) (row# . 6))
+   #hasheq((column# . 5) (row# . 6))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /home/samc/sw-dev/22SwDev/Code/4/xstate)
+(testing /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-4/4-in.json /course/cs4500f22/ta/github/crookt-Dsap5131/4/Tests-4/4-out.json)
+car: contract violation
+  expected: pair?
+  given: #f
+  context...:
+   /proj/racket/plt-released/recent/collects/racket/contract/private/arrow-val-first.rkt:486:18: body of top-level
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:53:0
+   /home/samc/sw-dev/22SwDev/Code/get.rkt:18:0: get
+   /home/samc/sw-dev/22SwDev/Code/4/xstate:34:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((board
+           .
+           #hasheq((connectors
+                    .
+                    (("┘" "┬" "┘" "└" "┘" "┼" "├")
+                     ("┌" "─" "│" "┴" "┴" "│" "┬")
+                     ("│" "┬" "┌" "└" "┼" "┬" "│")
+                     ("┤" "┌" "│" "└" "├" "┌" "─")
+                     ("┼" "┌" "┐" "┌" "┼" "│" "┬")
+                     ("┼" "┬" "┘" "┘" "┘" "│" "┬")
+                     ("┘" "│" "└" "┤" "┌" "┬" "┤")))
+                   (treasures
+                    .
+                    ((("sphalerite" "moonstone")
+                      ("pink-round" "apricot-square-radiant")
+                      ("black-spinel-cushion" "citrine")
+                      ("moss-agate" "purple-square-cushion")
+                      ("pink-spinel-cushion" "ammolite")
+                      ("padparadscha-sapphire" "ruby-diamond-profile")
+                      ("goldstone" "alexandrite"))
+                     (("unakite" "alexandrite")
+                      ("zoisite" "pink-spinel-cushion")
+                      ("unakite" "pink-opal")
+                      ("tanzanite-trillion" "purple-square-cushion")
+                      ("lemon-quartz-briolette" "golden-diamond-cut")
+                      ("jasper" "citrine-checkerboard")
+                      ("magnesite" "heliotrope"))
+                     (("ammolite" "grossular-garnet")
+                      ("jasper" "super-seven")
+                      ("ammolite" "yellow-heart")
+                      ("purple-oval" "black-obsidian")
+                      ("sunstone" "tigers-eye")
+                      ("tigers-eye" "blue-pear-shape")
+                      ("black-onyx" "magnesite"))
+                     (("jaspilite" "ruby-diamond-profile")
+                      ("hematite" "blue-pear-shape")
+                      ("magnesite" "australian-marquise")
+                      ("peridot" "ametrine")
+                      ("emerald" "chrome-diopside")
+                      ("gray-agate" "sunstone")
+                      ("labradorite" "super-seven"))
+                     (("green-beryl" "purple-cabochon")
+                      ("stilbite" "alexandrite-pear-shape")
+                      ("yellow-heart" "black-obsidian")
+                      ("labradorite" "green-princess-cut")
+                      ("azurite" "sunstone")
+                      ("labradorite" "peridot")
+                      ("black-onyx" "unakite"))
+                     (("alexandrite" "black-onyx")
+                      ("aventurine" "red-diamond")
+                      ("rock-quartz" "diamond")
+                      ("peridot" "chrome-diopside")
+                      ("apricot-square-radiant" "gray-agate")
+                      ("lemon-quartz-briolette" "raw-citrine")
+                      ("pink-opal" "golden-diamond-cut"))
+                     (("prasiolite" "aventurine")
+                      ("moonstone" "raw-citrine")
+                      ("alexandrite-pear-shape" "apatite")
+                      ("sphalerite" "apatite")
+                      ("almandine-garnet" "kunzite")
+                      ("lemon-quartz-briolette" "kunzite")
+                      ("pink-round" "garnet"))))))
+          (last . null)
+          (plmt
+           .
+           (#hasheq((current . #hasheq((column# . 5) (row# . 6)))
+                    (home . #hasheq((column# . 5) (row# . 1))))))
+          (spare . #hasheq((tilekey . "│"))))
+  2
+  "LEFT"
+  90)
+(*** expected)
+'((#hasheq((column# . 5) (row# . 0))
+   #hasheq((column# . 5) (row# . 1))
+   #hasheq((column# . 5) (row# . 2))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
