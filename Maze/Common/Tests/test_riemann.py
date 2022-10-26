@@ -1,6 +1,6 @@
 import pytest
 from state import State
-from player import Player
+from player_state import Player
 from board import Board
 from tile import Tile
 from riemann import Riemann

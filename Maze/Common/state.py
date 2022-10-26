@@ -1,6 +1,6 @@
 from tile import Tile
 from board import Board
-from player import Player
+from player_state import Player
 from directions import Direction
 import copy
 
@@ -19,7 +19,7 @@ class State:
         check if the active player is a goal tile.\n
         Kick active player.
     """
-    def __init__(self, players, board=False, extra_tile=False):
+    def __init__(self, players, board, extra_tile=False):
         """
         Constructs State. A State is built up of players, a board, and an extra_tile.
 
@@ -34,8 +34,6 @@ class State:
         if not extra_tile:
             self.extra_tile = Tile()
         self.board = board
-        if not board:
-            self.board = Board()
 
         self.__check_valid_constructor()
 

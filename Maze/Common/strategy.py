@@ -1,6 +1,6 @@
 from tile import Tile
 from board import Board
-from player import Player
+from player_state import Player
 import copy
 
 class Strategy:
