@@ -1,7 +1,7 @@
 from state import State
 from board import Board
 from tile import Tile
-from player import Player
+from player_state import Player
 import json
 import random
 
