@@ -4,6 +4,7 @@ from player_state import Player
 from coordinate import Coordinate 
 from player_game_state import PlayerGameState
 import copy
+from action import Pass, Move
 
 class Strategy:
     """
@@ -15,18 +16,9 @@ class Strategy:
         """
         Evaluates a PlayerGameState determines what the best row or column to slide is and the best Coordinate to move to. 
 
-        Will return the x, y coordinates of the players current location if it is unable to reach any other tile.
-
         :param: state <PlayerGameState>: Knowledge the player has about the game state
 
-        :return: (degree, direction, index, isrow, coordinate): <(int, int, int, bool, Coordinate)>:\n
-            degree: represents the degrees to rotate the extra_tile by.
-            direction: represents the direction to shift the row or column by.\n
-                -1 represents left or up\n
-                1 represents right or down
-            index: represents the row or column index to shift
-            isrow: True or False for if the index is for a row or a column.
-            coordinate: Coordinate to move to
+        :return: <Move>:
         """
         raise NotImplemented('move not implemented.')
 
@@ -58,20 +50,22 @@ class AbstractStrategy(Strategy):
         raise NotImplemented('enumeration not implemented.')
 
     def evaluate_move(self, state):
-        re = self.slide_and_insert(self, state)
+        re = self.slide_and_insert(state)
         if re == -1:
-            return player.get_coordinate()
+            return Pass()
+        degree, direction, index, is_row = re
+
         board_copy = copy.deepcopy(board)
         extra_tile_copy = copy.deepcopy(extra_tile)
         
-        degree, direction, index, is_row = re
         extra_tile_copy.rotate(degree)
         if is_row:
             board_copy.shift_row(index, direction, extra_tile_copy)
         else:
             board_copy.shift_column(index, direction, extra_tile_copy)
-        action = action, self.strategy.move(state.get_board(), state.get_player())
-        return action
+
+        coordinate = self.strategy.move(state)
+        return Move(degree, direction, index, is_row, coordinate)
 
 
     def slide_and_insert(self, state):
@@ -237,8 +231,8 @@ class AbstractStrategy(Strategy):
         
         for degree in self.DEGREES:
 
-            board_copy = copy.deepcopy(state.get_board())
-            tile_copy = copy.deepcopy(state.get_extra_tile())
+            board_copy = state.get_board()
+            tile_copy = state.get_extra_tile()
             player = state.get_player()
 
             tile_copy.rotate(degree)
@@ -252,7 +246,8 @@ class AbstractStrategy(Strategy):
             goal_tile = state.get_board().getTile(coordinate)
             updated_coordinate = board_copy.find_tile_coordinate_by_tile(goal_tile)
             reachable = board_copy.get_reachable_tiles(updated_player_coordinate)
-
+            for coord in reachable:
+                print(coord)
             if updated_coordinate in reachable:
                 return degree
         return -1

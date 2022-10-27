@@ -22,11 +22,13 @@ def test_check_degrees1():
 
 def test_check_degrees2():
     extra_tile = Tile('└')
+    player_state = PlayerGameState(board, extra_tile, player)
     re = riemann_strategy.check_degrees(Coordinate(1, 1), player_state, 0, 1, True)
     assert re == 270, 'Cannot find correct degree'
 
 def test_check_degrees3():
     extra_tile = Tile('│')
+    player_state = PlayerGameState(board, extra_tile, player)
     re = riemann_strategy.check_degrees(Coordinate(0, 2), player_state, 2, 1, False)
     assert re == -1, 'Found degree when one doesn\'t exist'
 
