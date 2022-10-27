@@ -27,7 +27,6 @@ class Euclid(AbstractStrategy):
         """
 
         enumerated_tiles = PriorityQueue()
-
         goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
         enumerated_tiles.put((-1, goal_position))
 

@@ -4,6 +4,7 @@ from tile import Tile
 from player_state import Player
 import json
 import random
+from coordinate import Coordinate
 
 def board_to_json(board):
     assert isinstance(board, Board)
@@ -21,21 +22,28 @@ def board_to_json(board):
 
 def tile_to_json(tile):
     assert isinstance(tile, Tile)
-    return {'tilekey': tile.get_path_code()}
+    gems = tile.get_gems()
+    return {'tilekey': tile.get_path_code(), '1-image': gems[0].value, '2-image': gems[1].value}
 
 
 def player_to_json(player, board):
     assert isinstance(player, Player)
     player_data = {}
-    x, y = player.get_position()
+    coords = player.get_coordinate()
+    x = coords.getX()
+    y = coords.getY()
     player_data['current'] = {'row#': x, 'column#': y}
-    h_x, h_y = board.find_tile_coordinate_by_tile(player.get_home())
-    player_data['home'] = {'row#': h_x, 'column#': h_y}
+
+    home_coords = board.find_tile_coordinate_by_tile(player.get_home())
+    player_data['home'] = {'row#': home_coords.getX(), 'column#': home_coords.getY()}
+    # TODO: make colors randomized and unique
+    player_data['color'] = 'blue'
     return player_data
 
 
 def state_to_json(state):
     assert isinstance(state, State)
+    # TODO: randomize last move?
     state_json = {
         'board': board_to_json(state.get_board()),
         'spare': tile_to_json(state.get_extra_tile()),
@@ -78,7 +86,7 @@ def make_tests(amount, fp):
         b = Board(board=test_board)
         p = Player('', b.get_board()[random.choice(range(7))][random.choice(range(7))],
                    b.get_board()[random.choice(range(7))][random.choice(range(7))],
-                   (random.choice(range(7)), random.choice(range(7))))
+                   Coordinate(random.choice(range(7)), random.choice(range(7))))
         s = State([p], b, Tile())
         test_case = format_xchoice_test_case(s,
                                              random.choice(["Euclid", "Riemann"]),
@@ -90,4 +98,4 @@ def make_tests(amount, fp):
 
 
 
-#make_tests(5, './Tests')
+make_tests(5, './Tests')

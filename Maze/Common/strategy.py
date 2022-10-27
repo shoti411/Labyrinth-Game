@@ -55,8 +55,8 @@ class AbstractStrategy(Strategy):
             return Pass()
         degree, direction, index, is_row = re
 
-        board_copy = copy.deepcopy(board)
-        extra_tile_copy = copy.deepcopy(extra_tile)
+        board_copy = copy.deepcopy(state.get_board())
+        extra_tile_copy = copy.deepcopy(state.get_extra_tile())
         
         extra_tile_copy.rotate(degree)
         if is_row:
@@ -64,7 +64,7 @@ class AbstractStrategy(Strategy):
         else:
             board_copy.shift_column(index, direction, extra_tile_copy)
 
-        coordinate = self.strategy.move(state)
+        coordinate = self.move(state)
         return Move(degree, direction, index, is_row, coordinate)
 
 

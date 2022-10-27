@@ -4,28 +4,26 @@ from riemann import Riemann
 from euclid import Euclid
 from board import Board
 from tile import Tile
-from state import State
+from player_game_state import PlayerGameState
 from player_state import Player
+from coordinate import Coordinate
 
-
-def xchoice():
+def xchoice(in_stream):
     """
     Reads json objects from stdin representing the game state and requested testing parameters.
     Outputs to stdout the reachable tiles from that Maze board state from the given coordinate.
     """
-    json_objects = read_input()
+    json_objects = read_input(in_stream)
     turn_data = handle_json(json_objects)
     return_output(turn_data)
 
 
-def read_input():
+def read_input(json_str):
     """
-    Reads input from stdin, parses well-formed and valid json objects.
+    Reads input from json_str, parses well-formed and valid json objects.
 
     :return: <list of Json Objects>
     """
-
-    json_str = sys.stdin.read()
     decoder = json.JSONDecoder()
     pos = 0
     objs = []
@@ -57,16 +55,17 @@ def handle_json(json_objects):
     spare_tile = Tile(json_objects[1]['spare']['tilekey'])
     players = json_to_players(json_objects[1], board)
 
-    state = State(players, board, spare_tile)
+    state = PlayerGameState(board, spare_tile, players[0])
     strategy = select_strategy(json_objects[0])
     x_coord, y_coord = (json_objects[2]['row#'], json_objects[2]['column#'])
+    players[0].set_coordinate(Coordinate(x_coord, y_coord))
 
-    slide_and_insert = strategy.slide_and_insert(board, spare_tile, players[0])
-    if slide_and_insert == -1:
+    move = strategy.evaluate_move(state)
+    if move.is_pass():
         return "PASS"
-    degree, direction_integer, index, is_row = slide_and_insert
-    x, y = strategy.move(board, players[0])
-    return index, direction_integer, degree, is_row, x, y
+    degrees, direction_integer, index, is_row, coordinate = move.get_move()
+    x, y = coordinate.getX(), coordinate.getY()
+    return index, direction_integer, degrees, is_row, x, y
 
 
 def get_direction(is_row, direction):
@@ -80,6 +79,7 @@ def get_direction(is_row, direction):
 
 
 def select_strategy(strategy):
+    # TODO: fix this
     strategy_map = {
         "Euclid": Euclid(),
         "Riemann": Riemann()
@@ -106,9 +106,12 @@ def json_to_players(json_object, board):
         players.append(Player('',
                               board_data[home['row#']][home['column#']],
                               board_data[home['row#']][home['column#']],
-                              [home['row#'], home['column#']]))
+                              Coordinate(home['row#'], home['column#'])))
     return players
 
 
 if __name__ == "__main__":
-    xchoice()
+    file_name = './Tests/4-in.json'
+    f = open(file_name, 'r', encoding='utf-8')
+    # xchoice(sys.stdin.read())
+    xchoice(f.read())
