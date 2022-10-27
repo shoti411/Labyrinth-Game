@@ -246,8 +246,6 @@ class AbstractStrategy(Strategy):
             goal_tile = state.get_board().getTile(coordinate)
             updated_coordinate = board_copy.find_tile_coordinate_by_tile(goal_tile)
             reachable = board_copy.get_reachable_tiles(updated_player_coordinate)
-            for coord in reachable:
-                print(coord)
             if updated_coordinate in reachable:
                 return degree
         return -1

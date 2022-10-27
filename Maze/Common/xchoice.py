@@ -15,7 +15,7 @@ def xchoice(in_stream):
     """
     json_objects = read_input(in_stream)
     turn_data = handle_json(json_objects)
-    return_output(turn_data)
+    return return_output(turn_data)
 
 
 def read_input(json_str):
@@ -43,7 +43,7 @@ def return_output(turn_data):
     index, direction_integer, degree, is_row, x, y = turn_data
     direction = get_direction(is_row, direction_integer)
     coordinate = position_to_object(x, y)
-    print(json.dumps([index, direction, degree, coordinate]))
+    return json.dumps([index, direction, degree, coordinate])
 
 
 def position_to_object(x, y):
@@ -111,7 +111,13 @@ def json_to_players(json_object, board):
 
 
 if __name__ == "__main__":
-    file_name = './Tests/4-in.json'
-    f = open(file_name, 'r', encoding='utf-8')
-    # xchoice(sys.stdin.read())
-    xchoice(f.read())
+    print(xchoice(sys.stdin.read()))
+    """
+    for i in range(5):
+        file_name = f'./Tests/{i}-in.json'
+        f = open(file_name, 'r', encoding='utf-8')
+        f_out = open(f'./Tests/{i}-out.json', 'w')
+        f_out.write(xchoice(f.read()))
+        f_out.close()
+        f.close()
+    """
