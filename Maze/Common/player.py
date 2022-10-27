@@ -30,18 +30,7 @@ class PlayerAPI:
 
     def take_turn(self, game_state):
         self.game_state = game_state
-        board, extra_tile, player = self.game_state
-        action = self.strategy.slide_and_insert(board, extra_tile, player)
-        if action == -1:
-            return False
-        degree, direction, index, is_row = action
-        extra_tile.rotate(degree)
-        if is_row:
-            board.shift_row(index, direction, extra_tile)
-        else:
-            board.shift_column(index, direction, extra_tile)
-        action = action, self.strategy.move(board, player)
-        return action
+        return self.strategy.evaluate_move(self.game_state)
 
     def won(self, w):
         return w

@@ -3,14 +3,15 @@ from player import PlayerAPI
 from player_state import Player
 from board import Board
 from tile import Tile
+from coordinate import Coordinate
 import random
 import copy
 import itertools
 
 class Referee:
 
-    rows, cols = 7, 7
-    rounds = 1000
+    ROWS, COLS = 7, 7
+    ROUNDS = 1000
     """
     TODO: strategy needs to be able to travel home
     TODO: enforce movable columns/rows
@@ -65,7 +66,7 @@ class Referee:
         kicked_players = []
         for player in players:
             try:
-                proposed_board = Board(player.proposeBoard(self.rows, self.cols))
+                proposed_board = Board(player.proposeBoard(self.ROWS, self.COLS))
                 proposed_boards.append(proposed_board)
             except ValueError:
                 kicked_players.append(player)
@@ -77,15 +78,18 @@ class Referee:
     def __initialize_players(self, board, num_players):
         players = []
         board_length = len(board)
-        valid_goal_tiles = list(itertools.product(range(board_length, step=2), range(board_length, step=2)))
+        goal_positions = list(itertools.product(range(board_length, step=2), range(board_length, step=2)))
+        valid_goal_tiles = []
+        for (x, y) in goal_positions:
+            valid_goal_tiles.append(Coordinate(x,y))
         for player in range(num_players):
             home_posn = random.choice(valid_goal_tiles)
             valid_goal_tiles.remove(home_posn)
-            home_tile = board[home_posn[0]][home_posn[1]]
+            home_tile = board[home_posn.getX()][home_posn.getY()]
 
             goal_posn = random.choice(valid_goal_tiles)
             valid_goal_tiles.remove(goal_posn)
-            goal_tile = board[goal_posn[0]][goal_posn[1]]
+            goal_tile = board[goal_posn.getX()][goal_posn.getY()]
 
             players.append((Player(avatar='', home=home_tile, goal=goal_tile, position=home_posn), goal_posn))
         return players
@@ -98,7 +102,7 @@ class Referee:
         kicked_players = []
         winners = []
 
-        for round_number in range(self.rounds):
+        for round_number in range(self.ROUNDS):
             # TODO : TAKE TURNS
             ...
             
