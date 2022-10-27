@@ -82,6 +82,17 @@ class AbstractStrategy(Strategy):
         re = self.slide_and_insert(self, board, extra_tile, player)
         if re == -1:
             return player.get_coordinate()
+        board_copy = copy.deepcopy(board)
+        extra_tile_copy = copy.deepcopy(extra_tile)
+        
+        degree, direction, index, is_row = re
+        extra_tile_copy.rotate(degree)
+        if is_row:
+            board_copy.shift_row(index, direction, extra_tile_copy)
+        else:
+            board_copy.shift_column(index, direction, extra_tile_copy)
+        action = action, self.strategy.move(board_copy, player)
+        return action
 
 
     def slide_and_insert(self, board, extra_tile, player):
