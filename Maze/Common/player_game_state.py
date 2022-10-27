@@ -18,7 +18,7 @@ class PlayerGameState:
         self.__player = player
 
     def get_board(self):
-        return copy.deepcopy(self.__board)
+        return self.__board
 
     def get_extra_tile(self):
         return copy.deepcopy(self.__extra_tile)
