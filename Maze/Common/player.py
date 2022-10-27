@@ -1,4 +1,3 @@
-from state import state
 from board import Board
 from tile import Tile
 from riemann import Riemann

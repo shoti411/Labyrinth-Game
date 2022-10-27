@@ -98,4 +98,4 @@ def make_tests(amount, fp):
 
 
 
-make_tests(5, './Tests')
+make_tests(1, './Tests')

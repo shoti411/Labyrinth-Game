@@ -1,7 +1,7 @@
 from gems import Gem
 from tile import Tile
 from coordinate import Coordinate
-from player_game_state import PlayerGameState
+
 
 class Player:
     """
@@ -34,8 +34,8 @@ class Player:
             raise ValueError('Goal must be of type Gem')
         if not(isinstance(self.__coordinate, Coordinate)):
             raise ValueError('coordinate must be an array of length 2 with integer values.')
-        if not(isinstance(self.__player_api, PlayerGameState)) and not(isinstance(self.__player_api, bool)):
-            raise ValueError('player_api must be False or type PlayerGameState')
+        #if not(isinstance(self.__player_api, PlayerAPI)) and not(isinstance(self.__player_api, bool)):
+        #    raise ValueError('player_api must be False or type PlayerAPI')
 
     def get_avatar(self):
         return self.__avatar

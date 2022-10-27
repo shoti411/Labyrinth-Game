@@ -21,7 +21,7 @@ class State:
         check if the active player is a goal tile.\n
         Kick active player.
     """
-    def __init__(self, players, board, extra_tile=False, last_action=False, round=0, round_passes=0):
+    def __init__(self, players, board, extra_tile=False, last_action=False, rounds=0, round_passes=0):
         """
         Constructs State. A State is built up of players, a board, and an extra_tile.
 
@@ -37,7 +37,7 @@ class State:
             self.extra_tile = Tile()
         self.board = board
         self.last_action = last_action
-        self.__round = round
+        self.__rounds = rounds
         self.__round_passes = round_passes
         self.next_players = []
 
@@ -196,9 +196,11 @@ class State:
                 return [player]
         
         winners = []
-        min_distance = Coordinate(0,0).get_euclid_distance(Coordinate(len(self.get_board()), len(self.get_board()[0])))
+        min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()),
+                                                                       len(self.get_board().get_board()[0])))
         for player in self.players:
-            player_distance = player.get_coordinate().get_euclid_distance(player.get_goal())
+            goal_coords = self.get_board().find_tile_coordinate_by_tile(player.get_home())
+            player_distance = player.get_coordinate().get_euclid_distance(goal_coords)
             if player.has_reached_goal() and player_distance < min_distance:
                 min_distance = player_distance
                 winners = [player]
