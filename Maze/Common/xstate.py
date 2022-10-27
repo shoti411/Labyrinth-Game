@@ -53,7 +53,7 @@ def handle_json(json_objects):
 
     state.rotate_extra_tile(degree)
     state.shift(index, direction, is_row)
-    x, y = state.get_players()[0].get_position()
+    x, y = state.get_players()[0].get_coordinate()
     return sort_reachable(board.get_reachable_tiles(x, y))
 
 

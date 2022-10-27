@@ -10,46 +10,27 @@ class Strategy:
     This class is not intended to be instantiated.
     """
 
-    def slide_and_insert(self, board, extra_tile, player):
+    def evaluate_move(self, board, extra_tile, player):
         """
-        slide_and_insert takes in a board, extra_tile, and player. It evaluates this game state and determines what 
-        the best row or column to slide is. 
-        
-        slide_and_insert will return -1 if it is impossible to reach any other tile regardless of the move done.
+        Takes in a board, extra_tile, and player. It evaluates this game state and determines what 
+        the best row or column to slide is and the best Coordinate to move to. 
+
+        Will return the x, y coordinates of the players current location if it is unable to reach any other tile.
 
         :param: board <Board>: Maze game scenario board
         :param: extra_tile <Tile>: extra tile of Maze game scenario
         :param: player <Player>: Active player of Maze game scenario
 
-        :return: (degree, direction, index, isrow): <(int, int, int, bool)>:\n
+        :return: (degree, direction, index, isrow, coordinate): <(int, int, int, bool, Coordinate)>:\n
             degree: represents the degrees to rotate the extra_tile by.
             direction: represents the direction to shift the row or column by.\n
                 -1 represents left or up\n
                 1 represents right or down
             index: represents the row or column index to shift
             isrow: True or False for if the index is for a row or a column.
+            coordinate: Coordinate to move to
         """
-
-        raise NotImplemented('slide_and_insert not implemented.')
-
-    def move(self, board, player):
-        """
-        move takes in a board, and player. It evaluates this game state and determines what 
-        the location to move to is.
-
-        move will return the x, y coordinates of the players current location if it is unable to reach any other tile.
-
-        :param: board <Board>: Maze game scenario board
-        :param: player <Player>: Active player of Maze game scenario
-
-        :return: (x, y): <(int, int)>:\n
-            x: represents the x coordinate to move to.
-            y: represents the y coordinate to move to.
-        """
-        
         raise NotImplemented('move not implemented.')
-
-        
 
 
 class AbstractStrategy(Strategy):
@@ -78,8 +59,50 @@ class AbstractStrategy(Strategy):
 
         raise NotImplemented('enumeration not implemented.')
 
+    def evaluate_move(self, board, extra_tile, player):
+        """
+        Takes in a board, extra_tile, and player. It evaluates this game state and determines what 
+        the best row or column to slide is and the best Coordinate to move to. 
+
+        Will return the x, y coordinates of the players current location if it is unable to reach any other tile.
+
+        :param: board <Board>: Maze game scenario board
+        :param: extra_tile <Tile>: extra tile of Maze game scenario
+        :param: player <Player>: Active player of Maze game scenario
+
+        :return: (degree, direction, index, isrow, coordinate): <(int, int, int, bool, Coordinate)>:\n
+            degree: represents the degrees to rotate the extra_tile by.
+            direction: represents the direction to shift the row or column by.\n
+                -1 represents left or up\n
+                1 represents right or down
+            index: represents the row or column index to shift
+            isrow: True or False for if the index is for a row or a column.
+            coordinate: Coordinate to move to
+        """
+        re = self.slide_and_insert(self, board, extra_tile, player)
+        if re == -1:
+            return player.get_coordinate()
+
 
     def slide_and_insert(self, board, extra_tile, player):
+        """
+        slide_and_insert takes in a board, extra_tile, and player. It evaluates this game state and determines what 
+        the best row or column to slide is. 
+        
+        slide_and_insert will return -1 if it is impossible to reach any other tile regardless of the move done.
+
+        :param: board <Board>: Maze game scenario board
+        :param: extra_tile <Tile>: extra tile of Maze game scenario
+        :param: player <Player>: Active player of Maze game scenario
+
+        :return: (degree, direction, index, isrow): <(int, int, int, bool)>:\n
+            degree: represents the degrees to rotate the extra_tile by.
+            direction: represents the direction to shift the row or column by.\n
+                -1 represents left or up\n
+                1 represents right or down
+            index: represents the row or column index to shift
+            isrow: True or False for if the index is for a row or a column.
+        """
         self.check_state(board, player, extra_tile)
         enumerated_tiles = self.get_enumerated_tiles(board, player)
         if enumerated_tiles.empty():
@@ -88,6 +111,17 @@ class AbstractStrategy(Strategy):
 
 
     def move(self, board, player):
+        """
+        move takes in a board, and player. It evaluates this game state and determines what 
+        the location to move to is.
+
+        move will return the players Coordinate if it is unable to reach any other tile.
+
+        :param: board <Board>: Maze game scenario board
+        :param: player <Player>: Active player of Maze game scenario
+
+        :return: <Coordinate>:
+        """
         self.check_state(board, player)
         enumerated_tiles = self.get_enumerated_tiles(board, player)
         return self.check_move(enumerated_tiles, board, player)
@@ -239,7 +273,7 @@ class AbstractStrategy(Strategy):
             else:
                 board_copy.shift_column(index, direction, tile_copy)
 
-            updated_player_coordinate = self.update_position(player.get_position(), index, direction, isrow, board)
+            updated_player_coordinate = self.update_position(player.get_coordinate(), index, direction, isrow, board)
             
             goal_tile = board.getTile(coordinate)
             updated_coordinate = board_copy.find_tile_coordinate_by_tile(goal_tile)
@@ -284,7 +318,7 @@ class AbstractStrategy(Strategy):
         :return: <Coordinate>:
         """
 
-        reachable = board.get_reachable_tiles(player.get_position())
+        reachable = board.get_reachable_tiles(player.get_coordinate())
         while not enumerated_tiles.empty():
             _, coordinate = enumerated_tiles.get()
             if coordinate in reachable:

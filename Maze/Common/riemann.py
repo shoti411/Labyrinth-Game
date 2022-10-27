@@ -30,7 +30,7 @@ class Riemann(AbstractStrategy):
         for r in range(len(board.get_board())):
             row_length = len(board.get_board()[r])
             for c in range(row_length):
-                if Coordinate(r, c) != player.get_position() and Coordinate(r, c) != goal_position:
+                if Coordinate(r, c) != player.get_coordinate() and Coordinate(r, c) != goal_position:
                     priority = ((r*row_length + c))
                     enumerated_tiles.put((priority, Coordinate(r, c)))
         return enumerated_tiles

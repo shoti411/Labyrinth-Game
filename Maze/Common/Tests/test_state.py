@@ -93,7 +93,7 @@ def test_shift1():
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, 1, True)
-    assert s.get_players()[0].get_position() == Coordinate(0, 1) and s.get_players()[1].get_position() == Coordinate(0, 0), \
+    assert s.get_players()[0].get_coordinate() == Coordinate(0, 1) and s.get_players()[1].get_coordinate() == Coordinate(0, 0), \
         'Shift row didn\'t work'
 
 
@@ -105,7 +105,7 @@ def test_shift2():
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, -1, True)
-    assert s.get_players()[0].get_position() == Coordinate(0, 2) and s.get_players()[1].get_position() == Coordinate(0, 1), \
+    assert s.get_players()[0].get_coordinate() == Coordinate(0, 2) and s.get_players()[1].get_coordinate() == Coordinate(0, 1), \
         'Shift row didn\'t work'
 
 
@@ -117,7 +117,7 @@ def test_shift3():
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, 1, False)
-    assert s.get_players()[0].get_position() == Coordinate(1, 0) and s.get_players()[1].get_position() == Coordinate(0, 0), \
+    assert s.get_players()[0].get_coordinate() == Coordinate(1, 0) and s.get_players()[1].get_coordinate() == Coordinate(0, 0), \
         'Shift col didn\'t work'
 
 
@@ -129,14 +129,14 @@ def test_shift4():
     ]
     s = State(players=test_players, board=board, extra_tile=extra_tile)
     s.shift(0, -1, False)
-    assert s.get_players()[0].get_position() == Coordinate(2, 0) and s.get_players()[1].get_position() == Coordinate(1, 0), \
+    assert s.get_players()[0].get_coordinate() == Coordinate(2, 0) and s.get_players()[1].get_coordinate() == Coordinate(1, 0), \
         'Shift col didn\'t work'
 
 
 def test_move1():
     s = State(players=players, board=board, extra_tile=extra_tile)
     s.move_active_player(Coordinate(0,2))
-    assert s.get_players()[0].get_position() == Coordinate(0,2), 'Move did not work'
+    assert s.get_players()[0].get_coordinate() == Coordinate(0,2), 'Move did not work'
 
 def test_move2():
     s = State(players=players, board=board, extra_tile=extra_tile)

@@ -62,7 +62,7 @@ class State:
         :param: coordinate (Coordinate): Coordinate representing the location of the move.
         """
         if self.active_can_reach_tile(coordinate):
-            self.players[0].set_position(coordinate)
+            self.players[0].set_coordinate(coordinate)
         else:
             raise ValueError('The given move is unreachable or unvalid.')
 
@@ -84,7 +84,7 @@ class State:
 
         :return: <bool>: True or False depending on if the player can reach the Tile.
         """
-        return coordinate in self.board.get_reachable_tiles(self.players[0].get_position())
+        return coordinate in self.board.get_reachable_tiles(self.players[0].get_coordinate())
 
     def active_on_goal_tile(self):
         """
@@ -92,7 +92,7 @@ class State:
 
         :return: <bool>: True or False depending on if the players coordinate is at a goal tile.
         """
-        return self.players[0].get_goal() == self.board.getTile(self.players[0].get_position())
+        return self.players[0].get_goal() == self.board.getTile(self.players[0].get_coordinate())
 
     def kick_active(self):
         """
@@ -128,11 +128,11 @@ class State:
 
         for player in self.players:
 
-            if player.get_position().getX() == index and is_row:
-                new_y = int((player.get_position().getY() + direction) % len(self.board.get_board()[index]))
-                player.set_position(Coordinate(player.get_position().getX(), new_y))
+            if player.get_coordinate().getX() == index and is_row:
+                new_y = int((player.get_coordinate().getY() + direction) % len(self.board.get_board()[index]))
+                player.set_coordinate(Coordinate(player.get_coordinate().getX(), new_y))
 
-            elif player.get_position().getY() == index and not is_row:
-                new_x = int((player.get_position().getX() + direction) % len(self.board.get_board()))
-                player.set_position(Coordinate(new_x, player.get_position().getY()))
+            elif player.get_coordinate().getY() == index and not is_row:
+                new_x = int((player.get_coordinate().getX() + direction) % len(self.board.get_board()))
+                player.set_coordinate(Coordinate(new_x, player.get_coordinate().getY()))
 

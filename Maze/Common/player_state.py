@@ -40,8 +40,8 @@ class Player:
     def get_goal(self):
         return self.__goal
 
-    def get_position(self):
+    def get_coordinate(self):
         return self.__coordinate
 
-    def set_position(self, coordinate):
+    def set_coordinate(self, coordinate):
         self.__coordinate = coordinate

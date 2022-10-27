@@ -100,6 +100,7 @@ class Referee:
 
         for round_number in range(self.rounds):
             # TODO : TAKE TURNS
+            ...
             
         return winners, kicked_players
 
