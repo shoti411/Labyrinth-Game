@@ -12,20 +12,19 @@ class Euclid(AbstractStrategy):
     Tie breaker for Euclidean distance is lexigraphically in row-column order.
     """
 
-    def get_enumerated_tiles(self, board, player):
+    def get_enumerated_tiles(self, state):
         """
         Creates a priority queue of the boards Tiles. 
         The highest priority is the goal tile then it is each tile with the closest Euclidean distance to the goal tile.
         Tie breaker for Euclidean distance is done lexigraphically in row-column order.
-
-        If the goal tile is not on the board then the Euclidean distance will be based on the player position not the goal tile.
         
-        :param: board <Board>: Maze game scenario board
-        :param: player <Player>: Active player of Maze game scenario
+        :param: state <PlayerGameState>: Knowledge the player has about the game state
 
         :return: <PriorityQueue>
         """
 
+        board = state.get_board()
+        player = state.get_player()
         enumerated_tiles = PriorityQueue()
         goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
         enumerated_tiles.put((-1, goal_position))

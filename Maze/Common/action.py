@@ -23,6 +23,17 @@ class Action:
     def is_pass(self):
         raise NotImplemented('is_pass not implemented.')
 
+    def does_undo(self, action):
+        """
+        Checks if this Action will undo the given Action
+
+        :param: action <Action>
+
+        :return: <boolean>
+        """
+
+        raise NotImplemented('is_action not implemented')
+
 class Pass:
     """
     Represents a Pass Action in which a Player passes their turn.
@@ -30,6 +41,9 @@ class Pass:
 
     def is_pass(self):
         return True
+
+    def does_undo(self, action):
+        return False
 
 class Move:
     """
@@ -70,6 +84,16 @@ class Move:
 
     def is_pass(self):
         return False
+
+    def does_undo(self, action):
+        if not isinstance(action, Move):
+            return False
+        
+        if self.get_isrow() != action.get_isrow():
+            return False
+
+        return self.get_index() == action.get_index() and self.get_direction() == -1*action.get_direction() 
+
 
     
 

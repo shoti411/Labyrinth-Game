@@ -3,6 +3,7 @@ from board import Board
 from player_state import Player
 from directions import Direction
 from coordinate import Coordinate
+from action import Move
 import copy
 
 
@@ -20,7 +21,7 @@ class State:
         check if the active player is a goal tile.\n
         Kick active player.
     """
-    def __init__(self, players, board, extra_tile=False):
+    def __init__(self, players, board, extra_tile=False, last_action=False, round=0, round_passes=0):
         """
         Constructs State. A State is built up of players, a board, and an extra_tile.
 
@@ -35,6 +36,10 @@ class State:
         if not extra_tile:
             self.extra_tile = Tile()
         self.board = board
+        self.last_action = last_action
+        self.__round = round
+        self.__round_passes = round_passes
+        self.next_players = []
 
         self.__check_valid_constructor()
 
@@ -55,6 +60,17 @@ class State:
     def get_board(self):
         return copy.deepcopy(self.board)
 
+    def get_round(self):
+        return self.__round
+    
+    def increment_round(self):
+        self.__round += 1
+        self.__round_passes = 0
+
+    def get_round_passes(self):
+        self.__round_passes
+
+
     def move_active_player(self, coordinate):
         """
         Moves the active player to the new location.
@@ -65,6 +81,8 @@ class State:
             self.players[0].set_coordinate(coordinate)
         else:
             raise ValueError('The given move is unreachable or unvalid.')
+
+        self.next_player()
 
     def rotate_extra_tile(self, degrees):
         """
@@ -94,6 +112,15 @@ class State:
         """
         return self.players[0].get_goal() == self.board.getTile(self.players[0].get_coordinate())
 
+    def player_on_home_tile(self, player):
+        """
+        Check if the players coordinate is at their home tile.
+
+        :return: <bool>: True or False depending on if the players coordinate is at a home tile.
+        """
+        return player.get_home() == self.board.getTile(player.get_coordinate())
+
+
     def kick_active(self):
         """
         Kicks active player from the game.
@@ -102,6 +129,94 @@ class State:
             self.players = self.players[1:]
         elif len(self.players) == 1:
             self.players = []
+
+    def get_last_action(self):
+        return self.last_action()
+
+    def do_pass(self):
+        """
+        Passes the active players turn.
+        """
+
+        self.__round_passes += 1
+        self.next_player()
+
+    def next_player(self):
+        """
+        Changes the active player to the next player.
+        """
+        self.next_players.append(self.players[0])
+        if len(self.players) == 1:
+            self.players = self.next_players
+            self.next_players = []
+            self.increment_round()
+
+    def get_active_player(self):
+        """
+        returns the active player
+
+        :return: <Player>
+        """
+
+        return self.players[0]
+
+    def is_game_over(self, max_rounds):
+        """
+        Checks if a game is over. 
+        A game is over we have reached the maximum number of rounds.
+        If all players in a round has passed.
+        If all players have been kicked.
+        If a player has previously reached their goal tile and now at their home tile.
+
+        :param: max_rounds <int>
+
+        :return: <bool>
+        """
+        if self.__rounds >= max_rounds:
+            return True
+        if len(self.players) == 0:
+            return True
+        if self.__round_passes == len(self.players):
+            return True
+        for player in self.players:
+            if player.has_reached_goal() and self.player_on_home_tile(player):
+                return True
+
+        return False
+
+    def get_winners(self):
+        """
+        Returns a list of players who are winning.
+
+        :return: <list(Player)>
+        """
+
+        for player in self.players:
+            if player.has_reached_goal() and self.player_on_home_tile(player):
+                return [player]
+        
+        winners = []
+        min_distance = Coordinate(0,0).get_euclid_distance(Coordinate(len(self.get_board()), len(self.get_board()[0])))
+        for player in self.players:
+            player_distance = player.get_coordinate().get_euclid_distance(player.get_goal())
+            if player.has_reached_goal() and player_distance < min_distance:
+                min_distance = player_distance
+                winners = [player]
+            elif player.has_reached_goal() and player_distance == min_distance:
+                winners.append(player)
+        if winners:
+            return winners        
+
+        winners = []
+        min_distance = Coordinate(0,0).get_euclid_distance(Coordinate(len(self.get_board()), len(self.get_board()[0])))
+        for player in self.players:
+            player_distance = player.get_coordinate().get_euclid_distance(player.get_goal())
+            if player_distance < min_distance:
+                min_distance = player_distance
+                winners = [player]
+            elif player_distance == min_distance:
+                winners.append(player)
+        return winners
 
     def shift(self, index, direction, is_row):
         """
@@ -135,4 +250,7 @@ class State:
             elif player.get_coordinate().getY() == index and not is_row:
                 new_x = int((player.get_coordinate().getX() + direction) % len(self.board.get_board()))
                 player.set_coordinate(Coordinate(new_x, player.get_coordinate().getY()))
+        
+        #TODO: INCOMPLETE 
+        self.last_action = Move(0, direction, index, is_row, Coordinate(0,0))
 

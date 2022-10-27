@@ -32,5 +32,6 @@ class PlayerAPI:
         self.game_state = game_state
         return self.strategy.evaluate_move(self.game_state)
 
+
     def won(self, w):
         return w

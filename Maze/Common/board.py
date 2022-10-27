@@ -46,6 +46,12 @@ class Board:
     def get_board(self):
         return copy.deepcopy(self.__board)
 
+    def get_moveable_rows(self):
+        return list(range(len(self.__board)))[::2]
+
+    def get_moveable_columns(self):
+        return list(range(len(self.__board[0])))[::2]
+
     def find_tile_coordinate_by_tile(self, tile):
         """
         Finds the coordinate of a given Tile.

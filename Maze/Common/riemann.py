@@ -10,17 +10,18 @@ class Riemann(AbstractStrategy):
     If it cannot then it will try to reach the top-most left-most position that it can reach. 
     """
 
-    def get_enumerated_tiles(self, board, player):
+    def get_enumerated_tiles(self, state):
         """
         Creates a priority queue of the boards Tiles. 
         The highest priority is the goal tile then it is each tile lexigraphically in row-column order. 
         
-        :param: board <Board>: Maze game scenario board
-        :param: player <Player>: Active player of Maze game scenario
+        :param: state <PlayerGameState>: Knowledge the player has about the game state
 
         :return: <PriorityQueue>
         """
 
+        board = state.get_board()
+        player = state.get_player()
         enumerated_tiles = PriorityQueue()
 
         goal_position = board.find_tile_coordinate_by_tile(player.get_goal())

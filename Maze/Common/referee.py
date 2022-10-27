@@ -1,36 +1,28 @@
+from player_game_state import PlayerGameState
 from state import State
 from player import PlayerAPI
 from player_state import Player
 from board import Board
 from tile import Tile
 from coordinate import Coordinate
+from action import Pass, Move
 import random
 import copy
 import itertools
 
+
 class Referee:
 
-    ROWS, COLS = 7, 7
-    ROUNDS = 1000
+    def __init__(self, min_row=7, min_col=7, max_rounds=1000):
+        self.min_rows = min_row
+        self.min_cols = min_col
+        self.max_rounds = max_rounds
     """
-    TODO: strategy needs to be able to travel home
-    TODO: enforce movable columns/rows
-    TODO: state probably needs distance to goal
+    TODO: create slide, insert classes for lastAction and Move
+    
 
     TODO: run 1 game to completion
-        - return winning players and those who misbehaved
-        - end conditions:
-            - player reaches home tile after reaching goal tile
-            - all active players opt to pass
-            - 1000 rounds
-        - win conditions:
-            - player(s) with shortest Euclidean distance to home tile
-            after reaching goal tile
-            - if no one has reached a goal tile, then it is the player(s)
-            who are closest to their goal tile.
-
-    TODO: interface that accepts game state, runs the game
-        to completion from this state
+        - return winning players and those who misbehave
 
 
     Two different teams may produce the player mechanism and the referee. Indeed, the plan calls for players from
@@ -56,7 +48,7 @@ class Referee:
         if len(players) == 0:
             return [], starting_players
         extra_tile = Tile()
-        player_states, goal_positions = self.__initialize_players(board, len(players))
+        player_states, goal_positions = self.__initialize_players(board, len(players), players)
         self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
         return self.__run_game(state)
@@ -66,7 +58,7 @@ class Referee:
         kicked_players = []
         for player in players:
             try:
-                proposed_board = Board(player.proposeBoard(self.ROWS, self.COLS))
+                proposed_board = Board(player.proposeBoard(self.min_rows, self.min_cols))
                 proposed_boards.append(proposed_board)
             except ValueError:
                 kicked_players.append(player)
@@ -75,7 +67,7 @@ class Referee:
         game_board = random.choice(proposed_boards)
         return game_board
 
-    def __initialize_players(self, board, num_players):
+    def __initialize_players(self, board, num_players, player_apis):
         players = []
         board_length = len(board)
         goal_positions = list(itertools.product(range(board_length, step=2), range(board_length, step=2)))
@@ -91,8 +83,48 @@ class Referee:
             valid_goal_tiles.remove(goal_posn)
             goal_tile = board[goal_posn.getX()][goal_posn.getY()]
 
-            players.append((Player(avatar='', home=home_tile, goal=goal_tile, position=home_posn), goal_posn))
+            players.append((Player(avatar='', home=home_tile, goal=goal_tile, position=home_posn, player_api=player_apis[player]), goal_posn))
         return players
+
+    def __valid_move(state, action):
+        """
+        Checks if a Action is valid. 
+
+        valid for a Pass is anything
+        valid for a Move requires:
+            degrees must be a multiple of 90
+            direction must be -1 or 1
+            index must be in board's moveable rows or columns
+            isrow must be a boolean
+            Coordinate must be on the board and reachable.
+            Move cannot undo the last action a player has made.
+
+        :param: state <State>: Game knowledge of the referee
+        :param: action <Action>: Action a player is taking 
+        """
+
+        if action.is_pass():
+            return True
+        
+        if action.get_degree() % 90 != 0:
+            return False
+        if action.get_direction() not in [-1, 1]:
+            return False
+        if not isinstance(action.get_isrow(), bool):
+            return False
+        if action.get_isrow() and action.get_index() not in state.get_board().get_moveable_rows():
+            return False
+        if not action.get_isrow() and action.get_index() not in state.get_board().get_moveable_columns():
+            return False
+        if action.does_undo(state.get_last_action()):
+            return False
+
+        state_copy = copy.deepcopy(state)
+        state_copy.rotate_extra_tile(action.get_degree())
+        state_copy.shift(action.get_index(), action.get_direction(), action.get_isrow())
+        if not state_copy.active_can_reach_tile(action.get_coordinate()):
+            return False
+        return True
 
     def __setup_players(self, player_apis, board, extra_tile, players, goal_positions):
         for i in range(len(player_apis)):
@@ -100,11 +132,18 @@ class Referee:
 
     def __run_game(self, state):
         kicked_players = []
-        winners = []
-
-        for round_number in range(self.ROUNDS):
-            # TODO : TAKE TURNS
-            ...
-            
+        while not state.is_game_over(self.max_rounds):
+            active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(), state.get_active_player(), state.get_last_action())
+            move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
+            try:
+                self.__valid_move(move)
+            except ValueError as e:
+                kicked_players.append(state.get_active_player())
+                state.kick_active()
+                continue
+            state.rotate_extra_tile(move.get_degree())
+            state.shift(move.get_index(), move.get_direction(), move.get_isrow())
+            state.move_active_player(move.get_coordinate())
+        winners = state.get_winners()
         return winners, kicked_players
 

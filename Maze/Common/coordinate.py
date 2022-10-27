@@ -1,3 +1,5 @@
+import math
+
 class Coordinate:
     """
     Coordinate represents an X,Y location in the Maze Game. 
@@ -24,6 +26,22 @@ class Coordinate:
 
     def getY(self):
         return self.__y
+
+    def get_euclid_distance(self, coordinate):
+        """
+        Calculate the Euclidean distance between this Coordinate and a given Coordinate
+
+        :param: coordinate <Coordinate>
+
+        :return: <int>
+        """
+
+        if not isinstance(coordinate, Coordinate):
+            raise ValueError('coordinate must be type Coordinate')
+
+        if self.getX() == -1 or coordinate.getX() == -1:
+            raise ValueError('Cannot get the distance from a Coordinate off the board.')
+        return math.sqrt((self.getX()-coordinate.getX())**2 + (self.getY()-coordinate.getY())**2)
     
     def __eq__(self, other):
         if isinstance(other, Coordinate):

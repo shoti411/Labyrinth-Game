@@ -36,13 +36,12 @@ class AbstractStrategy(Strategy):
     DIRECTIONS = [-1, 1]
 
 
-    def get_enumerated_tiles(self, board, player):  
+    def get_enumerated_tiles(self, state):  
         """
         Creates a priority queue of the boards Tiles. 
         The priority of each Tile is based on the class implementing this method.
 
-        :param: board <Board>: Maze game scenario board
-        :param: player <Player>: Active player of Maze game scenario
+        :param: state <PlayerGameState>: Knowledge the player has about the game state
 
         :return: <PriorityQueue>
         """
@@ -85,7 +84,7 @@ class AbstractStrategy(Strategy):
             isrow: True or False for if the index is for a row or a column.
         """
         self.check_state(state)
-        enumerated_tiles = self.get_enumerated_tiles(state.get_board(), state.get_player())
+        enumerated_tiles = self.get_enumerated_tiles(state)
         if enumerated_tiles.empty():
             return -1
         return self.check_slide_insert(enumerated_tiles, state)
@@ -102,7 +101,7 @@ class AbstractStrategy(Strategy):
         :return: <Coordinate>:
         """
         self.check_state(state)
-        enumerated_tiles = self.get_enumerated_tiles(state.get_board(), state.get_player())
+        enumerated_tiles = self.get_enumerated_tiles(state)
         return self.check_move(enumerated_tiles, state)
 
 
@@ -153,7 +152,7 @@ class AbstractStrategy(Strategy):
             isrow: True or False for if the index is for a row or a column.
                     This will always return False
         """
-        for col_index in range(len(state.get_board().get_board()[0]))[::2]:
+        for col_index in state.get_board().get_moveable_columns():
             re = self.check_direction(coordinate, state, col_index, False)
             if re != -1:
                 degree, direction = re
@@ -181,7 +180,7 @@ class AbstractStrategy(Strategy):
                     This will always return True
         """
 
-        for row_index in range(len(state.get_board().get_board()))[::2]:
+        for row_index in state.get_board().get_moveable_rows():
             re = self.check_direction(coordinate, state, row_index, True)
             if re != -1:
                 degree, direction = re
@@ -208,9 +207,11 @@ class AbstractStrategy(Strategy):
         """
 
         for direction in self.DIRECTIONS:
-            degree = self.check_degrees(coordinate, state, index, direction, isrow)
-            if degree != -1:
-                return degree, direction
+            #TODO INCOMPLETE
+            if not Move(0, index, direction, isrow, Coordinate(0,0)).does_undo(state.get_last_action()):
+                degree = self.check_degrees(coordinate, state, index, direction, isrow)
+                if degree != -1:
+                    return degree, direction
         return -1
 
 
