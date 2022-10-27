@@ -1,6 +1,7 @@
 import pytest
 from board import Board
 from tile import Tile
+from coordinate import Coordinate
 
 def test_board_constructor():
     test_board = [[Tile('┴'), Tile('┤')], [Tile('┤'), Tile('┼')]]
@@ -190,9 +191,9 @@ def test_board_get_reachable0():
                   [Tile('│'), Tile('│'), Tile('│')],
                   [Tile('│'), Tile('┐'), Tile('┐')]]
     board = Board(board=test_board)
-    test_list = board.get_reachable_tiles(0, 0)
+    test_list = board.get_reachable_tiles(Coordinate(0, 0))
     print(test_list)
-    compare_list = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 2), (2, 0)]
+    compare_list = [Coordinate(0, 0), Coordinate(0, 1), Coordinate(0, 2), Coordinate(1, 0), Coordinate(1, 2), Coordinate(2, 0)]
     assert all([x in test_list for x in compare_list] + [x in compare_list for x in test_list]), \
         'Basic reachable functionality failed.'
 
@@ -203,8 +204,11 @@ def test_board_get_reachable1():
                   [Tile('┼'), Tile('┼'), Tile('┼')],
                   [Tile('┼'), Tile('┼'), Tile('┼')]]
     board = Board(board=test_board)
-    test_list = board.get_reachable_tiles(0, 0)
-    compare_list = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+    test_list = board.get_reachable_tiles(Coordinate(0, 0))
+    compare_list = [
+        Coordinate(0, 0), Coordinate(0, 1), Coordinate(0, 2), 
+        Coordinate(1, 0), Coordinate(1, 1), Coordinate(1, 2), 
+        Coordinate(2, 0), Coordinate(2, 1), Coordinate(2, 2)]
     assert all([x in test_list for x in compare_list] + [x in compare_list for x in test_list]), \
         'Basic reachable functionality failed.'
 
@@ -215,8 +219,8 @@ def test_board_get_reachable2():
                   [Tile('─'), Tile('│'), Tile('─')],
                   [Tile('│'), Tile('─'), Tile('│')]]
     board = Board(board=test_board)
-    test_list = board.get_reachable_tiles(0, 0)
-    assert test_list == [(0, 0)], \
+    test_list = board.get_reachable_tiles(Coordinate(0, 0))
+    assert test_list == [Coordinate(0, 0)], \
         'Basic reachable functionality failed.'
 
 
@@ -227,7 +231,7 @@ def test_board_get_reachable3():
                   [Tile('│'), Tile('─'), Tile('│')]]
     board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        test_list = board.get_reachable_tiles(-1, 0)
+        test_list = board.get_reachable_tiles(Coordinate(-1, 0))
 
 
 def test_board_get_reachable4():
@@ -237,7 +241,7 @@ def test_board_get_reachable4():
                   [Tile('│'), Tile('─'), Tile('│')]]
     board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        test_list = board.get_reachable_tiles(0, -1)
+        test_list = board.get_reachable_tiles(Coordinate(0, -1))
 
 
 def test_board_get_reachable5():
@@ -247,7 +251,7 @@ def test_board_get_reachable5():
                   [Tile('│'), Tile('─'), Tile('│')]]
     board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        test_list = board.get_reachable_tiles(3, 0)
+        test_list = board.get_reachable_tiles(Coordinate(3, 0))
 
 
 def test_board_get_reachable6():
@@ -257,5 +261,5 @@ def test_board_get_reachable6():
                   [Tile('│'), Tile('─'), Tile('│')]]
     board = Board(board=test_board)
     with pytest.raises(ValueError) as e_info:
-        test_list = board.get_reachable_tiles(0, 3)
+        test_list = board.get_reachable_tiles(Coordinate(0, 3))
 

@@ -3,6 +3,7 @@ class Coordinate:
     Coordinate represents an X,Y location in the Maze Game. 
     X, Y must be either -1, -1 or both positive ints. 
     -1, -1 represents the location of an extra Tile.
+    0, 0 represents the top-most left-most position.
     """
     
     def __init__(self, x, y):
@@ -10,7 +11,7 @@ class Coordinate:
         self.__x = x
         self.__y = y
 
-    def __check_coordinate(x,y):
+    def __check_coordinate(self,x,y):
         if ((x == -1 and y != -1) or (x != -1 and y == -1)):
             raise ValueError('A Coordinate must have both X and Y as -1 or they must both be positive.')
         if ((x != -1 and y != -1) and (x < 0 or y < 0)):
@@ -24,3 +25,18 @@ class Coordinate:
     def getY(self):
         return self.__y
     
+    def __eq__(self, other):
+        if isinstance(other, Coordinate):
+            return self.getX() == other.getX() and self.getY() == other.getY()
+
+        return False
+
+    def __lt__(self, other):
+        if not isinstance(other, Coordinate):
+            raise ValueError(f'Cannot compare between {other} and Coordinate.')
+
+        if self.getX() < other.getX():
+            return True
+        elif self.getY() < other.getY():
+            return True
+        return False

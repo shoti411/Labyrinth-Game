@@ -1,5 +1,6 @@
 from tile import Tile
 from directions import Direction
+from coordinate import Coordinate
 import copy
 
 
@@ -45,21 +46,30 @@ class Board:
     def get_board(self):
         return copy.deepcopy(self.__board)
 
-
-    def find_tile_position_by_tile(self, tile):
+    def find_tile_coordinate_by_tile(self, tile):
         """
-        Finds the row column position on the board of a given Tile. If the Tile is not on the board return (-1, -1).
+        Finds the coordinate of a given Tile.
 
-        :param: tile <Tile>: Tile to find position of.
+        :param: tile <Tile>: Tile to find coordinate of.
 
-        :return: <tuple(int, int)>: row, column position of a Tile. 
+        :return: <Coordiante>
         """
 
         for r in range(len(self.__board)):
             for c in range(len(self.__board[r])):
                 if tile == self.__board[r][c]:
-                    return r, c
-        return -1, -1
+                    return Coordinate(r, c)
+        return Coordinate(-1, -1)
+
+    def getTile(self, coordinate):
+        """
+        Returns Tile at coordiante 
+        
+        :param: coordinate <Coordinate>: Coordinate must have a positive x and y
+        """
+        if coordinate.getX() < 0 or coordinate.getY() < 0:
+            raise ValueError('Coordinate must have a positive x and y')
+        return self.__board[coordinate.getX()][coordinate.getY()]
 
 
     def shift_column(self, index, direction, extra_tile):
@@ -158,55 +168,61 @@ class Board:
         if not isinstance(extra_tile, Tile):
             raise ValueError('extra_tile must be a type Tile object')
 
-    def get_reachable_tiles(self, x, y):
+    def get_reachable_tiles(self, coordinate):
         """
-        Check the reachable Tiles from a Tile at a given position.
+        Check the reachable Tiles from a Tile at a given coordinate.
 
-        :param: x (int): x coordinate
-        :param: y (int): y coordinate
+        :param: coordiante (Coordinate)
 
-        :return: (list(int, int)): List of reachable positions
+        :return: (list(Coordinate)): List of reachable Coordinates
         """
 
-        if x not in range(len(self.__board)) or y not in range(len(self.__board[0])):
+        if coordinate.getX() not in range(len(self.__board)) or coordinate.getY() not in range(len(self.__board[0])):
             raise ValueError('Cannot check reachable tiles from invalid index.')
-        return self.__get_reachable_tiles_recurse(x, y, [])
+        return self.__get_reachable_tiles_recurse(coordinate, [])
 
-    def __get_reachable_tiles_recurse(self, x, y, visited):
-        if x not in range(len(self.__board)) or y not in range(len(self.__board[0])):
+    def __get_reachable_tiles_recurse(self, coordinate, visited):
+        if coordinate.getX() not in range(len(self.__board)) or coordinate.getY() not in range(len(self.__board[0])):
             return visited
-        visited.append((x, y))
+        visited.append(coordinate)
 
-        connections = self.__connections(x, y)
+        connections = self.__connections(coordinate)
         for connection in connections:
             if connection not in visited:
-                visited = visited + self.__get_reachable_tiles_recurse(connection[0], connection[1], visited)
+                visited = visited + self.__get_reachable_tiles_recurse(connection, visited)
 
-        return list(set(visited))
+        unique_visited = []
+        for coordinate in visited:
+            if coordinate not in unique_visited:
+                unique_visited.append(coordinate)
 
-    def __connections(self, x, y):
+
+        return unique_visited
+
+    def __connections(self, coordinate):
         """
-        Checks and returns which of the surround Tiles from a given position are connected.
+        Checks and returns which of the surroundomg Tiles from a given coordinate are connected.
 
-        :param: x (int): row coordinate
-        :param: y (int): column coordinate
+        :param: coordiante (Coordinate)
         
         :return: (list(Direction)): List of reachable directions
         """
 
+        x = coordinate.getX()
+        y = coordinate.getY()
         connections = []
-        directions = self.get_board()[x][y].get_paths()
+        directions = self.getTile(coordinate).get_paths()
 
         if x > 0 and Direction.UP in directions and Direction.DOWN in self.__board[x - 1][y].get_paths():
-            connections.append((x - 1, y))
+            connections.append(Coordinate(x - 1, y))
         if x < len(self.__board) - 1 and Direction.DOWN in directions \
                 and Direction.UP in self.__board[x + 1][y].get_paths():
-            connections.append((x + 1, y))
+            connections.append(Coordinate(x + 1, y))
         if y > 0 and Direction.LEFT in directions and Direction.RIGHT in self.__board[x][y - 1].get_paths():
-            connections.append((x, y - 1))
+            connections.append(Coordinate(x, y - 1))
         if y < len(self.__board[0]) - 1 and Direction.RIGHT in directions and Direction.LEFT in self.__board[x][
             y + 1].get_paths():
-            connections.append((x, y + 1))
+            connections.append(Coordinate(x, y + 1))
 
         return connections
 

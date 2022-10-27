@@ -2,6 +2,7 @@ from tile import Tile
 from board import Board
 from player import Player
 from directions import Direction
+from coordinate import Coordinate
 import copy
 
 
@@ -56,15 +57,14 @@ class State:
     def get_board(self):
         return copy.deepcopy(self.board)
 
-    def move_active_player(self, x, y):
+    def move_active_player(self, coordinate):
         """
         Moves the active player to the new location.
 
-        :param: x (int): int representing the row location of the move.
-        :param: y (int): int representing the col location of the move.
+        :param: coordinate (Coordinate): Coordinate representing the location of the move.
         """
-        if self.active_can_reach_tile(x,y):
-            self.players[0].set_position(x,y)
+        if self.active_can_reach_tile(coordinate):
+            self.players[0].set_position(coordinate)
         else:
             raise ValueError('The given move is unreachable or unvalid.')
 
@@ -77,27 +77,24 @@ class State:
         """
         self.extra_tile.rotate(degrees)
 
-    def active_can_reach_tile(self, x, y):
+    def active_can_reach_tile(self, coordinate):
         """
-        Checks if the Tile on board at coordinates x and y is reachable from the active player.
+        Checks if the Tile on board at a given coordinate is reachable from the active player.
         If given an invalid location this will return False as the player is not at that location.
 
-        :param: x <int>: x represents the row coordinate of the board. 0 represents the top row.
-        :param: y <int>: y represents the column coordiante of the board. 0 represents the left row.
-        
+        :param: coordinate <Coordinate>: Coordinate of Tile.
+
         :return: <bool>: True or False depending on if the player can reach the Tile.
         """
-        curr_x, curr_y = self.players[0].get_position()
-        return (x, y) in self.board.get_reachable_tiles(curr_x, curr_y)
+        return coordinate in self.board.get_reachable_tiles(self.players[0].get_position())
 
     def active_on_goal_tile(self):
         """
-        Check if the active players position is at a goal tile.
+        Check if the active players coordinate is at a goal tile.
 
-        :return: <bool>: True or False depending on if the players position is at a goal tile.
+        :return: <bool>: True or False depending on if the players coordinate is at a goal tile.
         """
-        curr_x, curr_y = self.players[0].get_position()
-        return self.players[0].get_goal() == self.board.get_board()[curr_x][curr_y]
+        return self.players[0].get_goal() == self.board.getTile(self.players[0].get_position())
 
     def kick_active(self):
         """
@@ -133,11 +130,11 @@ class State:
 
         for player in self.players:
 
-            if player.get_position()[0] == index and is_row:
-                new_y = int((player.get_position()[1] + direction) % len(self.board.get_board()[index]))
-                player.set_position(player.get_position()[0], new_y)
+            if player.get_position().getX() == index and is_row:
+                new_y = int((player.get_position().getY() + direction) % len(self.board.get_board()[index]))
+                player.set_position(Coordinate(player.get_position().getX(), new_y))
 
-            elif player.get_position()[1] == index and not is_row:
-                new_x = int((player.get_position()[0] + direction) % len(self.board.get_board()))
-                player.set_position(new_x, player.get_position()[1])
+            elif player.get_position().getY() == index and not is_row:
+                new_x = int((player.get_position().getX() + direction) % len(self.board.get_board()))
+                player.set_position(Coordinate(new_x, player.get_position().getY()))
 

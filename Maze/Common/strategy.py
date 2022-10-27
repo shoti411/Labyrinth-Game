@@ -1,6 +1,7 @@
 from tile import Tile
 from board import Board
 from player import Player
+from coordinate import Coordinate 
 import copy
 
 class Strategy:
@@ -47,6 +48,8 @@ class Strategy:
         """
         
         raise NotImplemented('move not implemented.')
+
+        
 
 
 class AbstractStrategy(Strategy):
@@ -99,7 +102,7 @@ class AbstractStrategy(Strategy):
         Prioritizes shifting the direction -1 or 1
         Prioritizes degrees in order [0, 90, 180, 270]
 
-        :param: enumerated_tiles <PriorityQueue(Tile)>: Priority queue of the boards Tiles.
+        :param: enumerated_tiles <PriorityQueue(Coordinate)>: Priority queue of the boards Tiles coordinates.
         :param: board <Board>: Maze game scenario board
         :param: extra_tile <Tile>: extra tile of Maze game scenario
         :param: player <Player>: Active player of Maze game scenario
@@ -114,23 +117,22 @@ class AbstractStrategy(Strategy):
                     This will always return False
         """
         while not enumerated_tiles.empty():
-            _, (target_x, target_y) = enumerated_tiles.get()
-            re = self.check_row_shift(target_x, target_y, player, board, extra_tile)
+            _, coordinate = enumerated_tiles.get()
+            re = self.check_row_shift(coordinate, player, board, extra_tile)
             if re == -1:
-                re = self.check_col_shift(target_x, target_y, player, board, extra_tile)
+                re = self.check_col_shift(coordinate, player, board, extra_tile)
             if re != -1:
                 return re
         return -1
 
-    def check_col_shift(self, target_x, target_y, player, board, extra_tile):
+    def check_col_shift(self, coordinate, player, board, extra_tile):
         """
         Checks if there exists a column shift which will allow the player to reach a given position.
         Prioritizes the left col across to the right col.
         Prioritizes shifting the direction -1 or 1
         Prioritizes degrees in order [0, 90, 180, 270]
 
-        :param: target_x <int>: target x position to reach 
-        :param: target_y <int>: target y position to reach
+        :param: coordinate <Coordinate>: target coordinate.
         :param: player <Player>: Active player of Maze game scenario
         :param: board <Board>: Maze game scenario board
         :param: extra_tile <Tile>: extra tile of Maze game scenario
@@ -145,22 +147,21 @@ class AbstractStrategy(Strategy):
                     This will always return False
         """
         for col_index in range(len(board.get_board()[0]))[::2]:
-            re = self.check_direction(target_x, target_y, player, board, extra_tile, col_index, False)
+            re = self.check_direction(coordinate, player, board, extra_tile, col_index, False)
             if re != -1:
                 degree, direction = re
                 return degree, direction, col_index, False
         return -1
 
 
-    def check_row_shift(self, target_x, target_y, player, board, extra_tile):
+    def check_row_shift(self, coordinate, player, board, extra_tile):
         """
         Checks if there exists a row shift which will allow the player to reach a given position.
         Prioritizes the top row down to the bottom row.
         Prioritizes shifting the direction -1 or 1
         Prioritizes degrees in order [0, 90, 180, 270]
 
-        :param: target_x <int>: target x position to reach 
-        :param: target_y <int>: target y position to reach
+        :param: coordinate <Coordinate>: target coordinate.
         :param: player <Player>: Active player of Maze game scenario
         :param: board <Board>: Maze game scenario board
         :param: extra_tile <Tile>: extra tile of Maze game scenario
@@ -176,21 +177,20 @@ class AbstractStrategy(Strategy):
         """
 
         for row_index in range(len(board.get_board()))[::2]:
-            re = self.check_direction(target_x, target_y, player, board, extra_tile, row_index, True)
+            re = self.check_direction(coordinate, player, board, extra_tile, row_index, True)
             if re != -1:
                 degree, direction = re
                 return degree, direction, row_index, True
         return -1
     
 
-    def check_direction(self, target_x, target_y, player, board, extra_tile, index, isrow):
+    def check_direction(self, coordinate, player, board, extra_tile, index, isrow):
         """
         Checks if shifting a given row or column and rotation of the extra_tile which will allow the player to reach a given position.
         Prioritizes shifting the direction -1 or 1
         Prioritizes degrees in order [0, 90, 180, 270]
 
-        :param: target_x <int>: target x position to reach 
-        :param: target_y <int>: target y position to reach
+        :param: coordinate <Coordinate>: target coordinate.
         :param: player <Player>: Active player of Maze game scenario
         :param: board <Board>: Maze game scenario board
         :param: extra_tile <Tile>: extra tile of Maze game scenario
@@ -205,19 +205,18 @@ class AbstractStrategy(Strategy):
         """
 
         for direction in self.DIRECTIONS:
-            degree = self.check_degrees(target_x, target_y, player, board, extra_tile, index, direction, isrow)
+            degree = self.check_degrees(coordinate, player, board, extra_tile, index, direction, isrow)
             if degree != -1:
                 return degree, direction
         return -1
 
 
-    def check_degrees(self, target_x, target_y, player, board, extra_tile, index, direction, isrow):
+    def check_degrees(self, coordinate, player, board, extra_tile, index, direction, isrow):
         """
         Checks if any rotation of the extra_tile which will allow the player to reach a given position.
         Prioritizes degrees in order [0, 90, 180, 270]
 
-        :param: target_x <int>: target x position to reach 
-        :param: target_y <int>: target y position to reach
+        :param: coordinate <Coordinate>: target coordinate.
         :param: player <Player>: Active player of Maze game scenario
         :param: board <Board>: Maze game scenario board
         :param: extra_tile <Tile>: extra tile of Maze game scenario
@@ -240,40 +239,37 @@ class AbstractStrategy(Strategy):
             else:
                 board_copy.shift_column(index, direction, tile_copy)
 
-            x, y = player.get_position()
-            updated_x, updated_y = self.update_position(x, y, index, direction, isrow, board)
+            updated_player_coordinate = self.update_position(player.get_position(), index, direction, isrow, board)
             
-            reachable = board_copy.get_reachable_tiles(updated_x, updated_y)
+            goal_tile = board.getTile(coordinate)
+            updated_coordinate = board_copy.find_tile_coordinate_by_tile(goal_tile)
+            reachable = board_copy.get_reachable_tiles(updated_player_coordinate)
 
-            if target_x == -1 and target_y == -1:
-                updated_target_x, updated_target_y = board_copy.find_tile_position_by_tile(tile_copy) 
-            else:
-                goal_tile = board.get_board()[target_x][target_y]
-                updated_target_x, updated_target_y = board_copy.find_tile_position_by_tile(goal_tile)        
-            if (updated_target_x, updated_target_y) in reachable:
+            if updated_coordinate in reachable:
                 return degree
         return -1
 
 
-    def update_position(self, x, y, index, direction, isrow, board):
+    def update_position(self, coordinate, index, direction, isrow, board):
         """
-        Move the position x, y if it is affected by a slide performed with (index, direction, isrow) on board.
-        If x, y is knocked off then wrap x, y to the newly inserted location.
+        Move the coordiante if it is affected by a slide performed with (index, direction, isrow) on board.
+        If coordinate is knocked off then wrap coordinate to the newly inserted location.
 
-        :param: x <int>: x location of the tiles
-        :param: y <int>: y location of the tiles
+        :param: coordinate <Coordinate>: Coordinate of Tile
         :param: index <int>: index of the row or column to shift
         :param: direction <int>: direction to shift the row or column by
         :param: isrow <bool>: True or False representing if the index is for a row or column.
         :param: board <Board>: Maze game scenario board
 
-        :return: <int, int>: representing the updated position
+        :return: <Coordinate>: representing the updated position
         """
+        x = coordinate.getX()
+        y = coordinate.getY()
         if x == index and isrow:
             y = (y + direction) % len(board.get_board()[index])
         if y == index and not isrow:
             x = (x + direction) % len(board.get_board())
-        return x, y
+        return Coordinate(x, y)
 
     def check_move(self, enumerated_tiles, board, player):
         """
@@ -285,17 +281,14 @@ class AbstractStrategy(Strategy):
         :param: board <Board>: Maze game scenario board
         :param: player <Player>: Active player of Maze game scenario
 
-        :return: (x, y): <(int, int)>:\n
-            x: represents the x coordinate to move to.
-            y: represents the y coordinate to move to.
+        :return: <Coordinate>:
         """
-        
-        x, y = player.get_position()
-        reachable = board.get_reachable_tiles(x, y)
+
+        reachable = board.get_reachable_tiles(player.get_position())
         while not enumerated_tiles.empty():
-            _, (target_x, target_y) = enumerated_tiles.get()
-            if (target_x, target_y) in reachable:
-                return target_x, target_y
+            _, coordinate = enumerated_tiles.get()
+            if coordinate in reachable:
+                return coordinate
         return -1
     
 

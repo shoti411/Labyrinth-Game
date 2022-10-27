@@ -29,7 +29,7 @@ def player_to_json(player, board):
     player_data = {}
     x, y = player.get_position()
     player_data['current'] = {'row#': x, 'column#': y}
-    h_x, h_y = board.find_tile_position_by_tile(player.get_home())
+    h_x, h_y = board.find_tile_coordinate_by_tile(player.get_home())
     player_data['home'] = {'row#': h_x, 'column#': h_y}
     return player_data
 
@@ -90,4 +90,4 @@ def make_tests(amount, fp):
 
 
 
-make_tests(5, './Tests')
+#make_tests(5, './Tests')

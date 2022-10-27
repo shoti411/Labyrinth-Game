@@ -1,5 +1,6 @@
 from strategy import AbstractStrategy
 from queue import PriorityQueue
+from coordinate import Coordinate
 import math
 
 class Euclid(AbstractStrategy):
@@ -27,17 +28,13 @@ class Euclid(AbstractStrategy):
 
         enumerated_tiles = PriorityQueue()
 
-        goal_position = board.find_tile_position_by_tile(player.get_goal())
+        goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
         enumerated_tiles.put((-1, goal_position))
-
-        target_x, target_y = goal_position
-        if goal_position == (-1, -1):
-            target_x, target_y = player.get_position()
 
         for r in range(len(board.get_board())):
             row_length = len(board.get_board()[r])
             for c in range(row_length):
-                if (r, c) != player.get_position() and (r, c) != goal_position:
-                    priority = math.sqrt((r-target_x)**2 + (c-target_y)**2)
-                    enumerated_tiles.put((priority, (r, c)))
+                if Coordinate(r, c) != player.get_position() and Coordinate(r, c) != goal_position:
+                    priority = math.sqrt((r-goal_position.getX())**2 + (c-goal_position.getY())**2)
+                    enumerated_tiles.put((priority, Coordinate(r, c)))
         return enumerated_tiles

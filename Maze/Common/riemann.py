@@ -1,4 +1,5 @@
 from strategy import AbstractStrategy
+from coordinate import Coordinate
 from queue import PriorityQueue
 
 class Riemann(AbstractStrategy):
@@ -22,14 +23,14 @@ class Riemann(AbstractStrategy):
 
         enumerated_tiles = PriorityQueue()
 
-        goal_position = board.find_tile_position_by_tile(player.get_goal())
+        goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
         enumerated_tiles.put((-1, goal_position))
 
 
         for r in range(len(board.get_board())):
             row_length = len(board.get_board()[r])
             for c in range(row_length):
-                if (r, c) != player.get_position() and (r, c) != goal_position:
+                if Coordinate(r, c) != player.get_position() and Coordinate(r, c) != goal_position:
                     priority = ((r*row_length + c))
-                    enumerated_tiles.put((priority, (r, c)))
+                    enumerated_tiles.put((priority, Coordinate(r, c)))
         return enumerated_tiles
