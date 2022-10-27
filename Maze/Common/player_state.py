@@ -7,21 +7,19 @@ class Player:
     Player is a representation of a player from Maze game.
     """
 
-    def __init__(self, avatar, home, goal, position):
+    def __init__(self, avatar, home, goal, coordinate):
         """
         Constructs a Player. A Player is made up of an avatar, home tile, goal treasure, and a position.
         
         :param: avatar <string>: String that represents the avatar of the player. 
         :param: home <Tile>: home represents the home tile of the player.
         :param: goal <Tile>: goal represents the target tile of the player.
-        :param: position  <tuple(int,int)>: position represents a tuple of ints representing the coordinate of the player on the board. 
-                                            (x,y). x represents the row coordinate, y represents the column coordinate. 
-                                            (0,0). represents the top left of the board.
+        :param: coordinate  <Coordinate>: Coordinate of player
         """
         self.__avatar = avatar
         self.__home = home
         self.__goal = goal
-        self.__position = position
+        self.__coordinate = coordinate
 
         self.__check_constructor()
 
