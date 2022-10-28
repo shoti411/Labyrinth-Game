@@ -210,9 +210,11 @@ class State:
             return winners        
 
         winners = []
-        min_distance = Coordinate(0,0).get_euclid_distance(Coordinate(len(self.get_board()), len(self.get_board()[0])))
+        min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()),
+                                                                       len(self.get_board().get_board()[0])))
         for player in self.players:
-            player_distance = player.get_coordinate().get_euclid_distance(player.get_goal())
+            goal_coords = self.get_board().find_tile_coordinate_by_tile(player.get_goal())
+            player_distance = player.get_coordinate().get_euclid_distance(goal_coords)
             if player_distance < min_distance:
                 min_distance = player_distance
                 winners = [player]

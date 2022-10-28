@@ -83,7 +83,7 @@ def test_win_condition3():
     assert winners == [players[1]], 'Error testing if multiple players win by distance to home'
 
 
-def check_win_condition4():
+def test_win_condition4():
     """ Closest players to goal tile -- multiple"""
     players = [
         Player("",
@@ -102,13 +102,11 @@ def check_win_condition4():
     s.do_pass()
     ref = Referee()
     winners, kicked = ref.pickup_from_state(s)
-    print(winners)
-    print(players)
     assert winners == [players[1], players[2]], 'Error testing if multiple players win by distance to home'
 
 
 
-def check_win_condition5():
+def test_win_condition5():
     """ Closest player to goal tile -- only 1 """
     players = [
         Player("",
@@ -127,8 +125,6 @@ def check_win_condition5():
     s.do_pass()
     ref = Referee()
     winners, kicked = ref.pickup_from_state(s)
-    print(winners)
-    print(players)
     assert winners == [players[1]], 'Error testing if multiple players win by distance to home'
 
 
