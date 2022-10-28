@@ -7,6 +7,7 @@ from tile import Tile
 from player_game_state import PlayerGameState
 from player_state import Player
 from coordinate import Coordinate
+from action import Move
 
 def xchoice(in_stream):
     """
@@ -54,8 +55,9 @@ def handle_json(json_objects):
     board = json_to_board(json_objects[1])
     spare_tile = Tile(json_objects[1]['spare']['tilekey'])
     players = json_to_players(json_objects[1], board)
+    last_action = json_to_last_action(json_objects[1]['last'])
 
-    state = PlayerGameState(board, spare_tile, players[0])
+    state = PlayerGameState(board, spare_tile, players[0], last_action)
     strategy = select_strategy(json_objects[0])
     x_coord, y_coord = (json_objects[2]['row#'], json_objects[2]['column#'])
     players[0].set_coordinate(Coordinate(x_coord, y_coord))
@@ -108,6 +110,25 @@ def json_to_players(json_object, board):
                               board_data[home['row#']][home['column#']],
                               Coordinate(home['row#'], home['column#'])))
     return players
+
+def json_to_last_action(json_object) : 
+    index = json_object[0]
+    if json_object[1] is "LEFT":
+        is_row = True
+        direction = -1
+    elif json_object[1] is "RIGHT":
+        is_row = True
+        direction = 1
+    elif json_object[1] is "UP":
+        is_row = False
+        direction = -1
+    elif json_object[1] is "DOWN":
+        is_row = False
+        direction = 1
+    else:
+        raise ValueError("BAD JSON")
+    return Move(0, direction, index, is_row, Coordinate(0,0))
+
 
 
 if __name__ == "__main__":
