@@ -1,14 +1,17 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__),"../Common"))
+
 from player_game_state import PlayerGameState
 from state import State
-from player import PlayerAPI
 from player_state import Player
 from board import Board
 from tile import Tile
 from coordinate import Coordinate
-from action import Pass, Move
 import random
 import copy
 import itertools
+
 
 
 class Referee:

@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__),"../Common"))
+
 from board import Board
 from tile import Tile
 from riemann import Riemann
