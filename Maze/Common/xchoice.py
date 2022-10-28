@@ -7,7 +7,7 @@ from tile import Tile
 from player_game_state import PlayerGameState
 from player_state import Player
 from coordinate import Coordinate
-from action import Move
+from action import Move, Pass
 
 def xchoice(in_stream):
     """
@@ -111,7 +111,9 @@ def json_to_players(json_object, board):
                               Coordinate(home['row#'], home['column#'])))
     return players
 
-def json_to_last_action(json_object) : 
+def json_to_last_action(json_object) :
+    if not json_object:
+        return Pass()
     index = json_object[0]
     if json_object[1] is "LEFT":
         is_row = True
