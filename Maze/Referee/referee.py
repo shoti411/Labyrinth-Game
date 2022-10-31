@@ -106,9 +106,6 @@ class Referee:
         :param: action <Action>: Action a player is taking 
         """
 
-        if action.is_pass():
-            return
-        
         if action.get_degree() % 90 != 0:
             raise ValueError(f'{action.get_degree()} not multiple of 90')
         if action.get_direction() not in [-1, 1]:
@@ -120,13 +117,15 @@ class Referee:
         if not action.get_isrow() and action.get_index() not in state.get_board().get_moveable_columns():
             raise ValueError(f'{action.get_index()} not movable col')
         if action.does_undo(state.get_last_action()):
+            print(state.get_last_action())
+            print(action)
             raise ValueError(f'Action undoes last action.')
 
         state_copy = copy.deepcopy(state)
         state_copy.rotate_extra_tile(action.get_degree())
         state_copy.shift(action.get_index(), action.get_direction(), action.get_isrow())
         if not state_copy.active_can_reach_tile(action.get_coordinate()):
-            raise ValueError(f'Action undoes last action.')
+            raise ValueError(f'Player cannot reach tile {action.get_coordinate()}')
 
     def __setup_players(self, player_apis, board, extra_tile, players, goal_positions):
         for i in range(len(player_apis)):
@@ -138,16 +137,11 @@ class Referee:
             # TODO: build get_player_game_state for this line in state
             active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(),
                                                        state.get_active_player(), state.get_last_action())
-
             # TODO: timeout errors
             move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
-
-            # try:
-            #     pass
-            # except Exception as e:
-            #     print(e)
-            #     state.kick_active()
-            #     continue
+            if move.is_pass():
+                state.do_pass()
+                continue
 
             try:
                 self.__valid_move(state, move)
@@ -160,6 +154,7 @@ class Referee:
             state.rotate_extra_tile(move.get_degree())
             state.shift(move.get_index(), move.get_direction(), move.get_isrow())
             state.move_active_player(move.get_coordinate())
+            state.set_last_action(move)
         winners = state.get_winners()
         return winners, kicked_players
 

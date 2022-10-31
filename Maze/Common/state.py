@@ -131,7 +131,7 @@ class State:
             self.players = []
 
     def get_last_action(self):
-        return self.last_action
+        return copy.deepcopy(self.last_action)
 
     def do_pass(self):
         """
@@ -147,7 +147,7 @@ class State:
         """
         self.next_players.append(self.players[0])
         self.players.remove(self.players[0])
-        if len(self.players) == 1:
+        if len(self.players) == 0:
             self.players = self.next_players
             self.next_players = []
             self.increment_round()
@@ -175,11 +175,11 @@ class State:
         """
         if self.__rounds >= max_rounds:
             return True
-        if len(self.players) == 0:
+        if len(self.players) + len(self.next_players) == 0:
             return True
-        if self.__round_passes == len(self.players):
+        if self.__round_passes == len(self.players) + len(self.next_players):
             return True
-        for player in self.players:
+        for player in self.players + self.next_players:
             if player.has_reached_goal() and self.player_on_home_tile(player):
                 return True
 
@@ -192,14 +192,14 @@ class State:
         :return: <list(Player)>
         """
 
-        for player in self.players:
+        for player in self.players + self.next_players:
             if player.has_reached_goal() and self.player_on_home_tile(player):
                 return [player]
         
         winners = []
         min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()),
                                                                        len(self.get_board().get_board()[0])))
-        for player in self.players:
+        for player in self.players + self.next_players:
             goal_coords = self.get_board().find_tile_coordinate_by_tile(player.get_home())
             player_distance = player.get_coordinate().get_euclid_distance(goal_coords)
             if player.has_reached_goal() and player_distance < min_distance:
@@ -213,7 +213,7 @@ class State:
         winners = []
         min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()),
                                                                        len(self.get_board().get_board()[0])))
-        for player in self.players:
+        for player in self.players + self.next_players:
             goal_coords = self.get_board().find_tile_coordinate_by_tile(player.get_goal())
             player_distance = player.get_coordinate().get_euclid_distance(goal_coords)
             if player_distance < min_distance:
@@ -256,6 +256,8 @@ class State:
                 new_x = int((player.get_coordinate().getX() + direction) % len(self.board.get_board()))
                 player.set_coordinate(Coordinate(new_x, player.get_coordinate().getY()))
         
-        #TODO: INCOMPLETE 
-        self.last_action = Move(0, direction, index, is_row, Coordinate(0,0))
+        # TODO: INCOMPLETE
+
+    def set_last_action(self, action):
+        self.last_action = action
 

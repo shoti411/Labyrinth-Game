@@ -210,7 +210,7 @@ class AbstractStrategy(Strategy):
 
         for direction in self.DIRECTIONS:
             #TODO INCOMPLETE
-            if not Move(0, index, direction, isrow, Coordinate(0,0)).does_undo(state.get_last_action()):
+            if not Move(0, direction, index, isrow, Coordinate(0,0)).does_undo(state.get_last_action()):
                 degree = self.check_degrees(coordinate, state, index, direction, isrow)
                 if degree != -1:
                     return degree, direction
@@ -290,7 +290,7 @@ class AbstractStrategy(Strategy):
         reachable = state.get_board().get_reachable_tiles(state.get_player().get_coordinate())
         while not enumerated_tiles.empty():
             _, coordinate = enumerated_tiles.get()
-            if coordinate in reachable:
+            if coordinate in reachable and coordinate != state.get_player().get_coordinate():
                 return coordinate
         return -1
     

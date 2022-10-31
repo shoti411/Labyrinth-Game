@@ -27,7 +27,6 @@ class Riemann(AbstractStrategy):
         goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
         enumerated_tiles.put((-1, goal_position))
 
-
         for r in range(len(board.get_board())):
             row_length = len(board.get_board()[r])
             for c in range(row_length):

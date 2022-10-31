@@ -64,7 +64,7 @@ def handle_json(json_objects):
         player_api = PlayerAPI(json_objects[0][i][0], get_strategy(json_objects[0][i][1]))
         players[i].set_player_api(player_api)
     last_action = json_to_last_action(json_objects[1]['last'])
-    s = State(players, board, spare_tile, last_action)
+    s = State(players, board, extra_tile=spare_tile, last_action=False)
     return s
 
 def position_to_object(x, y):
@@ -94,7 +94,7 @@ def json_to_players(json_object, board):
                               Coordinate(home['row#'], home['column#'])))
     return players
 
-def json_to_last_action(json_object) :
+def json_to_last_action(json_object):
     if not json_object:
         return Pass()
     index = json_object[0]
