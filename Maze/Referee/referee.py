@@ -89,7 +89,7 @@ class Referee:
             players.append((Player(avatar='', home=home_tile, goal=goal_tile, position=home_posn, player_api=player_apis[player]), goal_posn))
         return players
 
-    def __valid_move(state, action):
+    def __valid_move(self, state, action):
         """
         Checks if a Action is valid. 
 
@@ -107,27 +107,26 @@ class Referee:
         """
 
         if action.is_pass():
-            return True
+            return
         
         if action.get_degree() % 90 != 0:
-            return False
+            raise ValueError(f'{action.get_degree()} not multiple of 90')
         if action.get_direction() not in [-1, 1]:
-            return False
+            raise ValueError(f'Invalid direction: {action.get_direction()}')
         if not isinstance(action.get_isrow(), bool):
-            return False
+            raise ValueError(f'{action.get_isrow()} not a boolean.')
         if action.get_isrow() and action.get_index() not in state.get_board().get_moveable_rows():
-            return False
+            raise ValueError(f'{action.get_index()} not movable row')
         if not action.get_isrow() and action.get_index() not in state.get_board().get_moveable_columns():
-            return False
+            raise ValueError(f'{action.get_index()} not movable col')
         if action.does_undo(state.get_last_action()):
-            return False
+            raise ValueError(f'Action undoes last action.')
 
         state_copy = copy.deepcopy(state)
         state_copy.rotate_extra_tile(action.get_degree())
         state_copy.shift(action.get_index(), action.get_direction(), action.get_isrow())
         if not state_copy.active_can_reach_tile(action.get_coordinate()):
-            return False
-        return True
+            raise ValueError(f'Action undoes last action.')
 
     def __setup_players(self, player_apis, board, extra_tile, players, goal_positions):
         for i in range(len(player_apis)):
@@ -136,14 +135,28 @@ class Referee:
     def __run_game(self, state):
         kicked_players = []
         while not state.is_game_over(self.max_rounds):
-            active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(), state.get_active_player(), state.get_last_action())
+            # TODO: build get_player_game_state for this line in state
+            active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(),
+                                                       state.get_active_player(), state.get_last_action())
+
+            # TODO: timeout errors
             move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
+
+            # try:
+            #     pass
+            # except Exception as e:
+            #     print(e)
+            #     state.kick_active()
+            #     continue
+
             try:
-                self.__valid_move(move)
+                self.__valid_move(state, move)
             except ValueError as e:
+                print(e)
                 kicked_players.append(state.get_active_player())
                 state.kick_active()
                 continue
+
             state.rotate_extra_tile(move.get_degree())
             state.shift(move.get_index(), move.get_direction(), move.get_isrow())
             state.move_active_player(move.get_coordinate())

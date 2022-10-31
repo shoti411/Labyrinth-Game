@@ -5,15 +5,27 @@ sys.path.append(os.path.join(os.path.dirname(__file__),"../Common"))
 from board import Board
 from tile import Tile
 from riemann import Riemann
+from euclid import Euclid
+
 
 
 class PlayerAPI:
 
-    def __init__(self, name):
+    # TODO: ENUM for strategies, not passing strings
+    def __init__(self, name, strategy='Riemann'):
         self.name = name
         self.strategy = Riemann()
         self.game_state = False
         self.goal_position = False
+
+    def get_strategy(self, strategy):
+        if strategy == 'Riemann':
+            return Riemann()
+        elif strategy == 'Euclid':
+            return Euclid()
+
+        raise ValueError(f'{strategy} does not exist')
+
 
     def name(self):
         return self.name
@@ -34,7 +46,6 @@ class PlayerAPI:
     def take_turn(self, game_state):
         self.game_state = game_state
         return self.strategy.evaluate_move(self.game_state)
-
 
     def won(self, w):
         return w

@@ -56,13 +56,16 @@ class AbstractStrategy(Strategy):
 
         board_copy = copy.deepcopy(state.get_board())
         extra_tile_copy = copy.deepcopy(state.get_extra_tile())
-        
+
         extra_tile_copy.rotate(degree)
         if is_row:
-            board_copy.shift_row(index, direction, extra_tile_copy)
+            extra_tile_copy = board_copy.shift_row(index, direction, extra_tile_copy)
         else:
-            board_copy.shift_column(index, direction, extra_tile_copy)
+            extra_tile_copy = board_copy.shift_column(index, direction, extra_tile_copy)
 
+        player = state.get_player()
+        player.set_coordinate(self.update_position(player.get_coordinate(), index, direction, is_row, board_copy))
+        state = PlayerGameState(board_copy, extra_tile_copy, player, state.get_last_action())
         coordinate = self.move(state)
         return Move(degree, direction, index, is_row, coordinate)
 
@@ -88,7 +91,6 @@ class AbstractStrategy(Strategy):
         if enumerated_tiles.empty():
             return -1
         return self.check_slide_insert(enumerated_tiles, state)
-
 
     def move(self, state):
         """

@@ -5,6 +5,11 @@ from player_state import Player
 import json
 import random
 from coordinate import Coordinate
+import string
+
+
+strategies = ['Riemann', 'Euclid']
+
 
 def board_to_json(board):
     assert isinstance(board, Board)
@@ -26,7 +31,7 @@ def tile_to_json(tile):
     return {'tilekey': tile.get_path_code(), '1-image': gems[0].value, '2-image': gems[1].value}
 
 
-def player_to_json(player, board):
+def player_to_json(player, board, referee_player=False):
     assert isinstance(player, Player)
     player_data = {}
     coords = player.get_coordinate()
@@ -36,18 +41,20 @@ def player_to_json(player, board):
 
     home_coords = board.find_tile_coordinate_by_tile(player.get_home())
     player_data['home'] = {'row#': home_coords.getX(), 'column#': home_coords.getY()}
-    # TODO: make colors randomized and unique
-    player_data['color'] = 'blue'
+    if referee_player:
+        goal_coords = board.find_tile_coordinate_by_tile(player.get_goal())
+        player_data['goto'] = {'row#': goal_coords.getX(), 'column#': goal_coords.getY()}
+    player_data['color'] = "%06x" % random.randint(0, 0xFFFFFF)
     return player_data
 
 
-def state_to_json(state):
+def state_to_json(state, referee_state=False):
     assert isinstance(state, State)
     # TODO: randomize last move?
     state_json = {
         'board': board_to_json(state.get_board()),
         'spare': tile_to_json(state.get_extra_tile()),
-        'plmt': [player_to_json(p, state.get_board()) for p in state.get_players()],
+        'plmt': [player_to_json(p, state.get_board(), referee_player=referee_state) for p in state.get_players()],
         'last': None
     }
     return state_json
@@ -62,7 +69,24 @@ def format_xstate_test_case(s, index, direction, degree):
     return json_string
 
 
-def format_xchoice_test_case(s, strategy, x, y):
+def format_coordinate(x, y):
+    return {"row#": x, "column#": y}
+
+
+def random_player_spec():
+    name_characters = string.ascii_letters + string.digits
+    name = "".join(random.choices(name_characters, k=random.randint(1, 20)))
+    return [name, random.choice(strategies)]
+
+
+def random_player_spec_json(amount):
+    player_spec = []
+    for i in range(amount):
+        player_spec.append(random_player_spec())
+    return json.dumps(player_spec)
+
+
+def format_xchoice_test_case(s, strategy, x, y, referee_state=False):
     json_string = ''
     json_string += json.dumps(strategy) + "\n"
     json_string += json.dumps(state_to_json(s), ensure_ascii=False) + '\n'
@@ -70,11 +94,16 @@ def format_xchoice_test_case(s, strategy, x, y):
     return json_string
 
 
-def format_coordinate(x, y):
-    return {"row#": x, "column#": y}
+def format_xgame_test_case(s):
+    assert isinstance(s, State)
+    json_string = ''
+    num_players = len(s.get_players())
+    json_string += random_player_spec_json(num_players) + '\n'
+    json_string += json.dumps(state_to_json(s, True)) + '\n'
+    return json_string
 
 
-def make_tests(amount, fp):
+def make_tests(amount, num_players=4, fp=None):
     for i in range(amount):
         test_board = [[Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
@@ -84,18 +113,22 @@ def make_tests(amount, fp):
                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()]]
         b = Board(board=test_board)
-        p = Player('', b.get_board()[random.choice(range(7))][random.choice(range(7))],
-                   b.get_board()[random.choice(range(7))][random.choice(range(7))],
-                   Coordinate(random.choice(range(7)), random.choice(range(7))))
-        s = State([p], b, Tile())
-        test_case = format_xchoice_test_case(s,
-                                             random.choice(["Euclid", "Riemann"]),
-                                             random.randint(0, len(test_board)),
-                                             random.randint(0, len(test_board)))
-        file = open(f'{fp}/{i}-in.json', 'w', encoding='utf-8')
-        file.write(test_case)
-        file.close()
+        players = []
+        selectable_indexes = [1, 3, 5]
+        for player in range(num_players):
+            p = Player('', b.get_board()[random.choice(selectable_indexes)][random.choice(selectable_indexes)],
+                       b.get_board()[random.choice(selectable_indexes)][random.choice(selectable_indexes)],
+                       Coordinate(random.choice(range(7)), random.choice(range(7))))
+            players.append(p)
+        s = State(players, b, Tile())
+        test_case = format_xgame_test_case(s)
+
+        if fp is not None:
+            file = open(f'{fp}/{i}-in.json', 'w', encoding='utf-8')
+            file.write(test_case)
+            file.close()
+        else:
+            print(test_case)
 
 
-
-make_tests(1, './Tests')
+make_tests(3, fp='./Tests')

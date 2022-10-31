@@ -1,6 +1,8 @@
 from gems import Gem
 from tile import Tile
 from coordinate import Coordinate
+import sys
+import os
 
 
 class Player:
@@ -53,6 +55,10 @@ class Player:
         if not self.__player_api:
             raise NotImplemented("This Player does not have a player api")
         return self.__player_api
+
+    def set_player_api(self, player_api):
+        # assert isinstance(player_api, PlayerAPI), 'Must be instance of PlayerAPI'
+        self.__player_api = player_api
 
     def set_coordinate(self, coordinate):
         self.__coordinate = coordinate

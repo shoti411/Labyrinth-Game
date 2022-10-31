@@ -61,10 +61,10 @@ class State:
         return copy.deepcopy(self.board)
 
     def get_round(self):
-        return self.__round
+        return self.__rounds
     
     def increment_round(self):
-        self.__round += 1
+        self.__rounds += 1
         self.__round_passes = 0
 
     def get_round_passes(self):
@@ -131,7 +131,7 @@ class State:
             self.players = []
 
     def get_last_action(self):
-        return self.last_action()
+        return self.last_action
 
     def do_pass(self):
         """
@@ -146,6 +146,7 @@ class State:
         Changes the active player to the next player.
         """
         self.next_players.append(self.players[0])
+        self.players.remove(self.players[0])
         if len(self.players) == 1:
             self.players = self.next_players
             self.next_players = []
