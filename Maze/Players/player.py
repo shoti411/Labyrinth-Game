@@ -14,7 +14,7 @@ class PlayerAPI:
     # TODO: ENUM for strategies, not passing strings
     def __init__(self, name, strategy='Riemann'):
         self.name = name
-        self.strategy = Riemann()
+        self.strategy = self.get_strategy(strategy)
         self.game_state = False
         self.goal_position = False
 

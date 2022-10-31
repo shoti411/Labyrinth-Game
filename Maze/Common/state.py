@@ -78,7 +78,12 @@ class State:
         :param: coordinate (Coordinate): Coordinate representing the location of the move.
         """
         if self.active_can_reach_tile(coordinate):
+            goal_coordinate = self.board.find_tile_coordinate_by_tile(self.players[0].get_goal())
+            if coordinate == goal_coordinate:
+                self.players[0].reached_goal()
+                self.players[0].set_goal(self.players[0].get_home())
             self.players[0].set_coordinate(coordinate)
+
         else:
             raise ValueError('The given move is unreachable or unvalid.')
 
@@ -260,4 +265,22 @@ class State:
 
     def set_last_action(self, action):
         self.last_action = action
+
+    def __str__(self):
+        return_str = '---------------------------\n'
+
+        return_str += f'{self.__rounds}\n'
+
+        for player in self.players + self.next_players:
+            goal_coord = self.board.find_tile_coordinate_by_tile(player.get_goal())
+            player_str = f'Player {player.get_avatar()} is at {player.get_coordinate()} and going to {goal_coord}, {player.has_reached_goal()}\n'
+            return_str += player_str
+
+        return_str += '\n\n'
+
+        return_str += str(self.board)
+
+        return_str += '\n----------------------------\n'
+        return return_str
+        
 

@@ -61,7 +61,7 @@ def handle_json(json_objects):
     spare_tile = Tile(json_objects[1]['spare']['tilekey'])
     players = json_to_players(json_objects[1], board)
     for i in range(len(players)):
-        player_api = PlayerAPI(json_objects[0][i][0], get_strategy(json_objects[0][i][1]))
+        player_api = PlayerAPI(json_objects[0][i][0], json_objects[0][i][1])
         players[i].set_player_api(player_api)
     last_action = json_to_last_action(json_objects[1]['last'])
     s = State(players, board, extra_tile=spare_tile, last_action=False)

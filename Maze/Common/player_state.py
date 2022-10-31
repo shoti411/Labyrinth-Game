@@ -33,7 +33,7 @@ class Player:
         if not isinstance(self.__home, type(Tile())):
             raise ValueError('Home must be of type Tile')
         if not isinstance(self.__goal, type(Tile())):
-            raise ValueError('Goal must be of type Gem')
+            raise ValueError('Goal must be of type Tile')
         if not(isinstance(self.__coordinate, Coordinate)):
             raise ValueError('coordinate must be an array of length 2 with integer values.')
         #if not(isinstance(self.__player_api, PlayerAPI)) and not(isinstance(self.__player_api, bool)):
@@ -47,6 +47,12 @@ class Player:
 
     def get_goal(self):
         return self.__goal
+
+    def set_goal(self, goal):
+        if not isinstance(goal, type(Tile())):
+            raise ValueError('Goal must be of type Tile')
+            
+        self.__goal = goal
 
     def get_coordinate(self):
         return self.__coordinate
