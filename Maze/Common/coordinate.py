@@ -8,10 +8,12 @@ class Coordinate:
     0, 0 represents the top-most left-most position.
     """
     
+
     def __init__(self, x, y):
         self.__check_coordinate(x, y)
         self.__x = x
         self.__y = y
+
 
     def __check_coordinate(self,x,y):
         if (not isinstance(x, int)) or (not isinstance(y, int)):
@@ -25,8 +27,10 @@ class Coordinate:
     def getX(self):
         return self.__x
 
+
     def getY(self):
         return self.__y
+
 
     def get_euclid_distance(self, coordinate):
         """
@@ -42,13 +46,16 @@ class Coordinate:
 
         if self.getX() == -1 or coordinate.getX() == -1:
             raise ValueError('Cannot get the distance from a Coordinate off the board.')
+
         return math.sqrt((self.getX()-coordinate.getX())**2 + (self.getY()-coordinate.getY())**2)
     
+
     def __eq__(self, other):
         if isinstance(other, Coordinate):
             return self.getX() == other.getX() and self.getY() == other.getY()
 
         return False
+
 
     def __lt__(self, other):
         if not isinstance(other, Coordinate):
@@ -59,6 +66,7 @@ class Coordinate:
         elif self.getY() < other.getY():
             return True
         return False
+
 
     def __str__(self):
         return f"({self.getX()},{self.getY()})"
