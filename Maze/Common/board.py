@@ -1,7 +1,8 @@
+import copy
+
 from tile import Tile
 from directions import Direction
 from coordinate import Coordinate
-import copy
 
 
 class Board:
@@ -12,6 +13,7 @@ class Board:
         Shifting columns and rows while inputting a given Tile.
         Checking reachable tiles from any given position.
     """
+
 
     def __init__(self, board):
         """
@@ -47,9 +49,19 @@ class Board:
         return copy.deepcopy(self.__board)
 
     def get_moveable_rows(self):
+        """
+        Returns a list of the indexs of moveable rows. Only even rows are moveable.
+
+        :return: (list<int>) 
+        """
         return list(range(len(self.__board)))[::2]
 
     def get_moveable_columns(self):
+        """
+        Returns a list of the indexs of moveable rows. Only even rows are moveable.
+
+        :return: (list<int>)
+        """
         return list(range(len(self.__board[0])))[::2]
 
     def find_tile_coordinate_by_tile(self, tile):
