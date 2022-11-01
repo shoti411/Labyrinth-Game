@@ -134,7 +134,7 @@ class Referee:
     def __run_game(self, state):
         kicked_players = []
         while not state.is_game_over(self.max_rounds):
-            print(state)
+            # print(state)
             # TODO: build get_player_game_state for this line in state
             active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(),
                                                        state.get_active_player(), state.get_last_action())

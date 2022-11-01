@@ -26,8 +26,7 @@ class PlayerAPI:
 
         raise ValueError(f'{strategy} does not exist')
 
-
-    def name(self):
+    def get_name(self):
         return self.name
 
     def propose_board(self, rows, columns):
