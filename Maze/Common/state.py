@@ -65,7 +65,6 @@ class State:
     
     def increment_round(self):
         self.__rounds += 1
-        self.__round_passes = 0
 
     def get_round_passes(self):
         self.__round_passes
@@ -87,6 +86,7 @@ class State:
         else:
             raise ValueError('The given move is unreachable or unvalid.')
 
+        self.__round_passes = 0
         self.next_player()
 
     def rotate_extra_tile(self, degrees):
