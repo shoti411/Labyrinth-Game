@@ -130,16 +130,10 @@ class Referee:
             raise ValueError(f'Player cannot reach tile {action.get_coordinate()}')
 
     def __run_game(self, state):
-        if not self.observer:
-            observer_status = True
-        else:
-            observer_status = self.observer.get_ready()
-            print(f"setting up observer status {observer_status}")
         while not state.is_game_over(self.max_rounds):
-            if observer_status:
+            if not self.observer or self.observer.get_ready():
                 state = self.__do_round(state)
-            if isinstance(self.observer, Observer):
-                print("HERERERERE")
+            if isinstance(self.observer, Observer) and self.observer.get_ready():
                 self.observer.draw(state)
 
         winners = state.get_winners()

@@ -25,11 +25,11 @@ default_board = Board([[Tile("┘"), Tile("┤"), Tile("┼"), Tile("│"), Tile
                        [Tile("┬"), Tile("└"), Tile("┌"), Tile("┤"), Tile("└"), Tile("┐"), Tile("┐")],
                        [Tile("┬"), Tile("┐"), Tile("─"), Tile("┐"), Tile("┘"), Tile("┤"), Tile("┘")]])
 
-def test_drawing():
+def drawing():
     players = [
         Player("",
                default_board.get_board()[0][0],
-               default_board.get_board()[5][5], Coordinate(0, 0), player_api=PlayerAPI(''), has_reached_goal=True),
+               default_board.get_board()[5][5], Coordinate(0, 0), player_api=PlayerAPI('')),
         Player("",
                default_board.get_board()[0][0],
                default_board.get_board()[5][5], Coordinate(5, 5), player_api=PlayerAPI('')),
@@ -45,4 +45,4 @@ def test_drawing():
     #assert winners[0] == players[1], "Player should have won game by win condition: reaching home"
 
 if __name__ == '__main__':
-    test_drawing() 
+    drawing() 
