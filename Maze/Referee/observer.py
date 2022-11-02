@@ -37,6 +37,16 @@ class Observer:
 
         self.ready = True
         self.window = tk.Tk()
+        im = Image.open(f'{str(os.path.dirname(os.path.abspath(__file__)))}\Images\{"0.png"}')
+        im = ImageTk.PhotoImage(im)
+        self.extra_tile = tk.Label(self.window, image=im, bd=0)
+        self.extra_tile.image = im
+        B = tk.Button(self.window, text="NEXT", command=self.next)
+        self.window.geometry(f'{200}x{200}')
+        self.extra_tile.pack()
+        B.pack()
+        self.window.mainloop()
+
 
     def next(self):
         self.ready = True
@@ -46,25 +56,20 @@ class Observer:
 
     def draw(self, state):
         self.ready = False
-        
+
         tile_dimensions = (100, 100)
         w, h = (tile_dimensions[0]*2, tile_dimensions[1]*2)
-
-        B = tk.Button(self.window, text ="NEXT", command = self.next)
         
         extra_tile = state.get_extra_tile()
         fp = self.TILE_CODE_FP_MAPPING[extra_tile.get_path_code()]
-        im = Image.open(f'../Referee/Images/{fp}')
+        im = Image.open(f'{str(os.path.dirname(os.path.abspath(__file__)))}\Images\{fp}')
         im = ImageTk.PhotoImage(im)
-        panel = tk.Label(self.window, image=im, bd=0)
-        panel.image = im
+        # self.extra_tile = tk.Label(self.window, image=im, bd=0)
+        self.extra_tile.configure(image=im)
+        self.extra_tile.image = im
         #panel.grid(row=0, column=0)
 
-
-        self.window.geometry(f'{w}x{h}')
-        B.pack()
-        panel.pack()
-        self.window.mainloop()
+        # self.extra_tile.pack()
 
     def save(self, state, file_path):
         ...
