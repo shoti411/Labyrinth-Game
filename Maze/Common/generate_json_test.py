@@ -129,6 +129,8 @@ def make_tests(amount, num_players=4, fp=None):
             file.close()
         else:
             print(test_case)
-
+"""
+CONSTRAINT Keep in mind that the instructors' test harness framework forces the tiles to live up to the specification of The Game: Labyrinth: the gems on each tile are distinct and all pairs of tiles display distinct sets of gems.
+"""
 
 make_tests(3, fp='./Tests')

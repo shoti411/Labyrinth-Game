@@ -123,9 +123,13 @@ if __name__ == "__main__":
     for i in range(3):
         file_name = f'./Tests/{i}-in.json'
         f = open(file_name, 'r', encoding='utf-8')
-
+        print(xgame(f.read()))
+        continue
         f_out = open(f'./Tests/{i}-out.json', 'w')
         f_out.write(xgame(f.read()))
         f_out.close()
         f.close()
 
+"""
+CONSTRAINT Keep in mind that the instructors' test harness framework forces the tiles to live up to the specification of The Game: Labyrinth: the gems on each tile are distinct and all pairs of tiles display distinct sets of gems.
+"""
