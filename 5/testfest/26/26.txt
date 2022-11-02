@@ -1,0 +1,13 @@
+(testing /course/cs4500f22/ta/github/crookt-Dsap5131/5/xchoice)
+(testing /course/cs4500f22/ta/github/5/26/Tests/4-in.json /course/cs4500f22/ta/github/5/26/Tests/4-out.json)
+Traceback (most recent call last):
+  File "../Maze/Common/xchoice.py", line 137, in <module>
+    print(xchoice(sys.stdin.read()))
+  File "../Maze/Common/xchoice.py", line 18, in xchoice
+    turn_data = handle_json(json_objects)
+  File "../Maze/Common/xchoice.py", line 58, in handle_json
+    last_action = json_to_last_action(json_objects[1]['last'])
+KeyError: 'last'
+((/course/cs4500f22/ta/github/5/26/Tests/4-in.json /course/cs4500f22/ta/github/5/26/Tests/4-out.json))
+((passed 1) (total 1) (partial-score 1))
+
