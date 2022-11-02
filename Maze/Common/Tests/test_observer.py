@@ -16,14 +16,35 @@ from action import Pass
 from player import PlayerAPI
 from referee import Referee
 from observer import Observer
+from threading import *
 
-default_board = Board([[Tile("┘"), Tile("┤"), Tile("┼"), Tile("│"), Tile("┬"), Tile("┐"), Tile("┬")],
-                       [Tile("─"), Tile("│"), Tile("│"), Tile("├"), Tile("┌"), Tile("├"), Tile("┌")],
-                       [Tile("┬"), Tile("│"), Tile("┬"), Tile("┘"), Tile("┌"), Tile("┐"), Tile("┐")],
-                       [Tile("┴"), Tile("┤"), Tile("│"), Tile("┐"), Tile("┌"), Tile("┤"), Tile("├")],
-                       [Tile("┌"), Tile("┬"), Tile("┘"), Tile("┐"), Tile("┤"), Tile("┘"), Tile("┤")],
-                       [Tile("┬"), Tile("└"), Tile("┌"), Tile("┤"), Tile("└"), Tile("┐"), Tile("┐")],
-                       [Tile("┬"), Tile("┐"), Tile("─"), Tile("┐"), Tile("┘"), Tile("┤"), Tile("┘")]])
+default_board = Board([[Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
+                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
+                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
+                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
+                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
+                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
+                       [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()]])
+
+observer = Observer()
+ref = Referee(observer=observer)
+
+def thread():
+    players = [
+        Player("",
+               default_board.get_board()[0][0],
+               default_board.get_board()[5][5], Coordinate(0, 0), player_api=PlayerAPI('')),
+        Player("",
+               default_board.get_board()[0][0],
+               default_board.get_board()[5][5], Coordinate(5, 5), player_api=PlayerAPI('')),
+        Player("",
+               default_board.get_board()[0][0],
+               default_board.get_board()[5][5], Coordinate(2, 4), player_api=PlayerAPI(''))
+    ]
+
+    s = State(players, default_board)
+    ref.pickup_from_state(s)
+
 
 def drawing():
     players = [
@@ -39,9 +60,7 @@ def drawing():
     ]
 
     s = State(players, default_board)
-    observer = Observer()
-    ref = Referee(observer=observer)
-    winners, kicked = ref.pickup_from_state(s)
+    ref.run_with_observer(s)
     #assert winners[0] == players[1], "Player should have won game by win condition: reaching home"
 
 if __name__ == '__main__':

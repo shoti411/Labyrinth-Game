@@ -13,6 +13,8 @@ import random
 import copy
 import itertools
 from observer import Observer
+from threading import *
+import time
 
 class Referee:
 
@@ -28,6 +30,10 @@ class Referee:
         if not isinstance(state, State):
             raise ValueError('state must be an instance of class State')
         return self.__run_game(state)
+
+    def run_with_observer(self, state):
+        Thread(target=self.__run_game, args=[state]).start()
+        self.observer.mainloop()
 
     def run(self, players):
         """ Starts a new Labyrinth game """
@@ -135,7 +141,6 @@ class Referee:
                 state = self.__do_round(state)
             if isinstance(self.observer, Observer) and self.observer.get_ready():
                 self.observer.draw(state)
-
         winners = state.get_winners()
         return winners, self.kicked_players
 
@@ -161,7 +166,6 @@ class Referee:
 
         return state
 
-        
 
     def __do_move(self, move, state):
         """ Performs a give move on the given state """

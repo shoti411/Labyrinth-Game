@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 import itertools
 
-def generate_background(dimensions=(100, 100), color='white'):
+def generate_background(dimensions=(100, 100), color='grey'):
     im = Image.new(mode='RGB', size=dimensions, color=color)
     return im
 
@@ -16,15 +16,16 @@ for tile in all_tiles:
     im = generate_background()
     w, h = im.size
 
+
     draw = ImageDraw.Draw(im)
 
     if 'UP' in tile:
-        draw.line((w / 2, 0, w / 2, h / 2), fill='black', width=5)
+        draw.line((w / 2, 0, w / 2, h / 2), fill='white', width=5)
     if 'LEFT' in tile:
-        draw.line((0, h / 2, w / 2, h / 2), fill='black', width=5)
+        draw.line((0, h / 2, w / 2, h / 2), fill='white', width=5)
     if 'RIGHT' in tile:
-        draw.line((w, h / 2, w / 2, h / 2), fill='black', width=5)
+        draw.line((w, h / 2, w / 2, h / 2), fill='white', width=5)
     if 'DOWN' in tile:
-        draw.line((w / 2, h, w / 2, h / 2), fill='black', width=5)
+        draw.line((w / 2, h, w / 2, h / 2), fill='white', width=5)
     im.save(f'{i}.png')
     i += 1
