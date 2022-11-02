@@ -64,6 +64,7 @@ def test_win_condition2():
     s.do_pass()
     ref = Referee()
     winners, kicked = ref.pickup_from_state(s)
+    players = s.get_players()
     assert winners == [players[0], players[1]], 'Error testing if multiple players win by distance to home'
 
 def test_win_condition3():
@@ -85,6 +86,7 @@ def test_win_condition3():
     s.do_pass()
     ref = Referee()
     winners, kicked = ref.pickup_from_state(s)
+    players = s.get_players()
     assert winners == [players[1]], 'Error testing if multiple players win by distance to home'
 
 
@@ -107,6 +109,7 @@ def test_win_condition4():
     s.do_pass()
     ref = Referee()
     winners, kicked = ref.pickup_from_state(s)
+    players = s.get_players()
     assert winners == [players[1], players[2]], 'Error testing if multiple players win by distance to home'
 
 
@@ -130,6 +133,7 @@ def test_win_condition5():
     s.do_pass()
     ref = Referee()
     winners, kicked = ref.pickup_from_state(s)
+    players = s.get_players()
     assert winners == [players[1]], 'Error testing if multiple players win by distance to home'
 
 

@@ -52,7 +52,7 @@ class State:
             raise ValueError('Players must be of type Player.')
 
     def get_players(self):
-        return self.players
+        return self.players + self.next_players
 
     def get_extra_tile(self):
         return self.extra_tile

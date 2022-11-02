@@ -136,7 +136,7 @@ def test_shift4():
 def test_move1():
     s = State(players=players, board=board, extra_tile=extra_tile)
     s.move_active_player(Coordinate(0,2))
-    assert s.get_players()[0].get_coordinate() == Coordinate(0,2), 'Move did not work'
+    assert s.get_players()[1].get_coordinate() == Coordinate(0,2), 'Move did not work'
 
 def test_move2():
     s = State(players=players, board=board, extra_tile=extra_tile)

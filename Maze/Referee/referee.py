@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__),"../Common"))
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Common"))
 
 from player_game_state import PlayerGameState
 from state import State
@@ -13,71 +14,61 @@ import copy
 import itertools
 
 
-
 class Referee:
 
     def __init__(self, min_row=7, min_col=7, max_rounds=1000):
         self.min_rows = min_row
         self.min_cols = min_col
         self.max_rounds = max_rounds
-    """
-    TODO: create slide, insert classes for lastAction and Move
-    
-
-    TODO: run 1 game to completion
-        - return winning players and those who misbehave
-
-
-    Two different teams may produce the player mechanism and the referee. Indeed, the plan calls for players from
-    people that nobody knows. It is therefore imperative to consider failure modes and to have the referee react to
-    failures in players.
-        - When such “foreign” players misbehave, the referee immediately stops interacting with them
-            so that they don’t bring down the system.
-        #TODO: define misbehavior
-
-    State what kind of abnormal interactions that referee takes care of now and what kind are left to the project
-    phase that adds in remote communication.
-
-    """
 
     def pickup_from_state(self, state):
+        """ Continues an existing Labyrinth game """
         if not isinstance(state, State):
             raise ValueError('state must be an instance of class State')
         return self.__run_game(state)
 
     def run(self, players):
-        starting_players = copy.deepcopy(players)
-        board = self.__initialize_board(players)
-        if len(players) == 0:
-            return [], starting_players
+        """ Starts a new Labyrinth game """
+        board, kicked_players = self.__initialize_board(players)
+
         extra_tile = Tile()
-        player_states, goal_positions = self.__initialize_players(board, len(players), players)
+        player_states, goal_positions = self.__initialize_players(board, players)
         self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
-        return self.__run_game(state)
+        return self.__run_game(state, kicked_players)
 
     def __initialize_board(self, players):
+        """
+        Asks players to propose boards, selects a random (acceptable) board.
+        Kicks players with invalid boards.
+        """
+
         proposed_boards = []
         kicked_players = []
+
         for player in players:
             try:
                 proposed_board = Board(player.proposeBoard(self.min_rows, self.min_cols))
                 proposed_boards.append(proposed_board)
-            except ValueError:
+            except Exception:
                 kicked_players.append(player)
-                continue
+
         [players.remove(x) for x in kicked_players]
         game_board = random.choice(proposed_boards)
-        return game_board
+        return game_board, kicked_players
 
-    def __initialize_players(self, board, num_players, player_apis):
+    def __initialize_players(self, board, player_apis):
+        """ Creates Player objects for all the PlayerAPIs, aka Referee's knowledge of the player. """
         players = []
         board_length = len(board)
+
         goal_positions = list(itertools.product(range(board_length, step=2), range(board_length, step=2)))
         valid_goal_tiles = []
         for (x, y) in goal_positions:
-            valid_goal_tiles.append(Coordinate(x,y))
-        for player in range(num_players):
+            valid_goal_tiles.append(Coordinate(x, y))
+
+        goals = []
+        for player in range(len(player_apis)):
             home_posn = random.choice(valid_goal_tiles)
             valid_goal_tiles.remove(home_posn)
             home_tile = board[home_posn.getX()][home_posn.getY()]
@@ -86,8 +77,20 @@ class Referee:
             valid_goal_tiles.remove(goal_posn)
             goal_tile = board[goal_posn.getX()][goal_posn.getY()]
 
-            players.append((Player(avatar='', home=home_tile, goal=goal_tile, position=home_posn, player_api=player_apis[player]), goal_posn))
-        return players
+            players.append((Player(avatar=player_apis[player].get_name(),
+                                   home=home_tile,
+                                   goal=goal_tile,
+                                   position=home_posn,
+                                   player_api=player_apis[player])))
+
+            goals.append(goal_posn)
+
+        return players, goals
+
+    def __setup_players(self, player_apis, board, extra_tile, players, goal_positions):
+        """ Calls setup in each player, giving them the initial state. """
+        for i in range(len(player_apis)):
+            player_apis[i].setup(PlayerGameState(board, extra_tile, players[i], False), goal_position=goal_positions[i])
 
     def __valid_move(self, state, action):
         """
@@ -117,8 +120,6 @@ class Referee:
         if not action.get_isrow() and action.get_index() not in state.get_board().get_moveable_columns():
             raise ValueError(f'{action.get_index()} not movable col')
         if action.does_undo(state.get_last_action()):
-            print(state.get_last_action())
-            print(action)
             raise ValueError(f'Action undoes last action.')
 
         state_copy = copy.deepcopy(state)
@@ -127,35 +128,32 @@ class Referee:
         if not state_copy.active_can_reach_tile(action.get_coordinate()):
             raise ValueError(f'Player cannot reach tile {action.get_coordinate()}')
 
-    def __setup_players(self, player_apis, board, extra_tile, players, goal_positions):
-        for i in range(len(player_apis)):
-            player_apis[i].setup((board, extra_tile, players[i]), goal_position=goal_positions[i])
-
-    def __run_game(self, state):
-        kicked_players = []
+    def __run_game(self, state, kicked_players=[]):
         while not state.is_game_over(self.max_rounds):
-            # print(state)
+
             # TODO: build get_player_game_state for this line in state
             active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(),
                                                        state.get_active_player(), state.get_last_action())
+
             # TODO: timeout errors
-            move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
-            if move.is_pass():
-                state.do_pass()
-                continue
 
             try:
+                move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
                 self.__valid_move(state, move)
-            except ValueError as e:
-                print(e)
+
+            except Exception as e:
                 kicked_players.append(state.get_active_player())
                 state.kick_active()
                 continue
 
-            state.rotate_extra_tile(move.get_degree())
-            state.shift(move.get_index(), move.get_direction(), move.get_isrow())
-            state.move_active_player(move.get_coordinate())
-            state.set_last_action(move)
+            self.__do_move(move, state)
+
         winners = state.get_winners()
         return winners, kicked_players
 
+    def __do_move(self, move, state):
+        """ Performs a give move on the given state """
+        state.rotate_extra_tile(move.get_degree())
+        state.shift(move.get_index(), move.get_direction(), move.get_isrow())
+        state.move_active_player(move.get_coordinate())
+        state.set_last_action(move)
