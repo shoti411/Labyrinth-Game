@@ -12,14 +12,16 @@ from coordinate import Coordinate
 import random
 import copy
 import itertools
-
+from observer import Observer
 
 class Referee:
 
-    def __init__(self, min_row=7, min_col=7, max_rounds=1000):
+    def __init__(self, min_row=7, min_col=7, max_rounds=1000, observer=False):
         self.min_rows = min_row
         self.min_cols = min_col
         self.max_rounds = max_rounds
+        self.kicked_players = []
+        self.observer = observer
 
     def pickup_from_state(self, state):
         """ Continues an existing Labyrinth game """
@@ -29,13 +31,13 @@ class Referee:
 
     def run(self, players):
         """ Starts a new Labyrinth game """
-        board, kicked_players = self.__initialize_board(players)
+        board = self.__initialize_board(players)
 
         extra_tile = Tile()
         player_states, goal_positions = self.__initialize_players(board, players)
         self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
-        return self.__run_game(state, kicked_players)
+        return self.__run_game(state)
 
     def __initialize_board(self, players):
         """
@@ -44,18 +46,17 @@ class Referee:
         """
 
         proposed_boards = []
-        kicked_players = []
 
         for player in players:
             try:
                 proposed_board = Board(player.proposeBoard(self.min_rows, self.min_cols))
                 proposed_boards.append(proposed_board)
             except Exception:
-                kicked_players.append(player)
+                self.kicked_players.append(player)
 
-        [players.remove(x) for x in kicked_players]
+        [players.remove(x) for x in self.kicked_players]
         game_board = random.choice(proposed_boards)
-        return game_board, kicked_players
+        return game_board
 
     def __initialize_players(self, board, player_apis):
         """ Creates Player objects for all the PlayerAPIs, aka Referee's knowledge of the player. """
@@ -128,28 +129,45 @@ class Referee:
         if not state_copy.active_can_reach_tile(action.get_coordinate()):
             raise ValueError(f'Player cannot reach tile {action.get_coordinate()}')
 
-    def __run_game(self, state, kicked_players=[]):
+    def __run_game(self, state):
+        if not self.observer:
+            observer_status = True
+        else:
+            observer_status = self.observer.get_ready()
+            print(f"setting up observer status {observer_status}")
         while not state.is_game_over(self.max_rounds):
-
-            # TODO: build get_player_game_state for this line in state
-            active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(),
-                                                       state.get_active_player(), state.get_last_action())
-
-            # TODO: timeout errors
-
-            try:
-                move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
-                self.__valid_move(state, move)
-
-            except Exception as e:
-                kicked_players.append(state.get_active_player())
-                state.kick_active()
-                continue
-
-            self.__do_move(move, state)
+            if observer_status:
+                state = self.__do_round(state)
+            if isinstance(self.observer, Observer):
+                print("HERERERERE")
+                self.observer.draw(state)
 
         winners = state.get_winners()
-        return winners, kicked_players
+        return winners, self.kicked_players
+
+    def __do_round(self, state):
+        """
+        Precondition: This function assumes the game State is not over.
+        """
+
+        # TODO: build get_player_game_state for this line in state
+        active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(),
+                                                    state.get_active_player(), state.get_last_action())
+
+        # TODO: timeout errors
+
+        try:
+            move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
+            self.__valid_move(state, move)
+            self.__do_move(move, state)
+
+        except Exception as e:
+            self.kicked_players.append(state.get_active_player())
+            state.kick_active()
+
+        return state
+
+        
 
     def __do_move(self, move, state):
         """ Performs a give move on the given state """
