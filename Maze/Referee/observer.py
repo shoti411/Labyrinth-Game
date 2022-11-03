@@ -67,7 +67,7 @@ class Observer(tk.Tk):
     def __initialize_board(self, rows, cols):
         board = []
         board_frame = tk.Frame()
-        im = Image.open(f'{self.FILE_PATH}\Images\\blank.png')
+        im = Image.open(f'{self.FILE_PATH}/Images/blank.png')
         im = ImageTk.PhotoImage(im)
         for r in range(rows):
             board.append([])
