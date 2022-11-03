@@ -38,7 +38,7 @@ class Observer(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.geometry(f'{800}x{900}')
+        self.geometry(f'{1000}x{900}')
 
         self.ready = True
         self.state = False
