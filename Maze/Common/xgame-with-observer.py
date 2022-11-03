@@ -119,11 +119,10 @@ def json_to_last_action(json_object):
 
 
 if __name__ == "__main__":
-    #print(xgame(sys.stdin.read()))
+    xgame(sys.stdin.read())
+    """
     file_name = f'./Tests/1-in.json'
     f = open(file_name, 'r', encoding='utf-8')
     xgame(f.read())
+    """
 
-"""
-CONSTRAINT Keep in mind that the instructors' test harness framework forces the tiles to live up to the specification of The Game: Labyrinth: the gems on each tile are distinct and all pairs of tiles display distinct sets of gems.
-"""
