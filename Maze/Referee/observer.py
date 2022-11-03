@@ -108,7 +108,7 @@ class Observer(tk.Tk):
 
     def draw_tile(self, reference, tile, players_on_tile=[], home_tile_on_tile=False):
         fp = self.TILE_CODE_FP_MAPPING[tile.get_path_code()]
-        im = Image.open(f'{self.FILE_PATH}\Images\{fp}')
+        im = Image.open(f'{self.FILE_PATH}/Images/{fp}')
         draw = ImageDraw.Draw(im)
 
         for i in range(len(players_on_tile)):
@@ -116,7 +116,7 @@ class Observer(tk.Tk):
         if home_tile_on_tile:
             draw.rectangle((65, 70, 95, 95), fill=home_tile_on_tile.get_avatar(), outline=(0, 0, 0))
 
-        gems = [f'{self.FILE_PATH}\Images\gems\{gem.value}.png' for gem in tile.get_gems()]
+        gems = [f'{self.FILE_PATH}/Images/gems/{gem.value}.png' for gem in tile.get_gems()]
 
         gem0 = Image.open(gems[0])
         gem1 = Image.open(gems[1])
