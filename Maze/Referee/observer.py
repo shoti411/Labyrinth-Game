@@ -96,9 +96,10 @@ class Observer(tk.Tk):
     def draw(self, state, is_game_over=False):
         if is_game_over:
             self.next_button.configure(text='GAME OVER')
+            self.state_info.configure(text=state.game_over_string())
+        else:
+            self.state_info.configure(text=str(state))
         self.state = state
-
-        self.state_info.configure(text=str(state))
 
         self.ready = False
         extra_tile = state.get_extra_tile()
