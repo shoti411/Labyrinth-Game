@@ -59,7 +59,7 @@ class Observer(tk.Tk):
         self.save_button = tk.Button(info_frame, text="SAVE", command=self.save, bd=5)
         self.save_button.grid(row=0, column=2)
 
-        self.state_info = tk.Label(info_frame, text='', bd=20)
+        self.state_info = tk.Label(info_frame, text='', bd=20, font=('Consolas', 10))
         self.state_info.grid(row=0, column=3)
 
         info_frame.pack()
@@ -83,12 +83,15 @@ class Observer(tk.Tk):
         self.ready = True
 
     def save(self):
-        filename = fd.askopenfilename(
-            title='Open a file',
-            initialdir='/')
-        file = open(filename, 'w')
-        file.write(self.state_to_json())
-        file.close()
+        try:
+            filename = fd.askopenfilename(
+                title='Open a file',
+                initialdir='/')
+            file = open(filename, 'w')
+            file.write(self.state_to_json())
+            file.close()
+        except FileNotFoundError:
+            pass
 
     def get_ready(self):
         return self.ready

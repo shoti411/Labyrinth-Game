@@ -267,20 +267,20 @@ class State:
 
     def __str__(self):
         return_str = f'----- ROUND {self.__rounds + 1} ----- \n'
-
-        return_str += 'NAME'.center(20)
-        return_str += 'COLOR'.center(20)
-        return_str += 'COORD'.center(20)
-        return_str += 'GOAL'.center(20)
-        return_str += 'GOAL?'.center(20) + '\n'
+        w = 15
+        return_str += 'NAME'.center(w + 10)
+        return_str += 'COLOR'.center(w)
+        return_str += 'COORD'.center(w)
+        return_str += 'GOAL'.center(w)
+        return_str += 'GOAL?'.center(w) + '\n'
 
         for player in self.players + self.next_players:
             goal_coord = self.board.find_tile_coordinate_by_tile(player.get_goal())
-            player_str = f'{player.get_player_api().get_name()}'.center(25)
-            player_str += f'{player.get_avatar()}'.center(25)
-            player_str += f'{player.get_coordinate()}'.center(25)
-            player_str += f'{goal_coord}'.center(25)
-            player_str += f'{player.has_reached_goal()}'.center(25)
+            player_str = f'{player.get_player_api().get_name()}'.center(w + 10)
+            player_str += f'{player.get_avatar()}'.center(w)
+            player_str += f'{player.get_coordinate()}'.center(w)
+            player_str += f'{goal_coord}'.center(w)
+            player_str += f'{player.has_reached_goal()}'.center(w)
             return_str += player_str + '\n'
 
         return return_str

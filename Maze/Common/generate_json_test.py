@@ -67,9 +67,9 @@ def state_to_json(state, referee_state=False):
     # TODO: randomize last move?
     state_json = {
         'board': board_to_json(state.get_board()),
-        'spare': tile_to_json(state.get_extra_tile()),
+        'last': last_action_to_json(state),
         'plmt': [player_to_json(p, state.get_board(), referee_player=referee_state) for p in state.get_players()],
-        'last': last_action_to_json(state)
+        'spare': tile_to_json(state.get_extra_tile())
     }
     return state_json
 
