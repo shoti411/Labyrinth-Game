@@ -23,7 +23,7 @@ def xgame(in_stream):
     """
     json_objects = read_input(in_stream)
     turn_data = handle_json(json_objects)
-    run_game(turn_data)
+    return run_game(turn_data)
 
 
 def read_input(json_str):
@@ -46,7 +46,9 @@ def read_input(json_str):
 
 def run_game(turn_data):
     ref = Referee(observer=Observer())
-    ref.pickup_from_state(state=turn_data)
+    winners = ref.pickup_from_state(state=turn_data)
+    winner_names = [x.get_player_api().get_name() for x in winners]
+    return json.dumps(sorted(winner_names))
 
 def get_strategy(strategy_string):
     if strategy_string == 'Riemann':
@@ -119,10 +121,8 @@ def json_to_last_action(json_object):
 
 
 if __name__ == "__main__":
-    xgame(sys.stdin.read())
-    """
-    file_name = f'./Tests/1-in.json'
+#    print(xgame(sys.stdin.read()))
+    file_name = f'./Tests/0-in.json'
     f = open(file_name, 'r', encoding='utf-8')
-    xgame(f.read())
-    """
+    print(xgame(f.read()))
 

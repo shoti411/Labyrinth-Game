@@ -24,6 +24,7 @@ class Referee:
         self.max_rounds = max_rounds
         self.kicked_players = []
         self.observer = observer
+        self.game_quit = False
 
     def pickup_from_state(self, state):
         """ Continues an existing Labyrinth game """
@@ -47,8 +48,16 @@ class Referee:
         return self.__run_game(state)
 
     def __run_with_observer(self, state):
-        Thread(target=self.__run_game, args=[state]).start()
-        self.observer.mainloop()
+        try:
+            t = Thread(target=self.__run_game, args=[state])
+            t.start()
+            self.observer.mainloop()
+            t.join()
+        except SystemExit:
+            self.observer = False
+            self.game_quit = True
+            t.join()
+        return state.get_winners()
 
     def __initialize_board(self, players):
         """
@@ -145,7 +154,7 @@ class Referee:
         if isinstance(self.observer, Observer):
             self.observer.draw(state)
 
-        while not state.is_game_over(self.max_rounds):
+        while not state.is_game_over(self.max_rounds) and not self.game_quit:
             if not self.observer or self.observer.get_ready():
                 state = self.__do_round(state)
             if isinstance(self.observer, Observer) and self.observer.get_ready():

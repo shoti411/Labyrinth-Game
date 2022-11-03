@@ -135,10 +135,15 @@ def make_tests(amount, num_players=4, fp=None):
         b = Board(board=test_board)
         players = []
         selectable_indexes = [1, 3, 5]
+        valid_posns = list(itertools.combinations(selectable_indexes + selectable_indexes, 2))
         for player in range(num_players):
-            p = Player('', b.get_board()[random.choice(selectable_indexes)][random.choice(selectable_indexes)],
-                       b.get_board()[random.choice(selectable_indexes)][random.choice(selectable_indexes)],
-                       Coordinate(random.choice(range(7)), random.choice(range(7))))
+            home = random.choice(valid_posns)
+            valid_posns.remove(home)
+            goal = random.choice(valid_posns)
+            valid_posns.remove(goal)
+            p = Player('', b.get_board()[home[0]][home[1]],
+                       b.get_board()[goal[0]][goal[1]],
+                       Coordinate(home[0], home[1]))
             players.append(p)
         s = State(players, b, Tile())
         test_case = format_xgame_test_case(s)
@@ -149,5 +154,6 @@ def make_tests(amount, num_players=4, fp=None):
             file.close()
         else:
             print(test_case)
+
 
 make_tests(3, fp='./Tests')

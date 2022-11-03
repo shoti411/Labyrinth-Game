@@ -39,7 +39,7 @@ class Observer(tk.Tk):
     def __init__(self):
         super().__init__()
         self.geometry(f'{1000}x{900}')
-
+        self.protocol("WM_DELETE_WINDOW", self.close_window)
         self.ready = True
         self.state = False
 
@@ -93,9 +93,13 @@ class Observer(tk.Tk):
     def get_ready(self):
         return self.ready
 
+    def close_window(self):
+        self.destroy()
+        raise SystemExit('Observer closed early.')
+
     def draw(self, state, is_game_over=False):
         if is_game_over:
-            self.next_button.configure(text='GAME OVER')
+            self.next_button.configure(text='GAME OVER', command=self.destroy)
             self.state_info.configure(text=state.game_over_string())
         else:
             self.state_info.configure(text=str(state))
