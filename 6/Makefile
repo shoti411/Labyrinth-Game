@@ -1,5 +1,5 @@
 all: setup
 
 setup:
-	pip install pillow
+	pip3 install pillow
 
