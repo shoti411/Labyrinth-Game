@@ -44,7 +44,7 @@ class Observer(tk.Tk):
         self.state = False
 
         self.board = self.__initialize_board(rows=7, cols=7)
-        im = Image.open(f'{str(os.path.dirname(os.path.abspath(__file__)))}\Images\\blank.png')
+        im = Image.open(f'{self.FILE_PATH}/Images/blank.png')
         im = ImageTk.PhotoImage(im)
 
         info_frame = tk.Frame()
