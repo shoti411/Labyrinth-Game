@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 ../Maze/Common/xgames.py
+python3 ../Maze/Common/xgame.py
