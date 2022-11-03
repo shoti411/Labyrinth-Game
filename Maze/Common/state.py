@@ -260,13 +260,13 @@ class State:
                 new_x = int((player.get_coordinate().getX() + direction) % len(self.board.get_board()))
                 player.set_coordinate(Coordinate(new_x, player.get_coordinate().getY()))
         
-        # TODO: INCOMPLETE
+    # TODO: INCOMPLETE
 
     def set_last_action(self, action):
         self.last_action = action
 
     def __str__(self):
-        return_str = f'----- ROUND {self.__rounds} ----- \n'
+        return_str = f'----- ROUND {self.__rounds + 1} ----- \n'
 
         return_str += 'NAME'.center(20)
         return_str += 'COLOR'.center(20)
@@ -284,5 +284,11 @@ class State:
             return_str += player_str + '\n'
 
         return return_str
-        
 
+    def game_over_string(self):
+        winners = self.get_winners()
+        return_str = f'----- ROUND {self.__rounds + 1} ----- \n'
+        return_str += f'{len(winners)} player{"s" if len(winners) > 1 else ""} won:'
+        for winner in winners:
+            return_str += f' {winner.get_player_api().get_name()},'
+        return return_str[:-1]
