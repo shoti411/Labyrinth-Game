@@ -29,39 +29,16 @@ default_board = Board([[Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
 observer = Observer()
 ref = Referee(observer=observer)
 
-def thread():
-    players = [
-        Player("",
-               default_board.get_board()[0][0],
-               default_board.get_board()[5][5], Coordinate(0, 0), player_api=PlayerAPI('')),
-        Player("",
-               default_board.get_board()[0][0],
-               default_board.get_board()[5][5], Coordinate(5, 5), player_api=PlayerAPI('')),
-        Player("",
-               default_board.get_board()[0][0],
-               default_board.get_board()[5][5], Coordinate(2, 4), player_api=PlayerAPI(''))
-    ]
-
-    s = State(players, default_board)
-    ref.pickup_from_state(s)
-
 
 def drawing():
     players = [
-        Player("",
-               default_board.get_board()[0][0],
-               default_board.get_board()[5][5], Coordinate(0, 0), player_api=PlayerAPI('')),
-        Player("",
-               default_board.get_board()[0][0],
-               default_board.get_board()[5][5], Coordinate(5, 5), player_api=PlayerAPI('')),
-        Player("",
-               default_board.get_board()[0][0],
-               default_board.get_board()[5][5], Coordinate(2, 4), player_api=PlayerAPI(''))
+        PlayerAPI("a"),
+        PlayerAPI("b"),
+        PlayerAPI("c")
     ]
-
-    s = State(players, default_board)
-    ref.run_with_observer(s)
+    ref.run(players)
     #assert winners[0] == players[1], "Player should have won game by win condition: reaching home"
+
 
 if __name__ == '__main__':
     drawing() 

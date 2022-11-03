@@ -121,7 +121,7 @@ if __name__ == "__main__":
     #print(xgame(sys.stdin.read()))
 
     for i in range(3):
-        file_name = f'./Tests/{i}-in.json'
+        file_name = f'./Tests/sample-{i}-in.json'
         f = open(file_name, 'r', encoding='utf-8')
         print(xgame(f.read()))
         continue

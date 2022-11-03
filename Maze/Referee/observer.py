@@ -3,13 +3,14 @@ import sys
 import json
 import random
 import tkinter as tk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw
 from tkinter import filedialog as fd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Common"))
 from player_state import Player
 from state import State
 from tile import Tile
+from coordinate import Coordinate
 
 
 class Observer(tk.Tk):
@@ -33,6 +34,8 @@ class Observer(tk.Tk):
         '┼': '10.png'
     }
 
+    FILE_PATH = str(os.path.dirname(os.path.abspath(__file__)))
+
     def __init__(self):
         super().__init__()
         self.geometry(f'{800}x{900}')
@@ -43,20 +46,28 @@ class Observer(tk.Tk):
         self.board = self.__initialize_board(rows=7, cols=7)
         im = Image.open(f'{str(os.path.dirname(os.path.abspath(__file__)))}\Images\\blank.png')
         im = ImageTk.PhotoImage(im)
-        self.extra_tile = tk.Label(self, image=im, bd=10)
+
+        info_frame = tk.Frame()
+
+        self.extra_tile = tk.Label(info_frame, image=im, bd=20)
         self.extra_tile.image = im
-        self.extra_tile.pack()
+        self.extra_tile.grid(row=0, column=0)
 
-        self.next_button = tk.Button(self, text="NEXT", command=self.next)
-        self.next_button.pack()
+        self.next_button = tk.Button(info_frame, text="NEXT", command=self.next, bd=5)
+        self.next_button.grid(row=0, column=1)
 
-        self.save_button = tk.Button(self, text="SAVE", command=self.save)
-        self.save_button.pack()
+        self.save_button = tk.Button(info_frame, text="SAVE", command=self.save, bd=5)
+        self.save_button.grid(row=0, column=2)
+
+        self.state_info = tk.Label(info_frame, text='', bd=20)
+        self.state_info.grid(row=0, column=3)
+
+        info_frame.pack()
 
     def __initialize_board(self, rows, cols):
         board = []
         board_frame = tk.Frame()
-        im = Image.open(f'{str(os.path.dirname(os.path.abspath(__file__)))}\Images\\blank.png')
+        im = Image.open(f'{self.FILE_PATH}\Images\\blank.png')
         im = ImageTk.PhotoImage(im)
         for r in range(rows):
             board.append([])
@@ -82,26 +93,53 @@ class Observer(tk.Tk):
     def get_ready(self):
         return self.ready
 
-    def draw(self, state):
+    def draw(self, state, is_game_over=False):
+        if is_game_over:
+            self.next_button.configure(text='GAME OVER')
         self.state = state
+
+        self.state_info.configure(text=str(state))
 
         self.ready = False
         extra_tile = state.get_extra_tile()
         self.draw_tile(self.extra_tile, extra_tile)
-        self.draw_board(state.get_board().get_board())
+        self.draw_board(state.get_board().get_board(), state.get_players())
 
-    def draw_tile(self, reference, tile):
+    def draw_tile(self, reference, tile, players_on_tile=[], home_tile_on_tile=False):
         fp = self.TILE_CODE_FP_MAPPING[tile.get_path_code()]
-        im = Image.open(f'{str(os.path.dirname(os.path.abspath(__file__)))}\Images\{fp}')
+        im = Image.open(f'{self.FILE_PATH}\Images\{fp}')
+        draw = ImageDraw.Draw(im)
+
+        for i in range(len(players_on_tile)):
+            draw.ellipse((0, i * 10, 30, 30 + i * 10), fill=players_on_tile[i].get_avatar(), outline=(0, 0, 0))
+        if home_tile_on_tile:
+            draw.rectangle((65, 70, 95, 95), fill=home_tile_on_tile.get_avatar(), outline=(0, 0, 0))
+
+        gems = [f'{self.FILE_PATH}\Images\gems\{gem.value}.png' for gem in tile.get_gems()]
+
+        gem0 = Image.open(gems[0])
+        gem1 = Image.open(gems[1])
+
+        im.paste(gem0.resize((30, 30)), (70, 0))
+        im.paste(gem1.resize((30, 30)), (0, 70))
+
         im = ImageTk.PhotoImage(im)
         reference.configure(image=im)
         reference.image = im
 
-    def draw_board(self, board):
+    def draw_board(self, board, players):
         for r in range(len(board)):
             for c in range(len(board[r])):
+                players_on_tile = []
+                home_tile_on_tile = False
+                for player in players:
+                    if Coordinate(r, c) == player.get_coordinate():
+                        players_on_tile.append(player)
+                    if board[r][c] == player.get_home():
+                        home_tile_on_tile = player
+
                 reference = self.board[r][c]
-                self.draw_tile(reference, board[r][c])
+                self.draw_tile(reference, board[r][c], players_on_tile, home_tile_on_tile)
 
     def player_to_json(self, player, board):
         assert isinstance(player, Player)
@@ -117,9 +155,11 @@ class Observer(tk.Tk):
         goal_coords = board.find_tile_coordinate_by_tile(player.get_goal())
         player_data['goto'] = {'row#': goal_coords.getX(), 'column#': goal_coords.getY()}
 
-        player_data['color'] = "%06x" % random.randint(0, 0xFFFFFF)
+        color = player.get_avatar()
+        if color[0] == '#':
+            color = color[1:]
+        player_data['color'] = color
         return player_data
-
 
     def board_to_json(self, board):
         connectors = []

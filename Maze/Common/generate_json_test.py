@@ -6,7 +6,8 @@ import json
 import random
 from coordinate import Coordinate
 import string
-
+from gems import Gem
+import itertools
 
 strategies = ['Riemann', 'Euclid']
 
@@ -44,8 +45,21 @@ def player_to_json(player, board, referee_player=False):
     if referee_player:
         goal_coords = board.find_tile_coordinate_by_tile(player.get_goal())
         player_data['goto'] = {'row#': goal_coords.getX(), 'column#': goal_coords.getY()}
-    player_data['color'] = "%06x" % random.randint(0, 0xFFFFFF)
+    player_data['color'] = ("%06x" % random.randint(0, 0xFFFFFF)).upper()
     return player_data
+
+
+def last_action_to_json(state):
+    last_action = state.get_last_action()
+    if not last_action or last_action.is_pass():
+        return None
+    direction_int = last_action.get_direction()
+    if last_action.get_isrow():
+        direction = 'LEFT' if direction_int == -1 else 'RIGHT'
+    else:
+        direction = 'UP' if direction_int == -1 else 'DOWN'
+    last_action = [last_action.get_index(), direction]
+    return last_action
 
 
 def state_to_json(state, referee_state=False):
@@ -55,7 +69,7 @@ def state_to_json(state, referee_state=False):
         'board': board_to_json(state.get_board()),
         'spare': tile_to_json(state.get_extra_tile()),
         'plmt': [player_to_json(p, state.get_board(), referee_player=referee_state) for p in state.get_players()],
-        'last': None
+        'last': last_action_to_json(state)
     }
     return state_json
 
@@ -105,13 +119,19 @@ def format_xgame_test_case(s):
 
 def make_tests(amount, num_players=4, fp=None):
     for i in range(amount):
-        test_board = [[Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
-                      [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
-                      [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
-                      [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
-                      [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
-                      [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()],
-                      [Tile(), Tile(), Tile(), Tile(), Tile(), Tile(), Tile()]]
+        test_board = []
+        gems = [x for x in Gem]
+        all_gem_combos = []
+        for subset in itertools.combinations(gems, 2):
+            all_gem_combos.append(subset)
+
+        for rows in range(7):
+            test_board.append([])
+            for cols in range(7):
+                gems = random.choice(all_gem_combos)
+                test_board[rows].append(Tile(gems=gems))
+                all_gem_combos.remove(gems)
+
         b = Board(board=test_board)
         players = []
         selectable_indexes = [1, 3, 5]
@@ -129,8 +149,5 @@ def make_tests(amount, num_players=4, fp=None):
             file.close()
         else:
             print(test_case)
-"""
-CONSTRAINT Keep in mind that the instructors' test harness framework forces the tiles to live up to the specification of The Game: Labyrinth: the gems on each tile are distinct and all pairs of tiles display distinct sets of gems.
-"""
 
 make_tests(3, fp='./Tests')

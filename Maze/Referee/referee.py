@@ -29,21 +29,26 @@ class Referee:
         """ Continues an existing Labyrinth game """
         if not isinstance(state, State):
             raise ValueError('state must be an instance of class State')
+        if self.observer:
+            return self.__run_with_observer(state)
         return self.__run_game(state)
-
-    def run_with_observer(self, state):
-        Thread(target=self.__run_game, args=[state]).start()
-        self.observer.mainloop()
 
     def run(self, players):
         """ Starts a new Labyrinth game """
-        board = self.__initialize_board(players)
 
+        board = self.__initialize_board(players)
         extra_tile = Tile()
+
         player_states, goal_positions = self.__initialize_players(board, players)
         self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
+        if self.observer:
+            return self.__run_with_observer(state)
         return self.__run_game(state)
+
+    def __run_with_observer(self, state):
+        Thread(target=self.__run_game, args=[state]).start()
+        self.observer.mainloop()
 
     def __initialize_board(self, players):
         """
@@ -55,9 +60,9 @@ class Referee:
 
         for player in players:
             try:
-                proposed_board = Board(player.proposeBoard(self.min_rows, self.min_cols))
+                proposed_board = Board(player.propose_board(self.min_rows, self.min_cols))
                 proposed_boards.append(proposed_board)
-            except Exception:
+            except Exception as e:
                 self.kicked_players.append(player)
 
         [players.remove(x) for x in self.kicked_players]
@@ -67,9 +72,10 @@ class Referee:
     def __initialize_players(self, board, player_apis):
         """ Creates Player objects for all the PlayerAPIs, aka Referee's knowledge of the player. """
         players = []
-        board_length = len(board)
 
-        goal_positions = list(itertools.product(range(board_length, step=2), range(board_length, step=2)))
+        goal_positions = itertools.combinations(board.get_immoveable_columns() + board.get_immoveable_rows(), 2)
+
+        board = board.get_board()
         valid_goal_tiles = []
         for (x, y) in goal_positions:
             valid_goal_tiles.append(Coordinate(x, y))
@@ -87,7 +93,7 @@ class Referee:
             players.append((Player(avatar=player_apis[player].get_name(),
                                    home=home_tile,
                                    goal=goal_tile,
-                                   position=home_posn,
+                                   coordinate=home_posn,
                                    player_api=player_apis[player])))
 
             goals.append(goal_posn)
@@ -136,11 +142,17 @@ class Referee:
             raise ValueError(f'Player cannot reach tile {action.get_coordinate()}')
 
     def __run_game(self, state):
+        if isinstance(self.observer, Observer):
+            self.observer.draw(state)
+
         while not state.is_game_over(self.max_rounds):
             if not self.observer or self.observer.get_ready():
                 state = self.__do_round(state)
             if isinstance(self.observer, Observer) and self.observer.get_ready():
                 self.observer.draw(state)
+
+        if isinstance(self.observer, Observer):
+            self.observer.draw(state, is_game_over=True)
         winners = state.get_winners()
         return winners, self.kicked_players
 
@@ -159,7 +171,6 @@ class Referee:
             move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
             self.__valid_move(state, move)
             self.__do_move(move, state)
-
         except Exception as e:
             self.kicked_players.append(state.get_active_player())
             state.kick_active()

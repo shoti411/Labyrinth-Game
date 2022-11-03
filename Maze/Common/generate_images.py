@@ -20,12 +20,12 @@ for tile in all_tiles:
     draw = ImageDraw.Draw(im)
 
     if 'UP' in tile:
-        draw.line((w / 2, 0, w / 2, h / 2), fill='white', width=5)
+        draw.line((w / 2, 0, w / 2, 10 + h / 2), fill='white', width=21)
     if 'LEFT' in tile:
-        draw.line((0, h / 2, w / 2, h / 2), fill='white', width=5)
+        draw.line((0, h / 2,  10 + w / 2, h / 2), fill='white', width=21)
     if 'RIGHT' in tile:
-        draw.line((w, h / 2, w / 2, h / 2), fill='white', width=5)
+        draw.line((w, h / 2, w / 2 - 10, h / 2), fill='white', width=21)
     if 'DOWN' in tile:
-        draw.line((w / 2, h, w / 2, h / 2), fill='white', width=5)
+        draw.line((w / 2, h, w / 2, h / 2 - 10), fill='white', width=21)
     im.save(f'{i}.png')
     i += 1

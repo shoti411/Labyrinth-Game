@@ -64,6 +64,23 @@ class Board:
         """
         return list(range(len(self.__board[0])))[::2]
 
+    def get_immoveable_rows(self):
+        """
+        Returns a list of the indexs of immoveable rows. Only even rows are moveable.
+
+        :return: (list<int>)
+        """
+        return list(range(len(self.__board)))[1::2]
+
+    def get_immoveable_columns(self):
+        """
+        Returns a list of the indexs of immoveable rows. Only even rows are moveable.
+
+        :return: (list<int>)
+        """
+        return list(range(len(self.__board[0])))[1::2]
+
+
     def find_tile_coordinate_by_tile(self, tile):
         """
         Finds the coordinate of a given Tile.

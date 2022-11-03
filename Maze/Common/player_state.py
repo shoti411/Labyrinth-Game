@@ -3,6 +3,8 @@ from tile import Tile
 from coordinate import Coordinate
 import sys
 import os
+import random
+import re
 
 
 class Player:
@@ -10,17 +12,20 @@ class Player:
     Player is a representation of a player from Maze game.
     """
 
+    __acceptable_colors = ["purple", "orange", "pink", "red", "blue", "green", "yellow", "white", "black"]
+
     def __init__(self, avatar, home, goal, coordinate, has_reached_goal=False, player_api=False):
         """
         Constructs a Player. A Player is made up of an avatar, home tile, goal treasure, and a position.
         
-        :param: avatar <string>: String that represents the avatar of the player. 
+        :param: avatar <string>: String that represents the color of the player.
         :param: home <Tile>: home represents the home tile of the player.
         :param: goal <Tile>: goal represents the target tile of the player.
         :param: coordinate  <Coordinate>: Coordinate of player
         :param: has_reached_goal <bool>: If the player has reached their goal Tile before
         """
-        self.__avatar = avatar
+        # TODO: check avatar is a valid color, if not, randomize.
+        self.__avatar = self.__assign_color(avatar)
         self.__home = home
         self.__goal = goal
         self.__coordinate = coordinate
@@ -28,6 +33,17 @@ class Player:
         self.__player_api = player_api
 
         self.__check_constructor()
+
+    def __assign_color(self, color):
+        if color in self.__acceptable_colors:
+            return color
+        color = color.upper()
+        pattern = re.compile("^[A-F|\d][A-F|\d][A-F|\d][A-F|\d][A-F|\d][A-F|\d]$")
+        if pattern.match(color):
+            return "#" + color
+        else:
+            return "#" + "%06x" % random.randint(0, 0xFFFFFF)
+
 
     def __check_constructor(self):
         if not isinstance(self.__home, type(Tile())):

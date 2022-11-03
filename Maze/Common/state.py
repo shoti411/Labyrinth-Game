@@ -250,8 +250,7 @@ class State:
             self.extra_tile = self.board.shift_row(index, direction, self.get_extra_tile())
         else:
             self.extra_tile = self.board.shift_column(index, direction, self.get_extra_tile())
-
-        for player in self.players:
+        for player in self.players + self.next_players:
 
             if player.get_coordinate().getX() == index and is_row:
                 new_y = int((player.get_coordinate().getY() + direction) % len(self.board.get_board()[index]))
@@ -267,20 +266,23 @@ class State:
         self.last_action = action
 
     def __str__(self):
-        return_str = '---------------------------\n'
+        return_str = f'----- ROUND {self.__rounds} ----- \n'
 
-        return_str += f'{self.__rounds}\n'
+        return_str += 'NAME'.center(20)
+        return_str += 'COLOR'.center(20)
+        return_str += 'COORD'.center(20)
+        return_str += 'GOAL'.center(20)
+        return_str += 'GOAL?'.center(20) + '\n'
 
         for player in self.players + self.next_players:
             goal_coord = self.board.find_tile_coordinate_by_tile(player.get_goal())
-            player_str = f'Player {player.get_avatar()} is at {player.get_coordinate()} and going to {goal_coord}, {player.has_reached_goal()}\n'
-            return_str += player_str
+            player_str = f'{player.get_player_api().get_name()}'.center(25)
+            player_str += f'{player.get_avatar()}'.center(25)
+            player_str += f'{player.get_coordinate()}'.center(25)
+            player_str += f'{goal_coord}'.center(25)
+            player_str += f'{player.has_reached_goal()}'.center(25)
+            return_str += player_str + '\n'
 
-        return_str += '\n\n'
-
-        return_str += str(self.board)
-
-        return_str += '\n----------------------------\n'
         return return_str
         
 
