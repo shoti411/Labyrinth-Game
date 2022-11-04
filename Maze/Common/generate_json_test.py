@@ -39,13 +39,13 @@ def player_to_json(player, board, referee_player=False):
     x = coords.getX()
     y = coords.getY()
     player_data['color'] = ("%06x" % random.randint(0, 0xFFFFFF)).upper()
-    player_data['current'] = {'row#': x, 'column#': y}
+    player_data['current'] = format_coordinate(x, y)
 
     if referee_player:
         goal_coords = board.find_tile_coordinate_by_tile(player.get_goal())
-        player_data['goto'] = {'row#': goal_coords.getX(), 'column#': goal_coords.getY()}
+        player_data['goto'] = format_coordinate(goal_coords.getX(),  goal_coords.getY())
     home_coords = board.find_tile_coordinate_by_tile(player.get_home())
-    player_data['home'] = {'row#': home_coords.getX(), 'column#': home_coords.getY()}
+    player_data['home'] = format_coordinate(home_coords.getX(), home_coords.getY())
     return player_data
 
 
