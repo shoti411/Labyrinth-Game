@@ -81,6 +81,7 @@ class Observer(tk.Tk):
 
     def next(self):
         self.ready = True
+        self.next_button['state'] = 'disabled'
 
     def save(self):
         try:
@@ -105,6 +106,7 @@ class Observer(tk.Tk):
             self.next_button.configure(text='GAME OVER', command=self.destroy)
             self.state_info.configure(text=state.game_over_string())
         else:
+            self.next_button['state'] = 'normal'
             self.state_info.configure(text=str(state))
         self.state = state
 
