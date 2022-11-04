@@ -181,6 +181,7 @@ class Referee:
             self.__valid_move(state, move)
             self.__do_move(move, state)
         except Exception as e:
+            print(e)
             self.kicked_players.append(state.get_active_player())
             state.kick_active()
 
