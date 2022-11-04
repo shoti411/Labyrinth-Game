@@ -156,4 +156,4 @@ def make_tests(amount, num_players=4, fp=None):
             print(test_case)
 
 
-make_tests(3, fp='./Tests')
+make_tests(1, fp='./Tests')
