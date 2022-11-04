@@ -121,8 +121,10 @@ def json_to_last_action(json_object):
 
 
 if __name__ == "__main__":
-#    print(xgame(sys.stdin.read()))
+    print(xgame(sys.stdin.read()))
+    """
     file_name = f'./Tests/0-in.json'
     f = open(file_name, 'r', encoding='utf-8')
     print(xgame(f.read()))
+    """
 
