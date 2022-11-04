@@ -29,7 +29,7 @@ def board_to_json(board):
 def tile_to_json(tile):
     assert isinstance(tile, Tile)
     gems = tile.get_gems()
-    return {'tilekey': tile.get_path_code(), '1-image': gems[0].value, '2-image': gems[1].value}
+    return {'1-image': gems[0].value, '2-image': gems[1].value, 'tilekey': tile.get_path_code()}
 
 
 def player_to_json(player, board, referee_player=False):
@@ -84,7 +84,7 @@ def format_xstate_test_case(s, index, direction, degree):
 
 
 def format_coordinate(x, y):
-    return {"row#": x, "column#": y}
+    return {"column#": y, "row#": x}
 
 
 def random_player_spec():
