@@ -161,7 +161,7 @@ class Referee:
                 self.observer.draw(state)
 
         if isinstance(self.observer, Observer):
-            self.observer.draw(state, is_game_over=True)
+            self.observer.draw(copy.deepcopy(state), is_game_over=True)
         winners = state.get_winners()
         return winners, self.kicked_players
 
