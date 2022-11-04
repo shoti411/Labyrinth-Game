@@ -133,7 +133,8 @@ class State:
         if len(self.players) > 1:
             self.players = self.players[1:]
         elif len(self.players) == 1:
-            self.players = []
+            self.players = self.next_players
+            self.next_players = []
 
     def get_last_action(self):
         return copy.deepcopy(self.last_action)
