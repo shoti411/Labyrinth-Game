@@ -52,23 +52,8 @@ class AbstractStrategy(Strategy):
         re = self.slide_and_insert(state)
         if re == -1:
             return Pass()
-        degree, direction, index, is_row = re
-
-        board_copy = copy.deepcopy(state.get_board())
-        extra_tile_copy = copy.deepcopy(state.get_extra_tile())
-
-        extra_tile_copy.rotate(degree)
-        if is_row:
-            extra_tile_copy = board_copy.shift_row(index, direction, extra_tile_copy)
-        else:
-            extra_tile_copy = board_copy.shift_column(index, direction, extra_tile_copy)
-
-        player = state.get_player()
-        player.set_coordinate(self.update_position(player.get_coordinate(), index, direction, is_row, board_copy))
-        state = PlayerGameState(board_copy, extra_tile_copy, player, state.get_last_action())
-        coordinate = self.move(state)
+        (degree, coordinate), direction, index, is_row = re
         return Move(degree, direction, index, is_row, coordinate)
-
 
     def slide_and_insert(self, state):
         """
@@ -91,21 +76,6 @@ class AbstractStrategy(Strategy):
         if enumerated_tiles.empty():
             return -1
         return self.check_slide_insert(enumerated_tiles, state)
-
-    def move(self, state):
-        """
-        Evaluates a PlayerGameState determines what the best Coordinate to move to is. 
-
-        move will return the players Coordinate if it is unable to reach any other tile.
-
-        :param: state <PlayerGameState>: Knowledge the player has about the game state
-
-        :return: <Coordinate>:
-        """
-        self.check_state(state)
-        enumerated_tiles = self.get_enumerated_tiles(state)
-        return self.check_move(enumerated_tiles, state)
-
 
     def check_slide_insert(self, enumerated_tiles, state):
         """
@@ -248,9 +218,8 @@ class AbstractStrategy(Strategy):
             
             goal_tile = state.get_board().getTile(coordinate)
             updated_coordinate = board_copy.find_tile_coordinate_by_tile(goal_tile)
-            reachable = board_copy.get_reachable_tiles(updated_player_coordinate)
-            if updated_coordinate in reachable:
-                return degree
+            if board_copy.coordinate_is_reachable_from(updated_coordinate, updated_player_coordinate):
+                return degree, updated_coordinate
         return -1
 
 
@@ -275,25 +244,6 @@ class AbstractStrategy(Strategy):
             x = (x + direction) % len(board.get_board())
         return Coordinate(x, y)
 
-    def check_move(self, enumerated_tiles, state):
-        """
-        Check if the player can reach any of the enumerated_tiles. Checks in order of the enumerated_tiles priority queue. 
-        
-        Will return -1 if the player can not move to a new tile.
-
-        :param: enumerated_tiles <PriorityQueue(Tile)>: Priority queue of the boards Tiles.
-        :param: state <PlayerGameState>: Knowledge the player has about the game state
-
-        :return: <Coordinate>:
-        """
-
-        reachable = state.get_board().get_reachable_tiles(state.get_player().get_coordinate())
-        while not enumerated_tiles.empty():
-            _, coordinate = enumerated_tiles.get()
-            if coordinate in reachable and coordinate != state.get_player().get_coordinate():
-                return coordinate
-        return -1
-    
 
     def check_state(self, state):
         if not isinstance(state, PlayerGameState):

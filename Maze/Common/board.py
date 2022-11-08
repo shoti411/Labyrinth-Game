@@ -3,7 +3,7 @@ import copy
 from tile import Tile
 from directions import Direction
 from coordinate import Coordinate
-
+import queue
 
 class Board:
     """
@@ -80,7 +80,6 @@ class Board:
         """
         return list(range(len(self.__board[0])))[1::2]
 
-
     def find_tile_coordinate_by_tile(self, tile):
         """
         Finds the coordinate of a given Tile.
@@ -96,6 +95,7 @@ class Board:
                     return Coordinate(r, c)
         return Coordinate(-1, -1)
 
+    # TODO: FIX THE STYLE ISSUE
     def getTile(self, coordinate):
         """
         Returns Tile at coordiante 
@@ -234,13 +234,37 @@ class Board:
 
         return unique_visited
 
+    def coordinate_is_reachable_from(self, goto, position):
+        """
+        Performs a breadth first search to find if Coordinate 'goto' is reachable from Coordinate 'position'
+        :return: boolean: represents whether the goto tile is reachable from position.
+        """
+
+        up_next = queue.Queue()
+        up_next.put(position)
+
+        has_searched = [position]
+
+        while not up_next.empty():
+            current = up_next.get()
+            children = self.__connections(current)
+            if current == goto:
+                return True
+
+            for child in children:
+                if child not in has_searched:
+                    has_searched.append(child)
+                    up_next.put(child)
+
+        return False
+
     def __connections(self, coordinate):
         """
-        Checks and returns which of the surroundomg Tiles from a given coordinate are connected.
+        Checks and returns which of the surrounding Tiles from a given coordinate are connected.
 
         :param: coordiante (Coordinate)
         
-        :return: (list(Direction)): List of reachable directions
+        :return: (list(Coordinate)): List of reachable Coordinates
         """
 
         x = coordinate.getX()

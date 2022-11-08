@@ -22,6 +22,7 @@ class State:
         check if the active player is a goal tile.\n
         Kick active player.
     """
+
     def __init__(self, players, board, extra_tile=False, last_action=False, rounds=0, round_passes=0):
         """
         Constructs State. A State is built up of players, a board, and an extra_tile.
@@ -32,7 +33,12 @@ class State:
         :param: board <Board>: board is default False and will be a randomized board of 7x7.
         :param: extra_tile <Tile>: extra_tile is default False and will be a randomized Tile.
         """
+
         self.players = players
+
+        # starting_players represents the (static) age order of the players in the game
+        self.__starting_players = copy.copy(players)
+
         self.extra_tile = extra_tile
         if not extra_tile:
             self.extra_tile = Tile()
@@ -40,7 +46,6 @@ class State:
         self.last_action = last_action
         self.__rounds = rounds
         self.__round_passes = round_passes
-        self.next_players = []
 
         self.__check_valid_constructor()
 
@@ -53,7 +58,7 @@ class State:
             raise ValueError('Players must be of type Player.')
 
     def get_players(self):
-        return self.players + self.next_players
+        return self.players
 
     def get_extra_tile(self):
         return self.extra_tile
@@ -63,13 +68,12 @@ class State:
 
     def get_round(self):
         return self.__rounds
-    
+
     def increment_round(self):
         self.__rounds += 1
 
     def get_round_passes(self):
         self.__round_passes
-
 
     def move_active_player(self, coordinate):
         """
@@ -108,7 +112,7 @@ class State:
 
         :return: <bool>: True or False depending on if the player can reach the Tile.
         """
-        return coordinate in self.board.get_reachable_tiles(self.players[0].get_coordinate())
+        return self.board.coordinate_is_reachable_from(coordinate, self.players[0].get_coordinate())
 
     def active_on_goal_tile(self):
         """
@@ -126,16 +130,14 @@ class State:
         """
         return player.get_home() == self.board.getTile(player.get_coordinate())
 
-
     def kick_active(self):
         """
         Kicks active player from the game.
         """
         if len(self.players) > 1:
             self.players = self.players[1:]
-        elif len(self.players) == 1:
-            self.players = self.next_players
-            self.next_players = []
+        elif len(self.players) <= 1:
+            self.players = []
 
     def get_last_action(self):
         return copy.deepcopy(self.last_action)
@@ -151,13 +153,12 @@ class State:
     def next_player(self):
         """
         Changes the active player to the next player.
+
+        If the last player to act is 'older' than the next player, the round is incremented.
         """
-        self.next_players.append(self.players[0])
-        self.players.remove(self.players[0])
-        if len(self.players) == 0:
-            self.players = self.next_players
-            self.next_players = []
+        if self.__starting_players.index(self.players[0]) >= self.__starting_players.index(self.players[1]):
             self.increment_round()
+        self.players = self.players[1:] + [self.players[0]]
 
     def get_active_player(self):
         """
@@ -182,11 +183,11 @@ class State:
         """
         if self.__rounds >= max_rounds:
             return True
-        if len(self.players) + len(self.next_players) == 0:
+        if len(self.players) == 0:
             return True
-        if self.__round_passes == len(self.players) + len(self.next_players):
+        if self.__round_passes == len(self.players):
             return True
-        for player in self.players + self.next_players:
+        for player in self.players:
             if player.has_reached_goal() and self.player_on_home_tile(player):
                 return True
 
@@ -198,36 +199,36 @@ class State:
 
         :return: <list(Player)>
         """
-
-        for player in self.players + self.next_players:
+        for player in self.players:
             if player.has_reached_goal() and self.player_on_home_tile(player):
                 return [player]
-        
-        winners = []
-        min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()),
-                                                                       len(self.get_board().get_board()[0])))
-        for player in self.players + self.next_players:
-            goal_coords = self.get_board().find_tile_coordinate_by_tile(player.get_home())
-            player_distance = player.get_coordinate().get_euclid_distance(goal_coords)
-            if player.has_reached_goal() and player_distance < min_distance:
-                min_distance = player_distance
-                winners = [player]
-            elif player.has_reached_goal() and player_distance == min_distance:
-                winners.append(player)
-        if winners:
-            return winners        
 
+        winners = self.__get_players_with_minimum_distance()
+        if winners:
+            return winners
+        return self.__get_players_with_minimum_distance(go_to_goal=True)
+
+    def __get_players_with_minimum_distance(self, go_to_goal=False):
         winners = []
-        min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()),
-                                                                       len(self.get_board().get_board()[0])))
-        for player in self.players + self.next_players:
-            goal_coords = self.get_board().find_tile_coordinate_by_tile(player.get_goal())
-            player_distance = player.get_coordinate().get_euclid_distance(goal_coords)
+        min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()) + 1,
+                                                                       len(self.get_board().get_board()[0]) + 1))
+        for player in self.players:
+
+            if go_to_goal:
+                goto_coords = self.get_board().find_tile_coordinate_by_tile(player.get_goal())
+            elif player.has_reached_goal():
+                goto_coords = self.get_board().find_tile_coordinate_by_tile(player.get_home())
+            else:
+                continue
+
+            player_distance = player.get_coordinate().get_euclid_distance(goto_coords)
+
             if player_distance < min_distance:
                 min_distance = player_distance
                 winners = [player]
             elif player_distance == min_distance:
                 winners.append(player)
+
         return winners
 
     def shift(self, index, direction, is_row):
@@ -252,7 +253,7 @@ class State:
             self.extra_tile = self.board.shift_row(index, direction, self.get_extra_tile())
         else:
             self.extra_tile = self.board.shift_column(index, direction, self.get_extra_tile())
-        for player in self.players + self.next_players:
+        for player in self.players:
 
             if player.get_coordinate().getX() == index and is_row:
                 new_y = int((player.get_coordinate().getY() + direction) % len(self.board.get_board()[index]))
@@ -261,8 +262,6 @@ class State:
             elif player.get_coordinate().getY() == index and not is_row:
                 new_x = int((player.get_coordinate().getX() + direction) % len(self.board.get_board()))
                 player.set_coordinate(Coordinate(new_x, player.get_coordinate().getY()))
-        
-    # TODO: INCOMPLETE
 
     def set_last_action(self, action):
         self.last_action = action
@@ -276,7 +275,7 @@ class State:
         return_str += 'GOAL'.center(w)
         return_str += 'GOAL?'.center(w) + '\n'
 
-        for player in self.players + self.next_players:
+        for player in self.players:
             goal_coord = self.board.find_tile_coordinate_by_tile(player.get_goal())
             player_str = f'{player.get_player_api().get_name()}'.center(w + 10)
             player_str += f'{player.get_avatar()}'.center(w)
@@ -303,13 +302,13 @@ class State:
         E.g. {'bob' : {'home' : Coordinate(1,1), 'current' : Coordinate(0,0)}}
         '''
         other_player_dict = {}
-        for p in self.players[1:] + self.next_players:
+        for p in self.players[1:]:
             player_name = p.get_player_api().get_name()
-            home_coord = self.board.find_coordinate_by_tile(p.get_home())
-            current_coord = self.board.find_coordinate_by_tile(p.get_coordinate())
-            other_player_dict[player_name] = {'home' : home_coord, 'current' : current_coord}
+            home_coord = self.board.find_tile_coordinate_by_tile(p.get_home())
+            current_coord = self.board.find_tile_coordinate_by_tile(p.get_coordinate())
+            other_player_dict[player_name] = {'home': home_coord, 'current': current_coord}
         return other_player_dict
 
     def get_player_game_state(self):
-        return PlayerGameState(self.get_board(), self.get_extra_tile(), self.get_active_player(), 
-                        self.get_last_action(), self.get_other_players())
+        return PlayerGameState(self.get_board(), self.get_extra_tile(), self.get_active_player(),
+                               self.get_last_action(), self.get_other_players())
