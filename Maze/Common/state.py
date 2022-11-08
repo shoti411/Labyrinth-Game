@@ -5,6 +5,7 @@ from directions import Direction
 from coordinate import Coordinate
 from action import Move
 import copy
+from player_game_state import PlayerGameState
 
 
 class State:
@@ -293,3 +294,22 @@ class State:
         for winner in winners:
             return_str += f' {winner.get_player_api().get_name()},'
         return return_str[:-1]
+
+    def get_other_players(self):
+        '''
+        Returns a dictionary mapping of the players' name to a dictionary 
+        containing of their home coordinate and their current coordinate,
+        excluding the active player.
+        E.g. {'bob' : {'home' : Coordinate(1,1), 'current' : Coordinate(0,0)}}
+        '''
+        other_player_dict = {}
+        for p in self.players[1:] + self.next_players:
+            player_name = p.get_player_api().get_name()
+            home_coord = self.board.find_coordinate_by_tile(p.get_home())
+            current_coord = self.board.find_coordinate_by_tile(p.get_coordinate())
+            other_player_dict[player_name] = {'home' : home_coord, 'current' : current_coord}
+        return other_player_dict
+
+    def get_player_game_state(self):
+        return PlayerGameState(self.get_board(), self.get_extra_tile(), self.get_active_player(), 
+                        self.get_last_action(), self.get_other_players())

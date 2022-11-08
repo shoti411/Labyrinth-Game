@@ -37,6 +37,8 @@ class Player:
     def __assign_color(self, color):
         if color in self.__acceptable_colors:
             return color
+        if not color:
+            return "#" + "%06x" % random.randint(0, 0xFFFFFF)
         color = color.upper()
         pattern = re.compile("^[A-F|\d][A-F|\d][A-F|\d][A-F|\d][A-F|\d][A-F|\d]$")
         if pattern.match(color):

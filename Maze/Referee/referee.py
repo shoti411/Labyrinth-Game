@@ -169,10 +169,7 @@ class Referee:
         """
         Precondition: This function assumes the game State is not over.
         """
-
-        # TODO: build get_player_game_state for this line in state
-        active_player_game_state = PlayerGameState(state.get_board(), state.get_extra_tile(),
-                                                    state.get_active_player(), state.get_last_action())
+        active_player_game_state = state.get_player_game_state()
 
         # TODO: timeout errors
 

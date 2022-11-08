@@ -6,7 +6,7 @@ class PlayerGameState:
     This breaks down to the board, extra tile and their own player information.
     """
 
-    def __init__(self, board, extra_tile, player, last_action):
+    def __init__(self, board, extra_tile, player, last_action, other_players=False):
         """
         :param: board <Board>: Maze game scenario board
         :param: extra_tile <Tile>: extra tile of Maze game scenario
@@ -17,6 +17,7 @@ class PlayerGameState:
         self.__extra_tile = extra_tile
         self.__player = player
         self.__last_action = last_action
+        self.__other_players = other_players
 
     def get_board(self):
         return copy.deepcopy(self.__board)
