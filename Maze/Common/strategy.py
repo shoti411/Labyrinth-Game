@@ -1,10 +1,12 @@
+import copy
 from tile import Tile
 from board import Board
-from player_state import Player
-from coordinate import Coordinate 
-from player_game_state import PlayerGameState
-import copy
 from action import Pass, Move
+from queue import PriorityQueue
+from player_state import Player
+from coordinate import Coordinate
+from player_game_state import PlayerGameState
+
 
 class Strategy:
     """
@@ -35,7 +37,6 @@ class AbstractStrategy(Strategy):
     # DIRECTIONS: <list(int)> Represents valid directions for sliding a row or column by.
     DIRECTIONS = [-1, 1]
 
-
     def get_enumerated_tiles(self, state):  
         """
         Creates a priority queue of the boards Tiles. 
@@ -48,9 +49,25 @@ class AbstractStrategy(Strategy):
 
         raise NotImplemented('enumeration not implemented.')
 
+    def enumerate_on_priority(self, state, priority_function):
+        board = state.get_board()
+        player = state.get_player()
+        enumerated_tiles = PriorityQueue()
+        goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
+        enumerated_tiles.put((-1, goal_position))
+
+        # math.sqrt((r-goal_position.getX())**2 + (c-goal_position.getY())**2)
+        for r in range(len(board.get_board())):
+            row_length = len(board.get_board()[r])
+            for c in range(row_length):
+                if Coordinate(r, c) != player.get_coordinate() and Coordinate(r, c) != goal_position:
+                    priority = priority_function(r, c)
+                    enumerated_tiles.put((priority, Coordinate(r, c)))
+        return enumerated_tiles
+
     def evaluate_move(self, state):
         re = self.slide_and_insert(state)
-        if re == -1:
+        if not re:
             return Pass()
         (degree, coordinate), direction, index, is_row = re
         return Move(degree, direction, index, is_row, coordinate)
@@ -74,7 +91,7 @@ class AbstractStrategy(Strategy):
         self.check_state(state)
         enumerated_tiles = self.get_enumerated_tiles(state)
         if enumerated_tiles.empty():
-            return -1
+            return False
         return self.check_slide_insert(enumerated_tiles, state)
 
     def check_slide_insert(self, enumerated_tiles, state):
@@ -100,11 +117,11 @@ class AbstractStrategy(Strategy):
         while not enumerated_tiles.empty():
             _, coordinate = enumerated_tiles.get()
             re = self.check_row_shift(coordinate, state)
-            if re == -1:
+            if not re:
                 re = self.check_col_shift(coordinate, state)
-            if re != -1:
+            if re:
                 return re
-        return -1
+        return False
 
     def check_col_shift(self, coordinate, state):
         """
@@ -126,10 +143,10 @@ class AbstractStrategy(Strategy):
         """
         for col_index in state.get_board().get_moveable_columns():
             re = self.check_direction(coordinate, state, col_index, False)
-            if re != -1:
+            if re:
                 degree, direction = re
                 return degree, direction, col_index, False
-        return -1
+        return False
 
 
     def check_row_shift(self, coordinate, state):
@@ -154,10 +171,10 @@ class AbstractStrategy(Strategy):
 
         for row_index in state.get_board().get_moveable_rows():
             re = self.check_direction(coordinate, state, row_index, True)
-            if re != -1:
+            if re:
                 degree, direction = re
                 return degree, direction, row_index, True
-        return -1
+        return False
     
 
     def check_direction(self, coordinate, state, index, isrow):
@@ -182,9 +199,9 @@ class AbstractStrategy(Strategy):
             #TODO INCOMPLETE
             if not Move(0, direction, index, isrow, Coordinate(0,0)).does_undo(state.get_last_action()):
                 degree = self.check_degrees(coordinate, state, index, direction, isrow)
-                if degree != -1:
+                if degree:
                     return degree, direction
-        return -1
+        return False
 
 
     def check_degrees(self, coordinate, state, index, direction, isrow):
@@ -220,7 +237,7 @@ class AbstractStrategy(Strategy):
             updated_coordinate = board_copy.find_tile_coordinate_by_tile(goal_tile)
             if board_copy.coordinate_is_reachable_from(updated_coordinate, updated_player_coordinate):
                 return degree, updated_coordinate
-        return -1
+        return False
 
 
     def update_position(self, coordinate, index, direction, isrow, board):

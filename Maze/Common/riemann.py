@@ -21,16 +21,9 @@ class Riemann(AbstractStrategy):
         """
 
         board = state.get_board()
-        player = state.get_player()
-        enumerated_tiles = PriorityQueue()
+        row_length = len(board.get_board())
 
-        goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
-        enumerated_tiles.put((-1, goal_position))
+        def priority_function(r, c):
+            return r * row_length + c
+        return super().enumerate_on_priority(state, priority_function)
 
-        for r in range(len(board.get_board())):
-            row_length = len(board.get_board()[r])
-            for c in range(row_length):
-                if Coordinate(r, c) != player.get_coordinate() and Coordinate(r, c) != goal_position:
-                    priority = ((r*row_length + c))
-                    enumerated_tiles.put((priority, Coordinate(r, c)))
-        return enumerated_tiles

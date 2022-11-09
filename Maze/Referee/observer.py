@@ -13,7 +13,15 @@ from tile import Tile
 from coordinate import Coordinate
 
 
-class Observer(tk.Tk):
+class ObserverInterface:
+    def draw(self):
+        raise NotImplemented("Draw is not implemented.")
+
+    def get_ready(self):
+        raise NotImplemented("get_ready is not implemented.")
+
+
+class Observer(tk.Tk, ObserverInterface):
     """
     Observer represents a GUI for a state of Maze game.
 
@@ -43,7 +51,7 @@ class Observer(tk.Tk):
         self.ready = True
         self.state = False
 
-        self.board = self.__initialize_board(rows=7, cols=7)
+        self.board = []
         im = Image.open(f'{self.FILE_PATH}/Images/blank.png')
         im = ImageTk.PhotoImage(im)
 
@@ -69,6 +77,7 @@ class Observer(tk.Tk):
         board_frame = tk.Frame()
         im = Image.open(f'{self.FILE_PATH}/Images/blank.png')
         im = ImageTk.PhotoImage(im)
+
         for r in range(rows):
             board.append([])
             for c in range(cols):
@@ -76,6 +85,7 @@ class Observer(tk.Tk):
                 tile.image = im
                 board[r].append(tile)
                 tile.grid(row=r, column=c)
+
         board_frame.pack()
         return board
 
@@ -102,30 +112,44 @@ class Observer(tk.Tk):
         raise SystemExit('Observer closed early.')
 
     def draw(self, state, is_game_over=False):
-        if is_game_over:
-            self.next_button.configure(text='GAME OVER', command=self.destroy)
-            self.state_info.configure(text=state.game_over_string())
-        else:
-            self.next_button['state'] = 'normal'
-            self.state_info.configure(text=str(state))
         self.state = state
-
+        self.__handle_game_over(is_game_over)
         self.ready = False
         extra_tile = state.get_extra_tile()
         self.draw_tile(self.extra_tile, extra_tile)
+
         self.draw_board(state.get_board().get_board(), state.get_players())
+
+    def __handle_game_over(self, is_game_over):
+        if is_game_over:
+            self.next_button.configure(text='GAME OVER', command=self.destroy)
+            self.state_info.configure(text=self.state.game_over_string())
+        else:
+            self.next_button['state'] = 'normal'
+            self.state_info.configure(text=str(self.state))
 
     def draw_tile(self, reference, tile, players_on_tile=[], home_tile_on_tile=False):
         fp = self.TILE_CODE_FP_MAPPING[tile.get_path_code()]
         im = Image.open(f'{self.FILE_PATH}/Images/{fp}')
         draw = ImageDraw.Draw(im)
 
-        for i in range(len(players_on_tile)):
-            draw.ellipse((0, i * 10, 30, 30 + i * 10), fill=players_on_tile[i].get_avatar(), outline=(0, 0, 0))
-        if home_tile_on_tile:
-            draw.rectangle((65, 70, 95, 95), fill=home_tile_on_tile.get_avatar(), outline=(0, 0, 0))
+        self.__draw_players(draw, players_on_tile, home_tile_on_tile)
+        self.__draw_gems(im, tile.get_gems())
 
-        gems = [f'{self.FILE_PATH}/Images/gems/{gem.value}.png' for gem in tile.get_gems()]
+        im = ImageTk.PhotoImage(im)
+        reference.configure(image=im)
+        reference.image = im
+
+    def __draw_players(self, draw, players_on_tile, home_tile_on_tile):
+        """ Draws the players and home on a tile """
+        for i in range(len(players_on_tile)):
+            draw.ellipse((0, i * 10, 30, 30 + i * 10), fill=players_on_tile[i].get_avatar())
+        if home_tile_on_tile:
+            draw.rectangle((65, 70, 95, 95), fill=home_tile_on_tile.get_avatar())
+
+    def __draw_gems(self, im, gems):
+        """ Draws the gems on a tile"""
+        gems = [f'{self.FILE_PATH}/Images/gems/{gem.value}.png' for gem in gems]
 
         gem0 = Image.open(gems[0])
         gem1 = Image.open(gems[1])
@@ -133,11 +157,11 @@ class Observer(tk.Tk):
         im.paste(gem0.resize((30, 30)), (70, 0))
         im.paste(gem1.resize((30, 30)), (0, 70))
 
-        im = ImageTk.PhotoImage(im)
-        reference.configure(image=im)
-        reference.image = im
-
     def draw_board(self, board, players):
+        """ Redraws a given board onto the GUI """
+        if len(self.board) == 0:
+            self.board = self.__initialize_board(len(self.state.get_board().get_board()),
+                                                 len(self.state.get_board().get_board()[0]))
         for r in range(len(board)):
             for c in range(len(board[r])):
                 players_on_tile = []

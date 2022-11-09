@@ -11,9 +11,8 @@ from state import State
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Referee"))
-from player import PlayerAPI
+from player import PlayerAPI, BadPlayerAPI
 from referee import Referee
-from observer import Observer
 
 
 def xgame(in_stream):
@@ -23,7 +22,7 @@ def xgame(in_stream):
     """
     json_objects = read_input(in_stream)
     turn_data = handle_json(json_objects)
-    return run_game(turn_data)
+    return return_output(turn_data)
 
 
 def read_input(json_str):
@@ -44,11 +43,12 @@ def read_input(json_str):
     return objs
 
 
-def run_game(turn_data):
-    ref = Referee(observer=Observer())
-    winners = ref.pickup_from_state(state=turn_data)
+def return_output(turn_data):
+    ref = Referee()
+    winners, kicked = ref.pickup_from_state(state=turn_data)
     winner_names = [x.get_player_api().get_name() for x in winners]
-    return json.dumps(sorted(winner_names))
+    kicked_names = [x.get_player_api().get_name() for x in kicked]
+    return json.dumps([sorted(winner_names), sorted(kicked_names)])
 
 def get_strategy(strategy_string):
     if strategy_string == 'Riemann':
@@ -61,15 +61,18 @@ def handle_json(json_objects):
     board = json_to_board(json_objects[1])
     spare_tile = Tile(json_objects[1]['spare']['tilekey'])
     players = json_to_players(json_objects[1], board)
+
     for i in range(len(players)):
         player_api = PlayerAPI(json_objects[0][i][0], json_objects[0][i][1])
+        if len(json_objects[0][i]) == 3:
+            player_api = BadPlayerAPI(json_objects[0][i][0], json_objects[0][i][2], json_objects[0][i][1])
         players[i].set_player_api(player_api)
+
     last_action = json_to_last_action(json_objects[1]['last'])
     if last_action is None:
         last_action = False
     s = State(players, board, extra_tile=spare_tile, last_action=last_action)
     return s
-
 
 def position_to_object(x, y):
     return {"row#": x, "column#": y}
@@ -98,7 +101,6 @@ def json_to_players(json_object, board):
                               Coordinate(home['row#'], home['column#'])))
     return players
 
-
 def json_to_last_action(json_object):
     if not json_object:
         return Pass()
@@ -122,7 +124,12 @@ def json_to_last_action(json_object):
 
 if __name__ == "__main__":
     # print(xgame(sys.stdin.read()))
-    file_name = f'./Tests/0-in.json'
-    f = open(file_name, 'r', encoding='utf-8')
-    print(xgame(f.read()))
-
+    for i in range(3):
+        file_name = f'./Tests/{i}-in.json'
+        f = open(file_name, 'r', encoding='utf-8')
+        print(xgame(f.read()))
+        continue
+        f_out = open(f'./Tests/{i}-out.json', 'w')
+        f_out.write(xgame(f.read()))
+        f_out.close()
+        f.close()

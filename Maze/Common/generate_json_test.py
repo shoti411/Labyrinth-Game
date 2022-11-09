@@ -93,10 +93,19 @@ def random_player_spec():
     return [name, random.choice(strategies)]
 
 
-def random_player_spec_json(amount):
+def random_bad_player_spec():
+    name_characters = string.ascii_letters + string.digits
+    name = "".join(random.choices(name_characters, k=random.randint(1, 20)))
+    return [name, random.choice(strategies), random.choice(['setUp', 'takeTurn', 'win'])]
+
+
+def random_player_spec_json(amount, include_bad_players=False):
     player_spec = []
     for i in range(amount):
-        player_spec.append(random_player_spec())
+        if include_bad_players and random.random() > 0.5:
+            player_spec.append(random_bad_player_spec())
+        else:
+            player_spec.append(random_player_spec())
     return json.dumps(player_spec)
 
 
@@ -108,11 +117,11 @@ def format_xchoice_test_case(s, strategy, x, y, referee_state=False):
     return json_string
 
 
-def format_xgame_test_case(s):
+def format_xbad_test_case(s):
     assert isinstance(s, State)
     json_string = ''
     num_players = len(s.get_players())
-    json_string += random_player_spec_json(num_players) + '\n'
+    json_string += random_player_spec_json(num_players, True) + '\n'
     json_string += json.dumps(state_to_json(s, True)) + '\n'
     return json_string
 
@@ -134,19 +143,20 @@ def make_tests(amount, num_players=4, fp=None):
 
         b = Board(board=test_board)
         players = []
-        selectable_indexes = [1, 3, 5]
-        valid_posns = list(itertools.combinations(selectable_indexes + selectable_indexes, 2))
+        selectable_indexes = b.get_immoveable_rows() + b.get_immoveable_columns()
+        valid_posns = list(set(itertools.combinations(selectable_indexes + selectable_indexes, 2)))
         for player in range(num_players):
             home = random.choice(valid_posns)
             valid_posns.remove(home)
             goal = random.choice(valid_posns)
             valid_posns.remove(goal)
+
             p = Player('', b.get_board()[home[0]][home[1]],
                        b.get_board()[goal[0]][goal[1]],
                        Coordinate(home[0], home[1]))
             players.append(p)
         s = State(players, b, Tile())
-        test_case = format_xgame_test_case(s)
+        test_case = format_xbad_test_case(s)
 
         if fp is not None:
             file = open(f'{fp}/{i}-in.json', 'w', encoding='utf-8')
@@ -156,4 +166,4 @@ def make_tests(amount, num_players=4, fp=None):
             print(test_case)
 
 
-#make_tests(1, fp='./Tests')
+make_tests(3, fp='./Tests')

@@ -12,7 +12,7 @@ from coordinate import Coordinate
 import random
 import copy
 import itertools
-from observer import Observer
+from observer import ObserverInterface
 from threading import *
 import time
 
@@ -41,7 +41,7 @@ class Referee:
         extra_tile = Tile()
 
         player_states, goal_positions = self.__initialize_players(board, players)
-        self.__setup_players(players, board, extra_tile, player_states, goal_positions)
+        player_states = self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
         if self.observer:
             return self.__run_with_observer(state)
@@ -112,7 +112,16 @@ class Referee:
     def __setup_players(self, player_apis, board, extra_tile, players, goal_positions):
         """ Calls setup in each player, giving them the initial state. """
         for i in range(len(player_apis)):
-            player_apis[i].setup(PlayerGameState(board, extra_tile, players[i], False), goal_position=goal_positions[i])
+            try:
+                player_apis[i].setup(PlayerGameState(board, extra_tile, players[i], False), goal_position=goal_positions[i])
+            except Exception as e:
+                print(e)
+                self.kicked_players.append(player_apis[i])
+
+        for player in self.kicked_players:
+            player_apis.remove(player)
+
+        return player_apis
 
     def __valid_move(self, state, action):
         """
@@ -151,18 +160,21 @@ class Referee:
             raise ValueError(f'Player cannot reach tile {action.get_coordinate()}')
 
     def __run_game(self, state):
-        if isinstance(self.observer, Observer):
+        if isinstance(self.observer, ObserverInterface):
             self.observer.draw(state)
 
         while not state.is_game_over(self.max_rounds) and not self.game_quit:
             if not self.observer or self.observer.get_ready():
                 state = self.__do_round(state)
-            if isinstance(self.observer, Observer) and self.observer.get_ready():
+            if isinstance(self.observer, ObserverInterface) and self.observer.get_ready():
                 self.observer.draw(state)
 
-        if isinstance(self.observer, Observer):
+        if isinstance(self.observer, ObserverInterface):
             self.observer.draw(copy.deepcopy(state), is_game_over=True)
         winners = state.get_winners()
+
+        winners, also_kicked = self.__notify_players_of_win_status(winners, state.get_players())
+        self.kicked_players = self.kicked_players + also_kicked
         return winners, self.kicked_players
 
     def __do_round(self, state):
@@ -184,10 +196,23 @@ class Referee:
 
         return state
 
-
     def __do_move(self, move, state):
         """ Performs a give move on the given state """
         state.rotate_extra_tile(move.get_degree())
         state.shift(move.get_index(), move.get_direction(), move.get_isrow())
         state.move_active_player(move.get_coordinate())
         state.set_last_action(move)
+
+    def __notify_players_of_win_status(self, winners, players):
+        kicked = []
+        for player in players:
+            try:
+                player.get_player_api().won(player in winners)
+            except Exception as e:
+                print(e)
+                kicked.append(player)
+                if player in winners:
+                    winners.remove(player)
+
+        return winners, kicked
+

@@ -3,6 +3,7 @@ from queue import PriorityQueue
 from coordinate import Coordinate
 import math
 
+
 class Euclid(AbstractStrategy):
     """
     Euclid is a Strategy for Maze game that interprets a board, player, and extra_tile to find what it thinks is the next best move.
@@ -22,17 +23,9 @@ class Euclid(AbstractStrategy):
 
         :return: <PriorityQueue>
         """
-
-        board = state.get_board()
         player = state.get_player()
-        enumerated_tiles = PriorityQueue()
-        goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
-        enumerated_tiles.put((-1, goal_position))
+        goal = state.get_board().find_tile_coordinate_by_tile(player.get_goal())
 
-        for r in range(len(board.get_board())):
-            row_length = len(board.get_board()[r])
-            for c in range(row_length):
-                if Coordinate(r, c) != player.get_coordinate() and Coordinate(r, c) != goal_position:
-                    priority = math.sqrt((r-goal_position.getX())**2 + (c-goal_position.getY())**2)
-                    enumerated_tiles.put((priority, Coordinate(r, c)))
-        return enumerated_tiles
+        def priority_function(r, c):
+            return math.sqrt((r - goal.getX()) ** 2 + (c - goal.getY()) ** 2)
+        return super().enumerate_on_priority(state, priority_function)

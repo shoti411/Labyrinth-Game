@@ -84,6 +84,8 @@ class State:
         if self.active_can_reach_tile(coordinate):
             goal_coordinate = self.board.find_tile_coordinate_by_tile(self.players[0].get_goal())
             if coordinate == goal_coordinate:
+                home_coordinate = self.board.find_tile_coordinate_by_tile(self.players[0].get_home())
+                self.players[0].get_player_api().setup(None, home_coordinate)
                 self.players[0].reached_goal()
                 self.players[0].set_goal(self.players[0].get_home())
             self.players[0].set_coordinate(coordinate)

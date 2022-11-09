@@ -48,3 +48,30 @@ class PlayerAPI:
 
     def won(self, w):
         return w
+
+
+class BadPlayerAPI(PlayerAPI):
+
+    def __init__(self, name, error_function, strategy='Riemann'):
+        """ :param: error_function <String>: represents the name of the function that will fail """
+        super().__init__(name, strategy)
+        self.error_function = error_function
+
+    def won(self, w):
+        if self.error_function == 'win':
+            raise ValueError(f'{self.name} ERRORED IN WON.')
+        else:
+            return super().won(w)
+
+    def take_turn(self, game_state):
+        if self.error_function == 'takeTurn':
+            raise ValueError(f'{self.name} ERRORED IN TAKETURN.')
+        else:
+            return super().take_turn(game_state)
+
+    def setup(self, game_state, goal_position):
+        if self.error_function == 'setUp':
+            raise ValueError(f'{self.name} ERRORED IN SETUP.')
+        else:
+            return super().setup(game_state, goal_position)
+

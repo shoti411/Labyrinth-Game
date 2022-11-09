@@ -46,15 +46,14 @@ class Player:
         else:
             return "#" + "%06x" % random.randint(0, 0xFFFFFF)
 
-
     def __check_constructor(self):
         if not isinstance(self.__home, type(Tile())):
             raise ValueError('Home must be of type Tile')
         if not isinstance(self.__goal, type(Tile())):
             raise ValueError('Goal must be of type Tile')
-        if not(isinstance(self.__coordinate, Coordinate)):
+        if not (isinstance(self.__coordinate, Coordinate)):
             raise ValueError('coordinate must be an array of length 2 with integer values.')
-        #if not(isinstance(self.__player_api, PlayerAPI)) and not(isinstance(self.__player_api, bool)):
+        # if not(isinstance(self.__player_api, PlayerAPI)) and not(isinstance(self.__player_api, bool)):
         #    raise ValueError('player_api must be False or type PlayerAPI')
 
     def get_avatar(self):
@@ -69,7 +68,7 @@ class Player:
     def set_goal(self, goal):
         if not isinstance(goal, type(Tile())):
             raise ValueError('Goal must be of type Tile')
-            
+
         self.__goal = goal
 
     def get_coordinate(self):
@@ -92,3 +91,4 @@ class Player:
 
     def reached_goal(self):
         self.__has_reached_goal = True
+
