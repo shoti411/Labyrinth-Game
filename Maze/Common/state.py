@@ -311,6 +311,8 @@ class State:
             other_player_dict[player_name] = {'home': home_coord, 'current': current_coord}
         return other_player_dict
 
-    def get_player_game_state(self):
-        return PlayerGameState(self.get_board(), self.get_extra_tile(), self.get_active_player(),
+    def get_player_game_state(self, player=False):
+        if not player:
+            player = self.get_active_player()
+        return PlayerGameState(self.get_board(), self.get_extra_tile(), player,
                                self.get_last_action(), self.get_other_players())

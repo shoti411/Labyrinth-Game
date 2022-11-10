@@ -31,6 +31,13 @@ class Referee:
         """ Continues an existing Labyrinth game """
         if not isinstance(state, State):
             raise ValueError('state must be an instance of class State')
+        player_apis, goal_posns = [], []
+        for player in state.get_players():
+            player_apis.append(player.get_player_api())
+            goal_posns.append(state.get_board().find_tile_coordinate_by_tile(player.get_goal()))
+
+        self.__setup_players(player_apis, state.get_board(), state.get_extra_tile(), state.get_players(), goal_posns)
+
         if self.observer:
             return self.__run_with_observer(state)
         return self.__run_game(state)
@@ -121,12 +128,12 @@ class Referee:
                 player_apis[i].setup(PlayerGameState(board, extra_tile, players[i], False),
                                      goal_position=goal_positions[i])
             except Exception as e:
-                self.kicked_players.append(player_apis[i])
+                self.kicked_players.append(players[i])
 
         for player in self.kicked_players:
-            player_apis.remove(player)
+            players.remove(player)
 
-        return player_apis
+        return players
 
     def __valid_move(self, state, action):
         """

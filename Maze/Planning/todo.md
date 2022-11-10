@@ -2,9 +2,6 @@
 * Referee: Catch timeout errors on all API calls (win, takeTurn, setup, proposeBoard). General error checks on all API calls.
 * Board: Make board class immutable. Include undo() function, that undoes a previous turn.
 
-======= In Progress =======
-
-
 ======= Completed =======
 * State: Get current active player's game state information that also includes other player's positions.
     * Commit message: "add other players to player game state"
