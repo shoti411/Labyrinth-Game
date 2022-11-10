@@ -31,6 +31,7 @@ class Referee:
         """ Continues an existing Labyrinth game """
         if not isinstance(state, State):
             raise ValueError('state must be an instance of class State')
+
         player_apis, goal_posns = [], []
         for player in state.get_players():
             player_apis.append(player.get_player_api())
@@ -152,6 +153,8 @@ class Referee:
         :param: action <Action>: Action a player is taking 
         """
 
+        if action.is_pass():
+            return True
         if action.get_degree() % 90 != 0:
             # raise ValueError(f'{action.get_degree()} not multiple of 90')
             return False
