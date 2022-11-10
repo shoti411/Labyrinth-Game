@@ -38,6 +38,7 @@ class Referee:
             goal_posns.append(state.get_board().find_tile_coordinate_by_tile(player.get_goal()))
 
         self.__setup_players(player_apis, state.get_board(), state.get_extra_tile(), state.get_players(), goal_posns)
+        [state.kick_player(p) for p in self.kicked_players]
 
         if self.observer:
             return self.__run_with_observer(state)
@@ -215,13 +216,11 @@ class Referee:
 
         try:
             move = state.get_active_player().get_player_api().take_turn(active_player_game_state)
-
             if self.__valid_move(state, move):
                 self.__do_move(move, state)
             else:
                 self.kicked_players.append(state.get_active_player())
                 state.kick_active()
-
         except Exception as e:
             self.kicked_players.append(state.get_active_player())
             state.kick_active()

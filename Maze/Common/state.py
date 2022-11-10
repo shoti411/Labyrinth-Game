@@ -141,6 +141,15 @@ class State:
         elif len(self.players) <= 1:
             self.players = []
 
+    def kick_player(self, player):
+        """
+        Kicks player from the game.
+        """
+        for p in self.players:
+            if player == p:
+                self.players.remove(player)
+                return
+
     def get_last_action(self):
         return copy.deepcopy(self.last_action)
 
@@ -158,6 +167,8 @@ class State:
 
         If the last player to act is 'older' than the next player, the round is incremented.
         """
+        if len(self.players) == 1:
+            return
         if self.__starting_players.index(self.players[0]) >= self.__starting_players.index(self.players[1]):
             self.increment_round()
         self.players = self.players[1:] + [self.players[0]]
