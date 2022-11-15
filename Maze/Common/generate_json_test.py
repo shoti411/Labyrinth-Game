@@ -96,7 +96,7 @@ def random_player_spec():
 def random_bad_player_spec():
     name_characters = string.ascii_letters + string.digits
     name = "".join(random.choices(name_characters, k=random.randint(1, 20)))
-    return [name, random.choice(strategies), random.choice(['setUp', 'takeTurn', 'win'])]
+    return [name, random.choice(strategies), random.choice(['setUp', 'takeTurn', 'win']), random.randint(1, 7)]
 
 
 def random_player_spec_json(amount, include_bad_players=False):
@@ -117,7 +117,7 @@ def format_xchoice_test_case(s, strategy, x, y, referee_state=False):
     return json_string
 
 
-def format_xbad_test_case(s):
+def format_xbad2_test_case(s):
     assert isinstance(s, State)
     json_string = ''
     num_players = len(s.get_players())
@@ -156,7 +156,7 @@ def make_tests(amount, num_players=4, fp=None):
                        Coordinate(home[0], home[1]))
             players.append(p)
         s = State(players, b, Tile())
-        test_case = format_xbad_test_case(s)
+        test_case = format_xbad2_test_case(s)
 
         if fp is not None:
             file = open(f'{fp}/{i}-in.json', 'w', encoding='utf-8')

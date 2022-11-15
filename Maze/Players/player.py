@@ -6,12 +6,47 @@ from board import Board
 from tile import Tile
 from riemann import Riemann
 from euclid import Euclid
-
+from socket import socket
 
 
 class PlayerAPI:
+    """ This class should not be instantiated """
+    def propose_board(self, rows, columns):
+        raise NotImplemented('propose_board not implemented')
 
-    # TODO: ENUM for strategies, not passing strings
+    def setup(self, game_state, goal_position):
+        raise NotImplemented('setup not implemented')
+
+    def take_turn(self, game_state):
+        raise NotImplemented('take_turn not implemented')
+
+    def won(self, w):
+        raise NotImplemented('won not implemented')
+
+
+class RemotePlayerAPI(PlayerAPI):
+    """ Proxy playerAPI class. Communicates in json objects to a tcp socket. """
+
+    def __init__(self, name, connection):
+        assert isinstance(connection, socket), 'Connection must be a TCP socket.'
+        self.name = name
+        self.connection = connection
+
+    def propose_board(self, rows, columns):
+        raise NotImplemented('propose_board not implemented')
+
+    def setup(self, game_state, goal_position):
+        raise NotImplemented('setup not implemented')
+
+    def take_turn(self, game_state):
+        raise NotImplemented('take_turn not implemented')
+
+    def won(self, w):
+        raise NotImplemented('won not implemented')
+
+
+class LocalPlayerAPI(PlayerAPI):
+
     def __init__(self, name, strategy='Riemann'):
         self.name = name
         self.strategy = self.get_strategy(strategy)
@@ -50,28 +85,36 @@ class PlayerAPI:
         return w
 
 
-class BadPlayerAPI(PlayerAPI):
+class BadPlayerAPI(LocalPlayerAPI):
 
-    def __init__(self, name, error_function, strategy='Riemann'):
+    def __init__(self, name, error_function, error_count, strategy='Riemann'):
         """ :param: error_function <String>: represents the name of the function that will fail """
+        assert 7 >= error_count >= 1, 'Error count must be a natural num between 1-7'
         super().__init__(name, strategy)
         self.error_function = error_function
+        self.error_count = error_count
 
     def won(self, w):
         if self.error_function == 'win':
-            raise ValueError(f'{self.name} ERRORED IN WON.')
+            self.error_count -= 1
+            if self.error_count == 0:
+                raise TimeoutError('Win timed out.')
         else:
             return super().won(w)
 
     def take_turn(self, game_state):
         if self.error_function == 'takeTurn':
-            raise ValueError(f'{self.name} ERRORED IN TAKETURN.')
+            self.error_count -= 1
+            if self.error_count == 0:
+                raise TimeoutError('Win timed out.')
         else:
             return super().take_turn(game_state)
 
     def setup(self, game_state, goal_position):
         if self.error_function == 'setUp':
-            raise ValueError(f'{self.name} ERRORED IN SETUP.')
+            self.error_count -= 1
+            if self.error_count == 0:
+                raise TimeoutError('Win timed out.')
         else:
             return super().setup(game_state, goal_position)
 

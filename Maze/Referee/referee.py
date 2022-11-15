@@ -252,3 +252,4 @@ class Referee:
                     winners.remove(player)
 
         return winners, kicked
+
