@@ -7,7 +7,7 @@ from tile import Tile
 from board import Board
 from coordinate import Coordinate
 from player_game_state import PlayerGameState
-from action import Move, Pass
+from action import Move, Pass, Action
 from player_state import Player
 
 class RefereeProxy:
@@ -19,6 +19,7 @@ class RefereeProxy:
         self.player = player
         self.socket = conn
         self.player_mechanism = False
+        self.receive_message()
 
     def receive_message(self):
         byte_string = b''
@@ -33,39 +34,71 @@ class RefereeProxy:
 
         if self.__is_valid(message):
             self.__send_message(self.__call_player_functions(message))
-            
+
+        if message[0] == 'win':
+            return
+
         self.receive_message()
 
     def __send_message(self, message):
-        pass
+        self.socket.send(bytes(message, encoding='utf-8'))
 
     def __call_player_functions(self, msg):
         func_name = msg[0]
         send_back = 'void'
         args = msg[1]
         if func_name == 'setup':
-            state = self.__parse_state(args[0])
-            goal_coord = self.__parse_coordinate(args[1])
-            self.player_mechanism = self.__parse_current_player(state, goal_coord)
-            self.player.setup(state, goal_coord)
+            state, goal = self.__setup(args[0], args[1])
+            self.player.setup(state, goal)
         elif func_name == 'take-turn':
-            state = self.__parse_state(args[0])
+            state = self.__take_turn(args[0])
             send_back = self.choice_to_json(self.player.take_turn(state))
         elif func_name == 'win':
             self.player.won(args[0])
         return send_back
 
-    def __parse_current_player(self, player_game_state, goal_coord):
-        return Player('', 
-        
+    def choice_to_json(self, choice):
+        if choice.is_pass():
+            return 'PASS'
+        index = choice.get_index()
+        degree = choice.get_degree()
+        coord = choice.get_coordinate()
+        coord = {"row#": coord.getX(), 'column#': coord.getY()}
+        direction = "DOWN" if choice.get_direction() == 1 else "UP"
+        if choice.get_direction() == -1:
+            direction = "RIGHT" if choice.get_direction() == 1 else "LEFT"
+        return [index, direction, degree, coord]
+
+
+    def __setup(self, state_json, goal_json):
+        board, spare_tile, last_action = self.__parse_state(state_json)
+
+        curr_coord = self.__parse_coordinate(state_json['plmt'][0]['current'])
+        curr_tile = board.getTile(curr_coord)
+
+        home_coord = self.__parse_coordinate(state_json['plmt'][0]['home'])
+        home_tile = board.getTile(home_coord)
+
+        goal_coord = self.__parse_coordinate(goal_json)
+        goal_tile = board.getTile(goal_coord)
+
+        self.player_mechanism = Player('', home_tile, goal_tile, curr_tile, goal_tile == home_tile)
+        return PlayerGameState(board, spare_tile, self.player_mechanism, last_action), goal_coord
+
+    def __take_turn(self, state_json):
+        board, spare_tile, last_action = self.__parse_state(state_json)
+        return PlayerGameState(board, spare_tile, self.player_mechanism, last_action)
+
+    def __parse_coordinate(self, coord_json):
+        return Coordinate(coord_json['row#'], coord_json['column#'])
+
     def __parse_state(self, json_state):
         board = self.json_to_board(json_state)
         spare_tile = Tile(json_state['spare']['tilekey'])
         last_action = self.json_to_last_action(json_state['last'])
         if last_action is None:
             last_action = False
-        s = PlayerGameState(board, spare_tile, self.player_mechanism, last_action=last_action)
-        return s
+        return board, spare_tile, last_action
 
     def json_to_board(self, json_object):
         #TODO add gem parsing
@@ -77,7 +110,7 @@ class RefereeProxy:
                 board_obj[row].append(Tile(board_strings[row][col]))
         return Board(board=board_obj)
     
-    def json_to_last_action(json_object):
+    def json_to_last_action(self, json_object):
         if not json_object:
             return Pass()
         index = json_object[0]

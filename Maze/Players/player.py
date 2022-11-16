@@ -33,6 +33,9 @@ class RemotePlayerAPI(PlayerAPI):
         self.address = address
         self.connection = connection
 
+    def send_message(self, msg):
+        self.connection.send(bytes(msg, encoding='utf-8'))
+
     def propose_board(self, rows, columns):
         raise NotImplemented('propose_board not implemented')
 

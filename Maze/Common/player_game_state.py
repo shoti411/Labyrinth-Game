@@ -1,5 +1,6 @@
 import copy
 
+
 class PlayerGameState:
     """ 
     This class is to represent the knowledge a Player is given about a game. 
