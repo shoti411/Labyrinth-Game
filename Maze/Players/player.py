@@ -27,16 +27,17 @@ class PlayerAPI:
 class RemotePlayerAPI(PlayerAPI):
     """ Proxy playerAPI class. Communicates in json objects to a tcp socket. """
 
-    def __init__(self, name, connection):
+    def __init__(self, name, connection, address):
         assert isinstance(connection, socket), 'Connection must be a TCP socket.'
         self.name = name
+        self.address = address
         self.connection = connection
 
     def propose_board(self, rows, columns):
         raise NotImplemented('propose_board not implemented')
 
     def setup(self, game_state, goal_position):
-        raise NotImplemented('setup not implemented')
+        raise NotImplemented()
 
     def take_turn(self, game_state):
         raise NotImplemented('take_turn not implemented')

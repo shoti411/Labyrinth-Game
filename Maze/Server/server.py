@@ -1,0 +1,63 @@
+import sys
+import os
+import time
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Common"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Referee"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
+
+import socket
+from referee import Referee
+from player import RemotePlayerAPI
+
+
+class Server:
+
+    FRAME_SIZE = 1024
+    TIMEOUT_FOR_PLAYERS = 20
+
+    def __init__(self, hostname, port):
+        self.hostname = hostname
+        self.port = port
+        self.socket = self.boot_server()
+        self.player_list = []
+
+        self.listen_for_players()
+
+    def boot_server(self):
+        open_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = (self.hostname, self.port)
+        open_socket.bind(server_address)
+        return open_socket
+
+    def listen_for_players(self):
+
+        self.__waiting_period()
+
+        if len(self.player_list) < 2:
+            self.__waiting_period()
+
+        try:
+            return self.start_game()
+        except ValueError:
+            return [[], []]
+
+    def __waiting_period(self):
+        t = time.time()
+        while time.time() < t + self.TIMEOUT_FOR_PLAYERS and len(self.player_list) < 6:
+            self.socket.listen()
+            time_left = t + self.TIMEOUT_FOR_PLAYERS - time.time()
+            self.socket.settimeout(time_left)
+            try:
+                connection, address = self.socket.accept()
+                self.socket.settimeout(2)
+                name = connection.recv(self.FRAME_SIZE)
+                self.player_list.append(RemotePlayerAPI(name, connection, address))
+            except socket.timeout:
+                continue
+
+    def start_game(self):
+        if len(self.player_list) < 2:
+            raise ValueError('Must have at least 2 players to run a game of Labyrinth.')
+        ref = Referee()
+        return ref.run(self.player_list)

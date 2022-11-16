@@ -14,7 +14,7 @@ import copy
 import itertools
 from observer import ObserverInterface
 from threading import *
-import time
+from gems import Gem
 
 
 class Referee:
@@ -47,8 +47,7 @@ class Referee:
     def run(self, players):
         """ Starts a new Labyrinth game """
 
-        board = self.__initialize_board(players)
-        extra_tile = Tile()
+        board, extra_tile = self.__create_board()
 
         player_states, goal_positions = self.__initialize_players(board, players)
         player_states = self.__setup_players(players, board, extra_tile, player_states, goal_positions)
@@ -56,6 +55,23 @@ class Referee:
         if self.observer:
             return self.__run_with_observer(state)
         return self.__run_game(state)
+
+    def __create_board(self):
+        """ Creates a random board and extra tile with distinct gem pairs """
+        test_board = []
+        gems = [x for x in Gem]
+        all_gem_combos = []
+        for subset in itertools.combinations(gems, 2):
+            all_gem_combos.append(subset)
+
+        for rows in range(self.min_rows):
+            test_board.append([])
+            for cols in range(self.min_cols):
+                gems = random.choice(all_gem_combos)
+                test_board[rows].append(Tile(gems=gems))
+                all_gem_combos.remove(gems)
+
+        return Board(board=test_board), Tile(gems=random.choice(all_gem_combos))
 
     def __run_with_observer(self, state):
         try:
