@@ -145,7 +145,12 @@ class Referee:
         """ Calls setup in each player, giving them the initial state. """
         for i in range(len(player_apis)):
             try:
-                player_apis[i].setup(PlayerGameState(board, extra_tile, players[i], False),
+                home = board.find_tile_coordinate_by_tile(players[i].get_home()).to_json_notation()
+                player_apis[i].setup(PlayerGameState(board, extra_tile, players[i], False,
+                                                     [{
+                                                         'home': home,
+                                                         'current': home
+                                                     }]),
                                      goal_position=goal_positions[i])
             except Exception as e:
                 print(e)

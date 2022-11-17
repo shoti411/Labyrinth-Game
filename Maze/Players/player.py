@@ -37,6 +37,7 @@ class RemotePlayerAPI(PlayerAPI):
         self.address = address
         self.connection = connection
 
+
     def get_name(self):
         return self.name
 

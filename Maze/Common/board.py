@@ -288,12 +288,12 @@ class Board:
     def to_json_notation(self):
         connectors = []
         treasures = []
-        for row in self.__board:
+        for i in range(len(self.__board)):
             connectors.append([])
             treasures.append([])
-            for tile in row:
-                connectors[-1].append(tile.get_path_code())
-                treasures[-1].append([t.value for t in tile.get_gems()])
+            for tile in self.__board[i]:
+                connectors[i].append(tile.get_path_code())
+                treasures[i].append([t.value for t in tile.get_gems()])
 
         return {"connectors" : connectors, "treasures": treasures}
 

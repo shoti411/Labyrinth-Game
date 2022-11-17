@@ -21,9 +21,10 @@ class Client:
             ref_prox = RefereeProxy(player, open_socket)
             ref_prox.receive_message()
             self.players.append(RefereeProxy(player, open_socket))
-        
+            print(self.players)
+
         for player in self.players:
-            threading.Thread(target=player.receive_message)
+            threading.Thread(target=player.receive_message).start()
 
         while True:
             players_playing = any([p.is_running for p in self.players])
