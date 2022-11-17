@@ -14,7 +14,7 @@ from player import RemotePlayerAPI
 class Server:
 
     FRAME_SIZE = 1024
-    TIMEOUT_FOR_PLAYERS = 20
+    TIMEOUT_FOR_PLAYERS = 5
 
     def __init__(self, hostname, port):
         self.hostname = hostname
@@ -51,7 +51,7 @@ class Server:
             try:
                 connection, address = self.socket.accept()
                 self.socket.settimeout(2)
-                name = connection.recv(self.FRAME_SIZE)
+                name = connection.recv(self.FRAME_SIZE).decode('utf-8')
                 self.player_list.append(RemotePlayerAPI(name, connection, address))
             except socket.timeout:
                 continue

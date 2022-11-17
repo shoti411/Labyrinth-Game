@@ -34,7 +34,10 @@ class Action:
 
         raise NotImplemented('is_action not implemented')
 
-class Pass:
+    def to_json_notation(self):
+        raise NotImplemented('to_json_notation not implemented.')
+
+class Pass(Action):
     """
     Represents a Pass Action in which a Player passes their turn.
     """
@@ -45,7 +48,10 @@ class Pass:
     def does_undo(self, action):
         return False
 
-class Move:
+    def to_json_notation(self):
+        return None
+
+class Move(Action):
     """
     Represents a Move Action for a Player.
 
@@ -94,7 +100,10 @@ class Move:
 
         return self.get_index() == action.get_index() and self.get_direction() == -1*action.get_direction() 
 
-
-    
+    def to_json_notation(self):
+        dir = "UP" if self.get_direction() == 1 else "DOWN"
+        if self.get_isrow():
+            dir = "RIGHT" if self.get_direction() == 1 else "LEFT"
+        return [self.get_index(), dir]
 
 

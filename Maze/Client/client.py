@@ -21,3 +21,9 @@ class Client:
             open_socket.connect((self.hostname, self.port))
             open_socket.send(bytes(f'{player.get_name()}', encoding='utf-8'))
             self.players.append(RefereeProxy(player, open_socket))
+            print(self.players)
+
+        while True:
+            players_playing = any([p.is_running for p in self.players])
+            if not players_playing:
+                return

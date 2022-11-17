@@ -43,6 +43,13 @@ class Tile:
     def get_gems(self):
         return self.__gems
 
+    def to_json_notation(self):
+        json_obj = {
+            'tilekey': self.get_path_code(),
+            '1-image': self.__gems[0].value,
+            '2-image': self.__gems[1].value,
+        }
+        return json_obj
 
     def get_paths(self):
         """

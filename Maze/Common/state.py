@@ -314,13 +314,12 @@ class State:
         excluding the active player.
         E.g. {'bob' : {'home' : Coordinate(1,1), 'current' : Coordinate(0,0)}}
         '''
-        other_player_dict = {}
+        other_players = []
         for p in self.players[1:]:
-            player_name = p.get_player_api().get_name()
             home_coord = self.board.find_tile_coordinate_by_tile(p.get_home())
             current_coord = self.board.find_tile_coordinate_by_tile(p.get_coordinate())
-            other_player_dict[player_name] = {'home': home_coord, 'current': current_coord}
-        return other_player_dict
+            other_players.append({'current': current_coord, 'home': home_coord, 'color': p.get_avatar()})
+        return other_players
 
     def get_player_game_state(self, player=False):
         if not player:

@@ -4,13 +4,14 @@ import socket
 import threading
 import random
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "../Server"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Player"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Client"))
 
-from server import Server
+from client import Client
+from player import LocalPlayerAPI
 
-for player in range(5):
-    open_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    open_socket.connect(('localhost', 888))
-    name = ("%06x" % random.randint(0, 0xFFFFFF)).upper()
-    open_socket.send(bytes(f'{name}', encoding='utf-8'))
+player1 = LocalPlayerAPI('tom')
+player2 = LocalPlayerAPI('shaun')
+
+client = Client('localhost', 888)
+client.connect_players([player1, player2])

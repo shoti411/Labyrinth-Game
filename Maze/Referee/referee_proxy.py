@@ -9,6 +9,7 @@ from coordinate import Coordinate
 from player_game_state import PlayerGameState
 from action import Move, Pass, Action
 from player_state import Player
+import time
 
 class RefereeProxy:
 
@@ -20,13 +21,12 @@ class RefereeProxy:
         self.socket = conn
         self.player_mechanism = False
         self.receive_message()
+        self.is_running = True
 
     def receive_message(self):
-        byte_string = b''
-        while True:
-            byte_string += self.socket.recv(self.FRAME_SIZE)
-            if byte_string == b'':
-                break
+        byte_string = self.socket.recv(self.FRAME_SIZE)
+        if byte_string == b'':
+            self.receive_message()
         try:
             message = self.parse_message(byte_string)
         except json.decoder.JSONDecodeError:
@@ -36,6 +36,7 @@ class RefereeProxy:
             self.__send_message(self.__call_player_functions(message))
 
         if message[0] == 'win':
+            self.is_running = False
             return
 
         self.receive_message()
@@ -145,6 +146,7 @@ class RefereeProxy:
         return True
 
     def parse_message(self, json_string):
+        print(json_string)
         json_str = json_string.decode('utf-8')
         decoder = json.JSONDecoder()
         pos = 0
@@ -156,5 +158,3 @@ class RefereeProxy:
             obj, pos = decoder.raw_decode(json_str)
             objs.append(obj)
         return objs[0]
-
-RefereeProxy('', '').parse_message(b'{ "eresr": "erere"')

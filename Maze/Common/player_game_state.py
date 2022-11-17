@@ -31,3 +31,15 @@ class PlayerGameState:
 
     def get_last_action(self):
         return copy.deepcopy(self.__last_action)
+
+    def to_json_notation(self):
+        last = None
+        if self.__last_action:
+            last = self.__last_action.to_json_notation()
+        json_obj = {
+            'board': self.__board.to_json_notation(),
+            'spare': self.__extra_tile.to_json_notation(),
+            'plmt': self.__other_players,
+            'last': last
+        }
+        return json_obj

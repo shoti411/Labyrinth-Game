@@ -285,6 +285,18 @@ class Board:
 
         return connections
 
+    def to_json_notation(self):
+        connectors = []
+        treasures = []
+        for row in self.__board:
+            connectors.append([])
+            treasures.append([])
+            for tile in row:
+                connectors.append(tile.get_path_code())
+                treasures.append([t.value for t in tile.get_gems()])
+
+        return {"connectors" : connectors, "treasures": treasures}
+
     def __str__(self):
         return_string = ''
         for row in self.__board:

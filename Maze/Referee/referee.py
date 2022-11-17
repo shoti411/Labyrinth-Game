@@ -52,6 +52,7 @@ class Referee:
         player_states, goal_positions = self.__initialize_players(board, players)
         player_states = self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
+        print(self.kicked_players)
         if self.observer:
             return self.__run_with_observer(state)
         return self.__run_game(state)
@@ -146,6 +147,7 @@ class Referee:
                 player_apis[i].setup(PlayerGameState(board, extra_tile, players[i], False),
                                      goal_position=goal_positions[i])
             except Exception as e:
+                print(e)
                 self.kicked_players.append(players[i])
 
         for player in self.kicked_players:

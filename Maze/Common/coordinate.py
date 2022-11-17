@@ -48,7 +48,9 @@ class Coordinate:
             raise ValueError('Cannot get the distance from a Coordinate off the board.')
 
         return math.sqrt((self.getX()-coordinate.getX())**2 + (self.getY()-coordinate.getY())**2)
-    
+
+    def to_json_notation(self):
+        return {'row#': self.__x, "column#": self.__y}
 
     def __eq__(self, other):
         if isinstance(other, Coordinate):
