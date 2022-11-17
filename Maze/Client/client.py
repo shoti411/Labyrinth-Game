@@ -1,6 +1,7 @@
 import sys
 import os
 import socket
+import threading
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Referee"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
@@ -22,6 +23,9 @@ class Client:
             open_socket.send(bytes(f'{player.get_name()}', encoding='utf-8'))
             self.players.append(RefereeProxy(player, open_socket))
             print(self.players)
+
+        for player in self.players:
+            threading.Thread(target=player.receive_message).start()
 
         while True:
             players_playing = any([p.is_running for p in self.players])

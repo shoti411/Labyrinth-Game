@@ -13,14 +13,13 @@ import time
 
 class RefereeProxy:
 
-    FRAME_SIZE = 1024
+    FRAME_SIZE = 100000
     VALID_FUNCTION_NAMES = ['setup', 'take-turn', 'win']
 
     def __init__(self, player, conn):
         self.player = player
         self.socket = conn
         self.player_mechanism = False
-        self.receive_message()
         self.is_running = True
 
     def receive_message(self):
@@ -29,10 +28,12 @@ class RefereeProxy:
             self.receive_message()
         try:
             message = self.parse_message(byte_string)
-        except json.decoder.JSONDecodeError:
+        except json.decoder.JSONDecodeError as e:
+            print(e)
             self.receive_message()
 
         if self.__is_valid(message):
+            print('is valid')
             self.__send_message(self.__call_player_functions(message))
 
         if message[0] == 'win':
@@ -75,7 +76,6 @@ class RefereeProxy:
         board, spare_tile, last_action = self.__parse_state(state_json)
 
         curr_coord = self.__parse_coordinate(state_json['plmt'][0]['current'])
-        curr_tile = board.getTile(curr_coord)
 
         home_coord = self.__parse_coordinate(state_json['plmt'][0]['home'])
         home_tile = board.getTile(home_coord)
@@ -83,7 +83,7 @@ class RefereeProxy:
         goal_coord = self.__parse_coordinate(goal_json)
         goal_tile = board.getTile(goal_coord)
 
-        self.player_mechanism = Player('', home_tile, goal_tile, curr_tile, goal_tile == home_tile)
+        self.player_mechanism = Player('', home_tile, goal_tile, curr_coord, goal_tile == home_tile)
         return PlayerGameState(board, spare_tile, self.player_mechanism, last_action), goal_coord
 
     def __take_turn(self, state_json):
@@ -146,7 +146,6 @@ class RefereeProxy:
         return True
 
     def parse_message(self, json_string):
-        print(json_string)
         json_str = json_string.decode('utf-8')
         decoder = json.JSONDecoder()
         pos = 0

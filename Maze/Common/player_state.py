@@ -52,7 +52,7 @@ class Player:
         if not isinstance(self.__goal, type(Tile())):
             raise ValueError('Goal must be of type Tile')
         if not (isinstance(self.__coordinate, Coordinate)):
-            raise ValueError('coordinate must be an array of length 2 with integer values.')
+            raise ValueError('coordinate must be a Coordinate')
         # if not(isinstance(self.__player_api, PlayerAPI)) and not(isinstance(self.__player_api, bool)):
         #    raise ValueError('player_api must be False or type PlayerAPI')
 
