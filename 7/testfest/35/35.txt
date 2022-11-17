@@ -1,0 +1,31 @@
+(testing /course/cs4500f22/ta/github/sly-mice/7/xbad)
+(testing /course/cs4500f22/ta/github/7/35/Tests/0-in.json /course/cs4500f22/ta/github/7/35/Tests/0-out.json)
+Traceback (most recent call last):
+  File "../Maze/Common/xbad.py", line 126, in <module>
+    print(xgame(sys.stdin.read()))
+  File "../Maze/Common/xbad.py", line 24, in xgame
+    turn_data = handle_json(json_objects)
+  File "../Maze/Common/xbad.py", line 61, in handle_json
+    board = json_to_board(json_objects[1])
+IndexError: list index out of range
+(testing /course/cs4500f22/ta/github/7/35/Tests/1-in.json /course/cs4500f22/ta/github/7/35/Tests/1-out.json)
+Traceback (most recent call last):
+  File "../Maze/Common/xbad.py", line 126, in <module>
+    print(xgame(sys.stdin.read()))
+  File "../Maze/Common/xbad.py", line 24, in xgame
+    turn_data = handle_json(json_objects)
+  File "../Maze/Common/xbad.py", line 61, in handle_json
+    board = json_to_board(json_objects[1])
+IndexError: list index out of range
+(testing /course/cs4500f22/ta/github/7/35/Tests/2-in.json /course/cs4500f22/ta/github/7/35/Tests/2-out.json)
+Traceback (most recent call last):
+  File "../Maze/Common/xbad.py", line 126, in <module>
+    print(xgame(sys.stdin.read()))
+  File "../Maze/Common/xbad.py", line 24, in xgame
+    turn_data = handle_json(json_objects)
+  File "../Maze/Common/xbad.py", line 61, in handle_json
+    board = json_to_board(json_objects[1])
+IndexError: list index out of range
+((/course/cs4500f22/ta/github/7/35/Tests/0-in.json /course/cs4500f22/ta/github/7/35/Tests/0-out.json) (/course/cs4500f22/ta/github/7/35/Tests/1-in.json /course/cs4500f22/ta/github/7/35/Tests/1-out.json) (/course/cs4500f22/ta/github/7/35/Tests/2-in.json /course/cs4500f22/ta/github/7/35/Tests/2-out.json))
+((passed 3) (total 3) (partial-score 3))
+
