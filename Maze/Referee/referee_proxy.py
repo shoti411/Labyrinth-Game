@@ -20,16 +20,14 @@ class RefereeProxy:
         self.player = player
         self.socket = conn
         self.player_mechanism = False
-        self.receive_message()
         self.is_running = True
 
     def receive_message(self):
         byte_string = self.socket.recv(self.FRAME_SIZE)
-        if byte_string == b'':
-            self.receive_message()
         try:
             message = self.parse_message(byte_string)
-        except json.decoder.JSONDecodeError:
+        except json.decoder.JSONDecodeError as e:
+            print(e)
             self.receive_message()
 
         if self.__is_valid(message):
@@ -153,8 +151,10 @@ class RefereeProxy:
         objs = []
         while pos < len(json_str):
             json_str = json_str[pos:].strip()
+            print(json_str)
             if not json_str:
                 break
             obj, pos = decoder.raw_decode(json_str)
+            print(obj)
             objs.append(obj)
         return objs[0]

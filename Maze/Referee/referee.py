@@ -46,6 +46,7 @@ class Referee:
 
     def run(self, players):
         """ Starts a new Labyrinth game """
+        print(players)
 
         board, extra_tile = self.__create_board()
 
@@ -203,14 +204,17 @@ class Referee:
 
     def __run_game(self, state):
         self.__alert_observer(state)
+        print('starting game')
 
         while not state.is_game_over(self.max_rounds) and not self.game_quit:
             if not self.observer or self.observer.get_ready():
                 state = self.__do_round(state)
             self.__alert_observer(state)
+    
 
         self.__alert_observer(state, True)
         winners = state.get_winners()
+        print(winners)
 
         winners, also_kicked = self.__notify_players_of_win_status(winners, state.get_players())
         self.kicked_players = self.kicked_players + also_kicked

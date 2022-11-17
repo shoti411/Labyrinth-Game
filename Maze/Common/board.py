@@ -292,8 +292,8 @@ class Board:
             connectors.append([])
             treasures.append([])
             for tile in row:
-                connectors.append(tile.get_path_code())
-                treasures.append([t.value for t in tile.get_gems()])
+                connectors[-1].append(tile.get_path_code())
+                treasures[-1].append([t.value for t in tile.get_gems()])
 
         return {"connectors" : connectors, "treasures": treasures}
 
