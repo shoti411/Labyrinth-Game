@@ -9,4 +9,4 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../Client"))
 from server import Server
 
 
-s = Server('localhost', 888)
+print(Server('localhost', 888))

@@ -10,6 +10,7 @@ from socket import socket
 import json
 from action import Pass, Move
 from coordinate import Coordinate
+import time
 
 class PlayerAPI:
     """ This class should not be instantiated """
@@ -30,6 +31,7 @@ class RemotePlayerAPI(PlayerAPI):
     """ Proxy playerAPI class. Communicates in json objects to a tcp socket. """
 
     FRAME_SIZE = 1024
+    TIMEOUT = 15
 
     def __init__(self, name, connection, address):
         assert isinstance(connection, socket), 'Connection must be a TCP socket.'
@@ -77,11 +79,15 @@ class RemotePlayerAPI(PlayerAPI):
 
     def listen_for_response(self):
         # TODO: ADD TIMEOUT ERRORS
+        self.connection.settimeout(self.TIMEOUT)
         response = self.connection.recv(self.FRAME_SIZE)
         return self.__parse_message(response)
 
     def __parse_message(self, json_string):
         json_str = json_string.decode('utf-8')
+        print(json_str)
+        if json_str == 'void':
+            return
         decoder = json.JSONDecoder()
         pos = 0
         objs = []
@@ -147,7 +153,7 @@ class BadPlayerAPI(LocalPlayerAPI):
         if self.error_function == 'win':
             self.error_count -= 1
             if self.error_count == 0:
-                raise TimeoutError('Win timed out.')
+                raise TimeoutError('win timed out.')
         else:
             return super().won(w)
 
@@ -155,15 +161,16 @@ class BadPlayerAPI(LocalPlayerAPI):
         if self.error_function == 'takeTurn':
             self.error_count -= 1
             if self.error_count == 0:
-                raise TimeoutError('Win timed out.')
+                raise TimeoutError('take timed out.')
         else:
             return super().take_turn(game_state)
 
     def setup(self, game_state, goal_position):
+        print('CALLED')
         if self.error_function == 'setUp':
             self.error_count -= 1
             if self.error_count == 0:
-                raise TimeoutError('Win timed out.')
+                raise TimeoutError('setup timed out.')
         else:
             return super().setup(game_state, goal_position)
 

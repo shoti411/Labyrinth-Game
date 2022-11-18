@@ -11,8 +11,9 @@ from state import State
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Referee"))
-from player import PlayerAPI, BadPlayerAPI
+from player import LocalPlayerAPI, BadPlayerAPI
 from referee import Referee
+from observer import Observer
 
 
 def xgame(in_stream):
@@ -63,7 +64,7 @@ def handle_json(json_objects):
     players = json_to_players(json_objects[1], board)
 
     for i in range(len(players)):
-        player_api = PlayerAPI(json_objects[0][i][0], json_objects[0][i][1])
+        player_api = LocalPlayerAPI(json_objects[0][i][0], json_objects[0][i][1])
         if len(json_objects[0][i]) == 4:
             player_api = BadPlayerAPI(json_objects[0][i][0], json_objects[0][i][2],
                                       json_objects[0][i][3], json_objects[0][i][1])
@@ -125,13 +126,9 @@ def json_to_last_action(json_object):
 
 if __name__ == "__main__":
 #    print(xgame(sys.stdin.read()))
-    file_name = f'./Tests/2-in.json'
-    f = open(file_name, 'r', encoding='utf-8')
-    print(xgame(f.read()))
 
-"""
     for i in range(3):
-        file_name = f'./Tests/ForStudents/{i}-in.json'
+        file_name = f'./Tests/ForStudents/1-in.json'
         f = open(file_name, 'r', encoding='utf-8')
         print(xgame(f.read()))
         continue
@@ -139,4 +136,3 @@ if __name__ == "__main__":
         f_out.write(xgame(f.read()))
         f_out.close()
         f.close()
-"""

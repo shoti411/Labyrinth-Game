@@ -13,7 +13,7 @@ class Server:
 
     #TODO make something to close down the server if all connections close
     FRAME_SIZE = 1024
-    TIMEOUT_FOR_PLAYERS = 5
+    TIMEOUT_FOR_PLAYERS = 20
 
     def __init__(self, hostname, port):
         self.hostname = hostname

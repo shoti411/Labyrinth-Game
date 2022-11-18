@@ -232,7 +232,6 @@ class AbstractStrategy(Strategy):
                 board_copy.shift_column(index, direction, tile_copy)
 
             updated_player_coordinate = self.update_position(player.get_coordinate(), index, direction, isrow, state.get_board())
-            
             goal_tile = state.get_board().getTile(coordinate)
             updated_coordinate = board_copy.find_tile_coordinate_by_tile(goal_tile)
             if board_copy.coordinate_is_reachable_from(updated_coordinate, updated_player_coordinate):
