@@ -125,14 +125,14 @@ def json_to_last_action(json_object):
 
 
 if __name__ == "__main__":
-#    print(xgame(sys.stdin.read()))
-
-    for i in range(3):
-        file_name = f'./Tests/ForStudents/1-in.json'
+    print(xgame(sys.stdin.read()))
+    '''
+    for i in range(5):
+        file_name = f'Tests\{i}-in.json'
         f = open(file_name, 'r', encoding='utf-8')
-        print(xgame(f.read()))
-        continue
-        f_out = open(f'./Tests/{i}-out.json', 'w')
+        #print(xgame(f.read()))
+        f_out = open(f'\Tests\{i}-out.json', 'w')
         f_out.write(xgame(f.read()))
         f_out.close()
         f.close()
+    '''

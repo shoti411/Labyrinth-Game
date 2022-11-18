@@ -1,0 +1,2 @@
+#!/bin/bash 
+python3 ../Maze/Common/xbad2.py

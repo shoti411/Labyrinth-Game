@@ -21,6 +21,7 @@ def xgame(in_stream):
     Outputs to stdout the reachable tiles from that Maze board state from the given coordinate.
     """
     json_objects = read_input(in_stream)
+    print(json_objects)
     turn_data = handle_json(json_objects)
     return return_output(turn_data)
 
