@@ -9,7 +9,7 @@ from coordinate import Coordinate
 from player_game_state import PlayerGameState
 from action import Move, Pass, Action
 from player_state import Player
-import time
+from gems import Gem, get_gem_by_string
 
 class RefereeProxy:
 
@@ -43,6 +43,7 @@ class RefereeProxy:
         self.receive_message()
 
     def __send_message(self, message):
+        print(f'SENDING {message}')
         self.socket.send(bytes(message, encoding='utf-8'))
 
     def __call_player_functions(self, msg):
@@ -50,8 +51,13 @@ class RefereeProxy:
         send_back = 'void'
         args = msg[1]
         if func_name == 'setup':
-            state, goal = self.__setup(args[0], args[1])
-            self.player.setup(state, goal)
+            if not args[0]:
+                self.player.setup(args[0], self.__parse_coordinate(args[1]))
+                self.player_mechanism.reached_goal()
+                self.player_mechanism.set_goal(self.player_mechanism.get_home())
+            else:
+                state, goal = self.__setup(args[0], args[1])
+                self.player.setup(state, goal)
         elif func_name == 'take-turn':
             state = self.__take_turn(args[0])
             send_back = self.choice_to_json(self.player.take_turn(state))
@@ -69,7 +75,7 @@ class RefereeProxy:
         direction = "DOWN" if choice.get_direction() == 1 else "UP"
         if choice.get_direction() == -1:
             direction = "RIGHT" if choice.get_direction() == 1 else "LEFT"
-        return [index, direction, degree, coord]
+        return json.dumps([index, direction, degree, coord])
 
 
     def __setup(self, state_json, goal_json):
@@ -82,12 +88,15 @@ class RefereeProxy:
 
         goal_coord = self.__parse_coordinate(goal_json)
         goal_tile = board.getTile(goal_coord)
-
         self.player_mechanism = Player('', home_tile, goal_tile, curr_coord, goal_tile == home_tile)
         return PlayerGameState(board, spare_tile, self.player_mechanism, last_action), goal_coord
 
     def __take_turn(self, state_json):
+        # TODO: UPDATE POSITION
         board, spare_tile, last_action = self.__parse_state(state_json)
+        my_data = state_json['plmt'][0]
+        my_position = my_data['current']
+        self.player_mechanism.set_coordinate(self.__parse_coordinate(my_position))
         return PlayerGameState(board, spare_tile, self.player_mechanism, last_action)
 
     def __parse_coordinate(self, coord_json):
@@ -102,13 +111,15 @@ class RefereeProxy:
         return board, spare_tile, last_action
 
     def json_to_board(self, json_object):
-        #TODO add gem parsing
         board_strings = (json_object['board']['connectors'])
+        gems = json_object['board']['treasures']
         board_obj = []
         for row in range(len(board_strings)):
             board_obj.append([])
             for col in range(len(board_strings[row])):
-                board_obj[row].append(Tile(board_strings[row][col]))
+                board_obj[row].append(Tile(board_strings[row][col],
+                                           gems=[get_gem_by_string(gems[row][col][0]),
+                                                 get_gem_by_string(gems[row][col][1])]))
         return Board(board=board_obj)
     
     def json_to_last_action(self, json_object):

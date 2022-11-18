@@ -49,6 +49,11 @@ class State:
 
         self.__check_valid_constructor()
 
+    def get_state_copy(self):
+        copy_players = [p.get_player_copy() for p in self.players]
+        return State(copy_players, copy.deepcopy(self.board), copy.deepcopy(self.extra_tile),
+                     copy.deepcopy(self.last_action), copy.deepcopy(self.__rounds), copy.deepcopy(self.__round_passes))
+
     def __check_valid_constructor(self):
         if not isinstance(self.extra_tile, type(Tile())):
             raise ValueError('Spare tile must be of type Tile.')
@@ -315,10 +320,10 @@ class State:
         E.g. {'bob' : {'home' : Coordinate(1,1), 'current' : Coordinate(0,0)}}
         '''
         other_players = []
-        for p in self.players[1:]:
+        for p in self.players[0:]:
             home_coord = self.board.find_tile_coordinate_by_tile(p.get_home())
-            current_coord = self.board.find_tile_coordinate_by_tile(p.get_coordinate())
-            other_players.append({'current': current_coord, 'home': home_coord, 'color': p.get_avatar()})
+            current_coord = p.get_coordinate()
+            other_players.append({'current': current_coord.to_json_notation(), 'home': home_coord.to_json_notation(), 'color': p.get_avatar()})
         return other_players
 
     def get_player_game_state(self, player=False):

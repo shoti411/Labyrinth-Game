@@ -87,7 +87,7 @@ class Tile:
 
 
     def __str__(self):
-        return self.__path_code
+        return f'{self.__path_code} {[x.value for x in self.__gems]}'
 
 
     def __eq__(self, other):

@@ -14,7 +14,7 @@ from player import RemotePlayerAPI
 class Server:
 
     FRAME_SIZE = 1024
-    TIMEOUT_FOR_PLAYERS = 5
+    TIMEOUT_FOR_PLAYERS = 20
 
     def __init__(self, hostname, port):
         self.hostname = hostname

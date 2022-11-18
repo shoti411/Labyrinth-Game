@@ -52,7 +52,6 @@ class Referee:
         player_states, goal_positions = self.__initialize_players(board, players)
         player_states = self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
-        print(self.kicked_players)
         if self.observer:
             return self.__run_with_observer(state)
         return self.__run_game(state)
@@ -198,7 +197,7 @@ class Referee:
             # raise ValueError(f'Action undoes last action.')
             return False
 
-        state_copy = copy.deepcopy(state)
+        state_copy = state.get_state_copy()
         state_copy.rotate_extra_tile(action.get_degree())
         state_copy.shift(action.get_index(), action.get_direction(), action.get_isrow())
         if not state_copy.active_can_reach_tile(action.get_coordinate()):

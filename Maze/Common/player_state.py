@@ -5,7 +5,7 @@ import sys
 import os
 import random
 import re
-
+import copy
 
 class Player:
     """
@@ -33,6 +33,14 @@ class Player:
         self.__player_api = player_api
 
         self.__check_constructor()
+
+    def get_player_copy(self):
+        return Player(copy.deepcopy(self.__avatar),
+                      copy.deepcopy(self.__home),
+                      copy.deepcopy(self.__goal),
+                      copy.deepcopy(self.__coordinate),
+                      copy.deepcopy(self.__has_reached_goal),
+                      False)
 
     def __assign_color(self, color):
         if color in self.__acceptable_colors:

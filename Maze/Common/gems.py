@@ -104,3 +104,10 @@ class Gem(Enum):
     YELLOW_JASPER = "yellow-jasper"
     ZIRCON = "zircon"
     ZOISITE = "zoisite"
+
+
+def get_gem_by_string(s):
+    for gem in Gem:
+        if gem.value == s:
+            return gem
+    raise ValueError(f'Gem {s} does not exist.')
