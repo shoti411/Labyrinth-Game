@@ -23,6 +23,7 @@ class RemotePlayerAPI:
         return self.name
 
     def send_message(self, msg):
+        print(f'SENDING {message}')
         self.connection.send(bytes(json.dumps(msg), encoding='utf-8'))
 
     def propose_board(self, rows, columns):

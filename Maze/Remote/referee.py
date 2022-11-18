@@ -25,7 +25,7 @@ class RefereeProxy:
     def receive_message(self):
         byte_string = self.socket.recv(self.FRAME_SIZE)
         if byte_string == b'':
-            self.socket.close()
+            self.receive_message()
         try:
             message = self.parse_message(byte_string)
         except json.decoder.JSONDecodeError as e:

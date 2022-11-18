@@ -23,8 +23,13 @@ class Client:
             open_socket.send(bytes(f'{player.get_name()}', encoding='utf-8'))
             self.players.append(RefereeProxy(player, open_socket))
 
+        threads = []
         for player in self.players:
-            threading.Thread(target=player.receive_message).start()
+            t = threading.Thread(target=player.receive_message).start()
+            threads.append(t)
+        
+        for t in threads:
+            t.join()
 
         while True:
             players_playing = any([p.is_running for p in self.players])
