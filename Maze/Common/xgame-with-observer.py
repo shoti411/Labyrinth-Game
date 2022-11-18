@@ -1,5 +1,11 @@
 import json
 import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Referee"))
+from player import PlayerAPI
+from referee import Referee
+from observer import Observer
 from riemann import Riemann
 from euclid import Euclid
 from board import Board
@@ -8,12 +14,6 @@ from player_state import Player
 from coordinate import Coordinate
 from action import Move, Pass
 from state import State
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
-sys.path.append(os.path.join(os.path.dirname(__file__), "../Referee"))
-from player import PlayerAPI
-from referee import Referee
-from observer import Observer
 
 
 def xgame(in_stream):

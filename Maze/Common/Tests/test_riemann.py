@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
 import pytest
 from state import State
 from player_state import Player

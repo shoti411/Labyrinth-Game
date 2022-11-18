@@ -1,3 +1,7 @@
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Common"))
+
 from queue import PriorityQueue
 import pytest
 from state import State

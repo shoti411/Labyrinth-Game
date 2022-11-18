@@ -1,5 +1,6 @@
 import json
 import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
 from riemann import Riemann
 from euclid import Euclid
 from board import Board

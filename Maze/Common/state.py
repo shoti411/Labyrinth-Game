@@ -313,12 +313,6 @@ class State:
         return return_str[:-1]
 
     def get_other_players(self):
-        '''
-        Returns a dictionary mapping of the players' name to a dictionary 
-        containing of their home coordinate and their current coordinate,
-        excluding the active player.
-        E.g. {'bob' : {'home' : Coordinate(1,1), 'current' : Coordinate(0,0)}}
-        '''
         other_players = []
         for p in self.players[0:]:
             home_coord = self.board.find_tile_coordinate_by_tile(p.get_home())

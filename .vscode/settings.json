@@ -1,5 +1,8 @@
 {
     "python.analysis.extraPaths": [
-        "./Maze/Common"
+        "./Maze/Common",
+        "./Maze/Players",
+        "./Maze/Referee",
+        "./Maze/Client"
     ]
 }
