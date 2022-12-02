@@ -61,11 +61,9 @@ class AbstractStrategy(Strategy):
 
     def evaluate_move(self, state):
         re = self.slide_and_insert(state)
-        print(re)
         if not re:
             return Pass()
         (degree, coordinate), direction, index, is_row = re
-        print(coordinate)
         return Move(degree, direction, index, is_row, coordinate)
 
     def slide_and_insert(self, state):

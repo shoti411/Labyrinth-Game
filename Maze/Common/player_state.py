@@ -22,7 +22,7 @@ class Player:
         :param: home <Tile>: home represents the home tile of the player.
         :param: goal <Tile>: goal represents the target tile of the player.
         :param: coordinate  <Coordinate>: Coordinate of player
-        :param: has_reached_goal <bool>: If the player has reached their goal Tile before
+        :param: num_goals_reached <bool>: How many goal tiles the player has reached
         """
         # TODO: check avatar is a valid color, if not, randomize.
         self.__avatar = self.__assign_color(avatar)
@@ -39,7 +39,6 @@ class Player:
                       copy.deepcopy(self.__home),
                       copy.deepcopy(self.__goal),
                       copy.deepcopy(self.__coordinate),
-                      copy.deepcopy(self.__has_reached_goal),
                       False)
 
     def __assign_color(self, color):

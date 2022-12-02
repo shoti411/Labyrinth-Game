@@ -326,5 +326,5 @@ class State:
     def get_player_game_state(self, player=False):
         if not player:
             player = self.get_active_player()
-        return PlayerGameState(self.get_board(), self.get_extra_tile(), player,
-                               self.get_last_action(), self.get_other_players())
+        return PlayerGameState(board=self.get_board(), extra_tile=self.get_extra_tile(), player=player,
+                               last_action=self.get_last_action(), other_players=self.get_other_players())

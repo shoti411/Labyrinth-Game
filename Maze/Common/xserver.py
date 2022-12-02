@@ -50,7 +50,7 @@ def json_to_state(json_state):
         [Gem(json_state['spare']['1-image']), Gem(json_state['spare']['2-image'])])
     players = json_to_players(json_state, board)
     last_action = json_to_last_action(json_state['last'])
-    s = State(players, board, extra_tile=spare_tile, last_action=last_action)
+    s = State(players=players, board=board, extra_tile=spare_tile, last_action=last_action)
     return s
 
 

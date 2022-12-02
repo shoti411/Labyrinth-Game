@@ -36,7 +36,8 @@ class Server:
             self.__waiting_period()
 
         if len(self.player_list) < 2:
-            return [[], []]
+            print('print not connecting')
+            return [], []
         else:
             return self.start_game(state)            
 

@@ -10,7 +10,7 @@ class RemotePlayerAPI:
     """ Proxy playerAPI class. Communicates in json objects to a tcp socket. """
 
     FRAME_SIZE = 1024
-    TIMEOUT = 4  
+    TIMEOUT = 4
 
     def __init__(self, name, connection, address):
         assert isinstance(connection, socket), 'Connection must be a TCP socket.'

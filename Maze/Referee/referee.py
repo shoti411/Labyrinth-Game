@@ -30,6 +30,8 @@ class Referee:
         if not isinstance(state, State):
             raise ValueError('state must be an instance of class State')
 
+        self.__initialize_goals(state.board)
+
         player_apis, goal_posns = [], []
         for player in state.get_players():
             player_apis.append(player.get_player_api())
@@ -46,11 +48,12 @@ class Referee:
         """ Starts a new Labyrinth game """
 
         board, extra_tile = self.__create_board()
+        self.__initialize_goals(board)
         player_states, goal_positions = self.__initialize_players(board, players)
         player_states = self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
         if self.observer:
-            return self.__run_with_observer(state), self.kicked_players
+            return self.__run_with_observer(state)
         return self.__run_game(state)
 
     def __create_board(self):
@@ -80,7 +83,7 @@ class Referee:
             self.observer = False
             self.game_quit = True
             t.join()
-        return state.get_winners()
+        return state.get_winners(), self.kicked_players
 
     def __initialize_board(self, players):
         """
@@ -105,7 +108,6 @@ class Referee:
         """ Creates Player objects for all the PlayerAPIs, aka Referee's knowledge of the player. """
         players = []
         goals = []
-        self.__initialize_goals()
         valid_home_tiles = copy.deepcopy(self.next_goals)
         for player in range(len(player_apis)):
             goal_tile = self.next_goals.pop(0)
@@ -119,14 +121,14 @@ class Referee:
             goals.append(goal_posn)
         return players, goals
 
-    def __initialize_goals(self):
+    def __initialize_goals(self, board):
         # TODO: Handle rectangular boards.
         goal_positions = itertools.combinations(board.get_immoveable_columns() + board.get_immoveable_rows(), 2)
-        board = board.get_board()
         valid_goal_tiles = []
         for (x, y) in goal_positions:
             valid_goal_tiles.append(Coordinate(x, y))
-        self.next_goals = [board.getTile(t) for t in random.shuffle(valid_goal_tiles)]
+        random.shuffle(valid_goal_tiles)
+        self.next_goals = [board.getTile(t) for t in valid_goal_tiles]
 
     def __initialize_home_positions(self, valid_tiles, board):
         tile = random.choice(valid_tiles)
@@ -147,6 +149,7 @@ class Referee:
                                                      }]),
                                      goal_position=goal_positions[i])
             except Exception as e:
+                print('setup error', e)
                 self.kicked_players.append(players[i])
 
         for player in self.kicked_players:
@@ -202,7 +205,6 @@ class Referee:
 
     def __run_game(self, state):
         self.__alert_observer(state)
-
         while not state.is_game_over(self.max_rounds, len(self.next_goals) == 0) and not self.game_quit:
             if not self.observer or self.observer.get_ready():
                 state = self.__do_round(state)
@@ -239,6 +241,7 @@ class Referee:
                 self.kicked_players.append(state.get_active_player())
                 state.kick_active()
         except Exception as e:
+            print('do round error', e)
             self.kicked_players.append(state.get_active_player())
             state.kick_active()
 

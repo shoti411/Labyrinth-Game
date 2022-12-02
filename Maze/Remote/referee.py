@@ -29,11 +29,9 @@ class RefereeProxy:
         try:
             message = self.parse_message(byte_string)
         except json.decoder.JSONDecodeError as e:
-            print(e)
             self.receive_message()
 
         if self.__is_valid(message):
-            print('is valid')
             self.__send_message(self.__call_player_functions(message))
 
         if message[0] == 'win':
@@ -43,7 +41,7 @@ class RefereeProxy:
         self.receive_message()
 
     def __send_message(self, message):
-        print(f'SENDING {message}')
+        #print(f'SENDING {message}')
         self.socket.send(bytes(message, encoding='utf-8'))
 
     def __call_player_functions(self, msg):
