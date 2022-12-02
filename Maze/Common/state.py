@@ -1,9 +1,7 @@
 from tile import Tile
 from board import Board
 from player_state import Player
-from directions import Direction
 from coordinate import Coordinate
-from action import Move
 import copy
 from player_game_state import PlayerGameState
 
@@ -87,19 +85,28 @@ class State:
         :param: coordinate (Coordinate): Coordinate representing the location of the move.
         """
         if self.active_can_reach_tile(coordinate):
-            goal_coordinate = self.board.find_tile_coordinate_by_tile(self.players[0].get_goal())
-            if coordinate == goal_coordinate:
-                home_coordinate = self.board.find_tile_coordinate_by_tile(self.players[0].get_home())
-                self.players[0].get_player_api().setup(None, home_coordinate)
-                self.players[0].reached_goal()
-                self.players[0].set_goal(self.players[0].get_home())
             self.players[0].set_coordinate(coordinate)
 
         else:
             raise ValueError('The given move is unreachable or unvalid.')
 
         self.__round_passes = 0
-        self.next_player()
+        goal_coordinate = self.board.find_tile_coordinate_by_tile(self.players[0].get_goal())
+        return self.players[0].get_coordinate() == goal_coordinate
+
+
+    def assign_new_goal(self, goal_tile=False):
+        if not goal_tile:
+            home_coordinate = self.board.find_tile_coordinate_by_tile(self.players[0].get_home())
+            self.players[0].get_player_api().setup(None, home_coordinate)
+            self.players[0].set_goal(self.players[0].get_home())
+        else:
+            goal_coordinate = self.board.find_tile_coordinate_by_tile(goal_tile)
+            self.players[0].get_player_api().setup(None, goal_coordinate)
+            self.players[0].set_goal(goal_tile)
+        
+        self.players[0].reached_goal()
+
 
     def rotate_extra_tile(self, degrees):
         """
@@ -187,7 +194,7 @@ class State:
 
         return self.players[0]
 
-    def is_game_over(self, max_rounds):
+    def is_game_over(self, max_rounds, no_more_goals):
         """
         Checks if a game is over. 
         A game is over we have reached the maximum number of rounds.
@@ -206,7 +213,7 @@ class State:
         if self.__round_passes == len(self.players):
             return True
         for player in self.players:
-            if player.has_reached_goal() and self.player_on_home_tile(player):
+            if no_more_goals and self.player_on_home_tile(player):
                 return True
 
         return False
@@ -217,36 +224,33 @@ class State:
 
         :return: <list(Player)>
         """
+        max_goals_reached = 0
+        possible_winners = []
         for player in self.players:
-            if player.has_reached_goal() and self.player_on_home_tile(player):
-                return [player]
+            if player.get_num_goals_reached() > max_goals_reached:
+                possible_winners = [player]
+                max_goals_reached = player.get_num_goals_reached()
+            elif player.get_num_goals_reached() == max_goals_reached:
+                possible_winners.append(player)
 
-        winners = self.__get_players_with_minimum_distance()
-        if winners:
-            return winners
-        return self.__get_players_with_minimum_distance(go_to_goal=True)
+        if len(possible_winners) > 1:
+            winners = self.__get_players_with_minimum_distance(possible_winners)
+        else:
+            winners = possible_winners
+        return winners
 
-    def __get_players_with_minimum_distance(self, go_to_goal=False):
+    def __get_players_with_minimum_distance(self, possible_winners):
         winners = []
         min_distance = Coordinate(0, 0).get_euclid_distance(Coordinate(len(self.get_board().get_board()) + 1,
                                                                        len(self.get_board().get_board()[0]) + 1))
-        for player in self.players:
-
-            if go_to_goal:
-                goto_coords = self.get_board().find_tile_coordinate_by_tile(player.get_goal())
-            elif player.has_reached_goal():
-                goto_coords = self.get_board().find_tile_coordinate_by_tile(player.get_home())
-            else:
-                continue
-
+        for player in possible_winners:
+            goto_coords = self.get_board().find_tile_coordinate_by_tile(player.get_goal())
             player_distance = player.get_coordinate().get_euclid_distance(goto_coords)
-
             if player_distance < min_distance:
                 min_distance = player_distance
                 winners = [player]
             elif player_distance == min_distance:
                 winners.append(player)
-
         return winners
 
     def shift(self, index, direction, is_row):
@@ -299,7 +303,6 @@ class State:
             player_str += f'{player.get_avatar()}'.center(w)
             player_str += f'{player.get_coordinate()}'.center(w)
             player_str += f'{goal_coord}'.center(w)
-            player_str += f'{player.has_reached_goal()}'.center(w)
             return_str += player_str + '\n'
 
         return return_str

@@ -1,8 +1,6 @@
-import os
-import sys
+import os, sys, copy, time
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Common"))
-
 from player_game_state import PlayerGameState
 from state import State
 from player_state import Player
@@ -10,7 +8,6 @@ from board import Board
 from tile import Tile
 from coordinate import Coordinate
 import random
-import copy
 import itertools
 from observer import ObserverInterface
 from threading import *
@@ -26,6 +23,7 @@ class Referee:
         self.kicked_players = []
         self.observer = observer
         self.game_quit = False
+        self.next_goals = []
 
     def pickup_from_state(self, state):
         """ Continues an existing Labyrinth game """
@@ -48,12 +46,11 @@ class Referee:
         """ Starts a new Labyrinth game """
 
         board, extra_tile = self.__create_board()
-
         player_states, goal_positions = self.__initialize_players(board, players)
         player_states = self.__setup_players(players, board, extra_tile, player_states, goal_positions)
         state = State(board=board, extra_tile=extra_tile, players=player_states)
         if self.observer:
-            return self.__run_with_observer(state)
+            return self.__run_with_observer(state), self.kicked_players
         return self.__run_game(state)
 
     def __create_board(self):
@@ -107,37 +104,36 @@ class Referee:
     def __initialize_players(self, board, player_apis):
         """ Creates Player objects for all the PlayerAPIs, aka Referee's knowledge of the player. """
         players = []
-
-        # TODO: Handle rectangular boards.
-        goal_positions = itertools.combinations(board.get_immoveable_columns() + board.get_immoveable_rows(), 2)
-
-        board = board.get_board()
-        valid_goal_tiles = []
-        for (x, y) in goal_positions:
-            valid_goal_tiles.append(Coordinate(x, y))
-
         goals = []
+        self.__initialize_goals()
+        valid_home_tiles = copy.deepcopy(self.next_goals)
         for player in range(len(player_apis)):
-            home_posn, home_tile, goal_posn, goal_tile = self.__initialize_positions(valid_goal_tiles, board)
+            goal_tile = self.next_goals.pop(0)
+            goal_posn = board.find_tile_coordinate_by_tile(goal_tile)
+            home_posn, home_tile = self.__initialize_home_positions(valid_home_tiles, board)
             players.append((Player(avatar=player_apis[player].get_name(),
                                    home=home_tile,
                                    goal=goal_tile,
                                    coordinate=home_posn,
                                    player_api=player_apis[player])))
-
             goals.append(goal_posn)
-
         return players, goals
 
-    def __initialize_positions(self, valid_tiles, board):
-        home_posn = random.choice(valid_tiles)
-        valid_tiles.remove(home_posn)
-        home_tile = board[home_posn.getX()][home_posn.getY()]
+    def __initialize_goals(self):
+        # TODO: Handle rectangular boards.
+        goal_positions = itertools.combinations(board.get_immoveable_columns() + board.get_immoveable_rows(), 2)
+        board = board.get_board()
+        valid_goal_tiles = []
+        for (x, y) in goal_positions:
+            valid_goal_tiles.append(Coordinate(x, y))
+        self.next_goals = [board.getTile(t) for t in random.shuffle(valid_goal_tiles)]
 
-        goal_posn = random.choice(valid_tiles)
-        valid_tiles.remove(goal_posn)
-        goal_tile = board[goal_posn.getX()][goal_posn.getY()]
-        return home_posn, home_tile, goal_posn, goal_tile
+    def __initialize_home_positions(self, valid_tiles, board):
+        tile = random.choice(valid_tiles)
+        posn = board.find_tile_coordinate_by_tile(tile)
+        valid_tiles.remove(tile)
+        return posn, tile
+
 
     def __setup_players(self, player_apis, board, extra_tile, players, goal_positions):
         """ Calls setup in each player, giving them the initial state. """
@@ -178,36 +174,36 @@ class Referee:
         if action.is_pass():
             return True
         if action.get_degree() % 90 != 0:
-            # raise ValueError(f'{action.get_degree()} not multiple of 90')
+            #raise ValueError(f'{action.get_degree()} not multiple of 90')
             return False
         if action.get_direction() not in [-1, 1]:
-            # raise ValueError(f'Invalid direction: {action.get_direction()}')
+            #raise ValueError(f'Invalid direction: {action.get_direction()}')
             return False
         if not isinstance(action.get_isrow(), bool):
-            # raise ValueError(f'{action.get_isrow()} not a boolean.')
+            #raise ValueError(f'{action.get_isrow()} not a boolean.')
             return False
         if action.get_isrow() and action.get_index() not in state.get_board().get_moveable_rows():
-            # raise ValueError(f'{action.get_index()} not movable row')
+            #raise ValueError(f'{action.get_index()} not movable row')
             return False
         if not action.get_isrow() and action.get_index() not in state.get_board().get_moveable_columns():
             #raise ValueError(f'{action.get_index()} not movable col')
             return False
         if action.does_undo(state.get_last_action()):
-            # raise ValueError(f'Action undoes last action.')
+            #raise ValueError(f'Action undoes last action.')
             return False
 
         state_copy = state.get_state_copy()
         state_copy.rotate_extra_tile(action.get_degree())
         state_copy.shift(action.get_index(), action.get_direction(), action.get_isrow())
         if not state_copy.active_can_reach_tile(action.get_coordinate()):
-            # raise ValueError(f'Player cannot reach tile {action.get_coordinate()}')
+            #raise ValueError(f'Player cannot reach tile {action.get_coordinate()} with move index: {action.get_index()}, direction: {action.get_direction()}, isrow: {action.get_isrow()}')
             return False
         return True
 
     def __run_game(self, state):
         self.__alert_observer(state)
 
-        while not state.is_game_over(self.max_rounds) and not self.game_quit:
+        while not state.is_game_over(self.max_rounds, len(self.next_goals) == 0) and not self.game_quit:
             if not self.observer or self.observer.get_ready():
                 state = self.__do_round(state)
             self.__alert_observer(state)
@@ -252,7 +248,13 @@ class Referee:
         """ Performs a give move on the given state """
         state.rotate_extra_tile(move.get_degree())
         state.shift(move.get_index(), move.get_direction(), move.get_isrow())
-        state.move_active_player(move.get_coordinate())
+        reached_goal = state.move_active_player(move.get_coordinate())
+        if reached_goal:
+            if len(self.next_goals) != 0:
+                state.assign_new_goal(self.next_goals.pop(0))
+            else:
+                state.assign_new_goal()
+        state.next_player()
         state.set_last_action(move)
 
     def __notify_players_of_win_status(self, winners, players):
@@ -262,7 +264,7 @@ class Referee:
             False : They lost the game
 
         Catches kicked players.
-         """
+        """
         kicked = []
         for player in players:
             try:

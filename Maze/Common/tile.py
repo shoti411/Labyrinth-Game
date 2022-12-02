@@ -1,6 +1,4 @@
-import copy
 import random
-
 from gems import Gem
 from directions import Direction
 

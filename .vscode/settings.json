@@ -3,6 +3,7 @@
         "./Maze/Common",
         "./Maze/Players",
         "./Maze/Referee",
-        "./Maze/Client"
+        "./Maze/Client",
+        "./Maze/Server"
     ]
 }

@@ -1,6 +1,4 @@
 from strategy import AbstractStrategy
-from coordinate import Coordinate
-from queue import PriorityQueue
 
 class Riemann(AbstractStrategy):
     """

@@ -1,9 +1,5 @@
-import copy
-from tile import Tile
-from board import Board
 from action import Pass, Move
 from queue import PriorityQueue
-from player_state import Player
 from coordinate import Coordinate
 from player_game_state import PlayerGameState
 
@@ -55,8 +51,6 @@ class AbstractStrategy(Strategy):
         enumerated_tiles = PriorityQueue()
         goal_position = board.find_tile_coordinate_by_tile(player.get_goal())
         enumerated_tiles.put((-1, goal_position))
-
-        # math.sqrt((r-goal_position.getX())**2 + (c-goal_position.getY())**2)
         for r in range(len(board.get_board())):
             row_length = len(board.get_board()[r])
             for c in range(row_length):
@@ -67,9 +61,11 @@ class AbstractStrategy(Strategy):
 
     def evaluate_move(self, state):
         re = self.slide_and_insert(state)
+        print(re)
         if not re:
             return Pass()
         (degree, coordinate), direction, index, is_row = re
+        print(coordinate)
         return Move(degree, direction, index, is_row, coordinate)
 
     def slide_and_insert(self, state):
@@ -196,7 +192,6 @@ class AbstractStrategy(Strategy):
         """
 
         for direction in self.DIRECTIONS:
-            #TODO INCOMPLETE
             if not Move(0, direction, index, isrow, Coordinate(0,0)).does_undo(state.get_last_action()):
                 degree = self.check_degrees(coordinate, state, index, direction, isrow)
                 if degree:

@@ -14,7 +14,7 @@ class Player:
 
     __acceptable_colors = ["purple", "orange", "pink", "red", "blue", "green", "yellow", "white", "black"]
 
-    def __init__(self, avatar, home, goal, coordinate, has_reached_goal=False, player_api=False):
+    def __init__(self, avatar, home, goal, coordinate, player_api=False):
         """
         Constructs a Player. A Player is made up of an avatar, home tile, goal treasure, and a position.
         
@@ -29,7 +29,7 @@ class Player:
         self.__home = home
         self.__goal = goal
         self.__coordinate = coordinate
-        self.__has_reached_goal = has_reached_goal
+        self.__num_goals_reached = 0
         self.__player_api = player_api
 
         self.__check_constructor()
@@ -94,9 +94,9 @@ class Player:
     def set_coordinate(self, coordinate):
         self.__coordinate = coordinate
 
-    def has_reached_goal(self):
-        return self.__has_reached_goal
+    def get_num_goals_reached(self):
+        return self.__num_goals_reached
 
     def reached_goal(self):
-        self.__has_reached_goal = True
+        self.__num_goals_reached += 1
 

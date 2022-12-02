@@ -25,7 +25,7 @@ class RefereeProxy:
     def receive_message(self):
         byte_string = self.socket.recv(self.FRAME_SIZE)
         if byte_string == b'':
-            self.receive_message()
+            return
         try:
             message = self.parse_message(byte_string)
         except json.decoder.JSONDecodeError as e:
@@ -73,7 +73,7 @@ class RefereeProxy:
         coord = choice.get_coordinate()
         coord = {"row#": coord.getX(), 'column#': coord.getY()}
         direction = "DOWN" if choice.get_direction() == 1 else "UP"
-        if choice.get_direction() == -1:
+        if choice.get_isrow():
             direction = "RIGHT" if choice.get_direction() == 1 else "LEFT"
         return json.dumps([index, direction, degree, coord])
 

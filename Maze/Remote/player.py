@@ -10,7 +10,7 @@ class RemotePlayerAPI:
     """ Proxy playerAPI class. Communicates in json objects to a tcp socket. """
 
     FRAME_SIZE = 1024
-    TIMEOUT = 15
+    TIMEOUT = 4  
 
     def __init__(self, name, connection, address):
         assert isinstance(connection, socket), 'Connection must be a TCP socket.'
@@ -23,7 +23,7 @@ class RemotePlayerAPI:
         return self.name
 
     def send_message(self, msg):
-        print(f'SENDING {message}')
+        #print(f'SENDING {msg}')
         self.connection.send(bytes(json.dumps(msg), encoding='utf-8'))
 
     def propose_board(self, rows, columns):
@@ -57,7 +57,6 @@ class RemotePlayerAPI:
         return self.listen_for_response()
 
     def listen_for_response(self):
-        # TODO: ADD TIMEOUT ERRORS
         self.connection.settimeout(self.TIMEOUT)
         response = self.connection.recv(self.FRAME_SIZE)
         return self.__parse_message(response)
