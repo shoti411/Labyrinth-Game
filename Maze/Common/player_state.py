@@ -22,7 +22,6 @@ class Player:
         :param: home <Tile>: home represents the home tile of the player.
         :param: goal <Tile>: goal represents the target tile of the player.
         :param: coordinate  <Coordinate>: Coordinate of player
-        :param: num_goals_reached <bool>: How many goal tiles the player has reached
         """
         # TODO: check avatar is a valid color, if not, randomize.
         self.__avatar = self.__assign_color(avatar)
