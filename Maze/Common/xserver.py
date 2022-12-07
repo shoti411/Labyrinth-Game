@@ -17,7 +17,7 @@ def xserver(in_stream):
     """
     json_objects = read_input(in_stream)
     state = json_to_state(json_objects[0])
-    s = Server('localhost', int(sys.argv[1]), state)
+    s = Server('localhost', int(sys.argv[1]), state=state)
     return return_output(s.get_game_outcome())
 
 

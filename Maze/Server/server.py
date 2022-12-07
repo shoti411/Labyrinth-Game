@@ -12,12 +12,14 @@ class Server:
     FRAME_SIZE = 1024
     TIMEOUT_FOR_PLAYERS = 20
 
-    def __init__(self, hostname, port, state=False):
+    def __init__(self, hostname, port, referee=False, state=False):
         self.hostname = hostname
         self.port = port
         self.socket = self.boot_server()
         self.player_list = []
-        self.game_outcome = self.listen_for_players(state)
+        if not referee:
+            referee = Referee()
+        self.game_outcome = self.listen_for_players(referee, state)
 
     def get_game_outcome(self):
         return self.game_outcome
@@ -28,7 +30,7 @@ class Server:
         open_socket.bind(server_address)
         return open_socket
 
-    def listen_for_players(self, state):
+    def listen_for_players(self, referee, state):
 
         self.__waiting_period()
 
@@ -39,7 +41,7 @@ class Server:
             print('print not connecting')
             return [], []
         else:
-            return self.start_game(state)            
+            return self.start_game(referee, state)            
 
     def __waiting_period(self):
         t = time.time()
@@ -55,13 +57,11 @@ class Server:
             except socket.timeout:
                 continue
 
-    def start_game(self, state):
-        #obs = Observer()
-        ref = Referee()#observer=obs)
+    def start_game(self, referee, state):
         if state:
             self.__add_apis_to_state(state)
-            return ref.pickup_from_state(state)
-        return ref.run(self.player_list)
+            return referee.pickup_from_state(state)
+        return referee.run(self.player_list)
 
     def __add_apis_to_state(self, state):
         for i, p in enumerate(state.get_players()):
