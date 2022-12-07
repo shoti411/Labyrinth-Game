@@ -16,14 +16,14 @@ from gems import Gem
 
 class Referee:
 
-    def __init__(self, min_row=7, min_col=7, max_rounds=1000, observer=False):
+    def __init__(self, min_row=7, min_col=7, max_rounds=1000, observer=False, goals=[]):
         self.min_rows = min_row
         self.min_cols = min_col
         self.max_rounds = max_rounds
         self.kicked_players = []
         self.observer = observer
         self.game_quit = False
-        self.next_goals = []
+        self.next_goals = goals
 
     def pickup_from_state(self, state):
         """ Continues an existing Labyrinth game """

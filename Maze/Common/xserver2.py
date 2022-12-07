@@ -59,13 +59,17 @@ def json_to_state(json_state):
 
 
 def json_to_goals_array(json_object, board):
-    coords_data = json_object['goals']
+    try:
+        coords_data = json_object['goals']
+    except IndexError:
+        return []
     board.get_board()
     board_data = board.get_board()
     goals = []
     for goal in coords_data:
         goals.append(board_data[goal['row#']][goal['column#']])
 
+    return goals
 
 def json_to_board(json_object):
     board_connectors = json_object['board']['connectors']
