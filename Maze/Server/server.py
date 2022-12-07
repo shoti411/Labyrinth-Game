@@ -51,7 +51,7 @@ class Server:
             self.socket.settimeout(time_left)
             try:
                 connection, address = self.socket.accept()
-                self.socket.settimeout(2)
+                self.socket.settimeout(2) #seconds
                 name = connection.recv(self.FRAME_SIZE).decode('utf-8')
                 self.player_list.append(RemotePlayerAPI(name, connection, address))
             except socket.timeout:

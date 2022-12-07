@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../Players"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../Client"))
 
 from client import Client
-from player import LocalPlayerAPI
+from player import LocalPlayerAPI, BadPlayerAPI
 
 def xclients(in_stream):
     '''
@@ -23,7 +23,12 @@ def connect_players(player_list):
     '''
     local_players = []
     for p in player_list:
-        local_players.append(LocalPlayerAPI(p[0], p[1]))
+        if len(p) == 3:
+            local_players.append(BadPlayerAPI(p[0], p[2], 0, p[1]))
+        elif (len(p) == 4):
+            local_players.append(BadPlayerAPI(p[0], p[2], p[3], p[1]))
+        else:
+            local_players.append(LocalPlayerAPI(p[0], p[1]))
     client = Client('localhost', int(sys.argv[1]))
     client.connect_players(local_players)
 
