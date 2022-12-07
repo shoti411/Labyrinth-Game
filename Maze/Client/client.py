@@ -25,8 +25,8 @@ class Client:
             t.start()
             threads.append(t)
         
-        for t in threads:
-            t.join()
+        # for t in threads:
+        #     t.join()
 
         while True:
             players_playing = any([p.is_running for p in self.players])
