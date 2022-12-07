@@ -89,7 +89,7 @@ def json_to_ref_players(json_object, board):
         players.append(Player(player_data['color'],
                               board_data[home['row#']][home['column#']],
                               board_data[goal['row#']][goal['column#']],
-                              board_data[current['row#']][current['column#']]))
+                              Coordinate(current['row#'], current['column#'])))
     return players
 
 def json_to_last_action(json_object):
