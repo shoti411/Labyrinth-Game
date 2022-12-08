@@ -1,16 +1,9 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__),"../Common"))
-
-from board import Board
 from tile import Tile
 from riemann import Riemann
 from euclid import Euclid
-from socket import socket
-import json
-from action import Pass, Move
-from coordinate import Coordinate
-import time
 
 class PlayerAPI:
     """ This class should not be instantiated """
@@ -88,7 +81,7 @@ class BadPlayerAPI(LocalPlayerAPI):
         if self.error_function == 'takeTurn':
             self.error_count -= 1
             if self.error_count == 0:
-                raise TimeoutError('take timed out.')
+                raise TimeoutError('take turn timed out.')
         else:
             return super().take_turn(game_state)
 

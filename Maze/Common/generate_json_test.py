@@ -69,9 +69,18 @@ def state_to_json(state, referee_state=False):
         'board': board_to_json(state.get_board()),
         'last': last_action_to_json(state),
         'plmt': [player_to_json(p, state.get_board(), referee_player=referee_state) for p in state.get_players()],
-        'spare': tile_to_json(state.get_extra_tile())
+        'spare': tile_to_json(state.get_extra_tile()),
+        'goals': goals_to_json(state.get_board())
     }
     return state_json
+
+def goals_to_json(board):
+    goal_positions = itertools.combinations(board.get_immoveable_columns() + board.get_immoveable_rows(), 2)
+    valid_goal_tiles = []
+    for (x, y) in goal_positions:
+        valid_goal_tiles.append((x, y))
+    return [format_coordinate(x, y) for x, y in random.choices(population=valid_goal_tiles, k=random.randint(0, len(valid_goal_tiles)))]
+        
 
 
 def format_xstate_test_case(s, index, direction, degree):
@@ -125,6 +134,14 @@ def format_xbad2_test_case(s):
     json_string += json.dumps(state_to_json(s, True)) + '\n'
     return json_string
 
+def format_xserver_xclients_test_case(s):
+    assert isinstance(s, State)
+    json_string = ''
+    num_players = len(s.get_players())
+    json_string += random_player_spec_json(num_players, True) + '\n'
+    json_string += json.dumps(state_to_json(s, True)) + '\n'
+    return json_string
+
 
 def make_tests(amount, num_players=4, fp=None):
     for i in range(amount):
@@ -156,7 +173,7 @@ def make_tests(amount, num_players=4, fp=None):
                        Coordinate(home[0], home[1]))
             players.append(p)
         s = State(players, b, Tile())
-        test_case = format_xbad2_test_case(s)
+        test_case = format_xserver_xclients_test_case(s)
 
         if fp is not None:
             file = open(f'{fp}/{i}-in.json', 'w', encoding='utf-8')
@@ -166,4 +183,4 @@ def make_tests(amount, num_players=4, fp=None):
             print(test_case)
 
 
-make_tests(5, fp='./Tests')
+make_tests(5, fp=r'C:\Users\Shaun\College\Fall 2022\Software Development\egoless-bears\10\Tests')
