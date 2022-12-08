@@ -74,21 +74,18 @@ class BadPlayerAPI(LocalPlayerAPI):
             self.error_count -= 1
             if self.error_count == 0:
                 raise TimeoutError('win timed out.')
-        else:
-            return super().won(w)
+        return super().won(w)
 
     def take_turn(self, game_state):
         if self.error_function == 'takeTurn':
             self.error_count -= 1
             if self.error_count == 0:
                 raise TimeoutError('take turn timed out.')
-        else:
-            return super().take_turn(game_state)
+        return super().take_turn(game_state)
 
     def setup(self, game_state, goal_position):
         if self.error_function == 'setUp':
             self.error_count -= 1
             if self.error_count == 0:
                 raise TimeoutError('setup timed out.')
-        else:
-            return super().setup(game_state, goal_position)
+        return super().setup(game_state, goal_position)

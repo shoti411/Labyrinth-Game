@@ -239,7 +239,7 @@ class Referee:
             else:
                 self.kicked_players.append(state.get_active_player())
                 state.kick_active()
-        except Exception as e:
+        except TimeoutError as e:
             print('do round error', e)
             self.kicked_players.append(state.get_active_player())
             state.kick_active()
