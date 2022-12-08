@@ -122,11 +122,10 @@ class Referee:
         return players, goals
 
     def __initialize_goals(self, board):
-        # TODO: Handle rectangular boards.
-        goal_positions = itertools.combinations(board.get_immoveable_columns() + board.get_immoveable_rows(), 2)
         valid_goal_tiles = []
-        for (x, y) in goal_positions:
-            valid_goal_tiles.append(Coordinate(x, y))
+        for row in board.get_immoveable_rows():
+            for col in board.get_immoveable_columns():
+                valid_goal_tiles.append(Coordinate(row, col))
         self.next_goals = [board.getTile(t) for t in valid_goal_tiles]
 
     def __initialize_home_positions(self, valid_tiles, board):
