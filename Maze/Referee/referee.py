@@ -147,7 +147,6 @@ class Referee:
                                                      }]),
                                      goal_position=goal_positions[i])
             except Exception as e:
-                print('setup error', e)
                 self.kicked_players.append(players[i])
 
         for player in self.kicked_players:
@@ -239,7 +238,6 @@ class Referee:
                 self.kicked_players.append(state.get_active_player())
                 state.kick_active()
         except TimeoutError as e:
-            print('do round error', e)
             self.kicked_players.append(state.get_active_player())
             state.kick_active()
 
