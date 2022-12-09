@@ -1,2 +1,0 @@
-#!/bin/bash 
-python3 ../Maze/Common/xclients.py $1 ${2:-"127.0.0.1"}
