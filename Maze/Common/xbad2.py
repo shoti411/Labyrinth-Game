@@ -97,10 +97,11 @@ def json_to_players(json_object, board):
     for player_data in players_data:
         home = player_data['home']
         goal = player_data['goto']
+        current = player_data['current']
         players.append(Player(player_data['color'],
                               board_data[home['row#']][home['column#']],
                               board_data[goal['row#']][goal['column#']],
-                              Coordinate(home['row#'], home['column#'])))
+                              Coordinate(current['row#'], current['column#'])))
     return players
 
 def json_to_last_action(json_object):
