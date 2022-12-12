@@ -138,8 +138,8 @@ def json_to_goals_array(json_object, board):
 
 
 if __name__ == "__main__":
-    #print(xgame(sys.stdin.read()))
-    
+    print(xgame(sys.stdin.read()))
+    '''
     for i in range(5):
         file_name = rf'C:\Users\Shaun\College\Fall 2022\Software Development\egoless-bears\10\Tests\{i}-in.json'
         f = open(file_name, 'r', encoding='utf-8')
@@ -147,4 +147,4 @@ if __name__ == "__main__":
         f_out.write(xgame(f.read()))
         f_out.close()
         f.close()
-    
+    '''

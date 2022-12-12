@@ -7,7 +7,7 @@ from action import Pass, Move
 from coordinate import Coordinate
 
 class RemotePlayerAPI:
-    """ Proxy playerAPI class. Communicates in json objects to a tcp socket. """
+    """ Proxy playerAPI class. Communicates in json objects to a tcp socket to simulate a local player. """
 
     FRAME_SIZE = 1024
     TIMEOUT = 4

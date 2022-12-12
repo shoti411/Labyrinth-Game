@@ -11,6 +11,11 @@ from action import Move, Pass, Action
 from player_state import Player
 from gems import Gem, get_gem_by_string
 
+'''A class to be used by clients in order to simulate a referee on their end of the connection.
+The RefereeProxy is associated with a PlayerAPI (self.player), a connection, and a PlayerState (self.player_mechanism).
+This information is all used to run the game according to inputs received from the server through the connection.
+The PlayerAPI is used to implement the logic of playing the game (strategy) and the PlayerState is used to keep track
+of the player's information, such a goal and home.'''
 class RefereeProxy:
 
     FRAME_SIZE = 100000
@@ -22,6 +27,7 @@ class RefereeProxy:
         self.player_mechanism = False
         self.is_running = True
 
+    '''Receive messages from the server, parse, call corresponding function, and send back a response.'''
     def receive_message(self):
         byte_string = self.socket.recv(self.FRAME_SIZE)
         if byte_string == b'':
@@ -44,6 +50,8 @@ class RefereeProxy:
         #print(f'SENDING {message}')
         self.socket.send(bytes(message, encoding='utf-8'))
 
+    '''Call the function associated with the message sent from the server with the arguments provided.
+    Send back either void or a json choice depending on the called function.'''
     def __call_player_functions(self, msg):
         func_name = msg[0]
         send_back = 'void'
@@ -75,7 +83,8 @@ class RefereeProxy:
             direction = "RIGHT" if choice.get_direction() == 1 else "LEFT"
         return json.dumps([index, direction, degree, coord])
 
-
+    '''In the case where the setup function is being used by the server for the first time, use the state and goal given to
+    set up the PlayerState with the proper information.  Return the associated PlayerGameState and goal coordinate.'''
     def __setup(self, state_json, goal_json):
         board, spare_tile, last_action = self.__parse_state(state_json)
 
@@ -140,7 +149,8 @@ class RefereeProxy:
             raise ValueError("BAD JSON")
         return Move(0, direction, index, is_row, Coordinate(0, 0))
 
-
+    '''Checks if the input received from the server was associated with one of the valid function calls
+    and has the correct amount of arguments.'''
     def __is_valid(self, msg):
         if len(msg) != 2:
             return False
