@@ -52,6 +52,7 @@ class Server:
     '''Wait for players to connect for a predetermined amount of time and associate each connected player with a 
     RemotePlayerAPI to be used to play the game.'''
     def __waiting_period(self):
+        #get the starting time and loop while it has not yet been the amount of seconds given for the timeout
         t = time.time()
         while time.time() < t + self.TIMEOUT_FOR_PLAYERS and len(self.player_list) < 6:
             self.socket.listen()

@@ -95,9 +95,10 @@ class RefereeProxy:
 
         goal_coord = self.__parse_coordinate(goal_json)
         goal_tile = board.getTile(goal_coord)
-        self.player_mechanism = Player('', home_tile, goal_tile, curr_coord, goal_tile == home_tile)
+        self.player_mechanism = Player('', home_tile, goal_tile, curr_coord, False)
         return PlayerGameState(board, spare_tile, self.player_mechanism, last_action), goal_coord
 
+    '''Return a state to be used in the player's take_turn function.'''
     def __take_turn(self, state_json):
         # TODO: UPDATE POSITION
         board, spare_tile, last_action = self.__parse_state(state_json)
