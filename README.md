@@ -1,6 +1,6 @@
 # Labyrinth
 
-This project implements "Labyrinth", a maze game where players compete to reach their goal while navigating the maze.
+This project implements "Labyrinth", a maze game where players compete to reach their goal while navigating the maze. The numbers represent the milestones and tests which we covered through our class, while the Maze folder displays the actual code for the game.
 
 ## Directory Structure
 
@@ -21,10 +21,7 @@ This project implements "Labyrinth", a maze game where players compete to reach 
     * observer.py: contains the observer implementation
 * Planning/: contains planning memos and general task items
 
-The UML diagram below depicts the class structure of the code: \
-
-
-The UML diagram below depicts the pacakge structure of the code: \
+The UML diagram in the pdf file, "output", depicts the class structure of the code.
 
 
 ## Milestones
